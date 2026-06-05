@@ -1,0 +1,6 @@
+{
+  "name": "MakeEazy",
+  "description": "Compliance, Advisory and taxation service website.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

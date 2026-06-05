@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import "react-datepicker/dist/react-datepicker.css";
+
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 300;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 400;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff') format('woff');
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 500;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff') format('woff');
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 700;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 800;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Heavy.woff') format('woff');
+}
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Gilroy", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+/* Custom styles for native date picker */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px; /* rounded edges */
+  transition: all 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(249, 115, 22, 0.1); /* hover effect with orange tint */
+  transform: scale(1.05);
+}
+
+input[type="date"] {
+  position: relative;
+}
+
+/* Custom styles for React DatePicker popup calendar */
+.react-datepicker {
+  font-family: var(--font-sans) !important;
+  border-radius: 16px !important; /* rounded edges for popup container */
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden;
+}
+
+.react-datepicker__header {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  padding-top: 12px !important;
+}
+
+.react-datepicker__day {
+  border-radius: 8px !important; /* rounded edges for days */
+  transition: all 0.2s ease !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(249, 115, 22, 0.1) !important; /* hover effect */
+  color: #ea580c !important;
+  transform: scale(1.1);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #ea580c !important;
+  color: white !important;
+}
+
+.react-datepicker__day--selected:hover {
+  background-color: #c2410c !important;
+  color: white !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+.react-datepicker__month-select,
+.react-datepicker__year-select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: #334155;
+  outline: none;
+  cursor: pointer;
+}
+
+.react-datepicker__month-select:focus,
+.react-datepicker__year-select:focus {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+}
+
