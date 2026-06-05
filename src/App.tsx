@@ -166,7 +166,7 @@ function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <a href="#" className="flex-shrink-0 flex items-center gap-2 cursor-pointer relative">
+          <a href="#" className="flex-shrink-0 flex items-center gap-2 cursor-pointer relative" aria-label="MakeEazy Home">
             <img 
               src="/logo.png" 
               alt="Make Eazy Logo" 
@@ -188,7 +188,7 @@ function Navbar() {
             {NAV_ITEMS.map((item) => (
               <div key={item.name} className="relative group">
                 {item.dropdown ? (
-                  <button className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-orange-500 transition-colors py-8">
+                  <button className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-orange-500 transition-colors py-8" aria-label={`Toggle ${item.name} menu`}>
                     {item.name}
                     <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
                   </button>
@@ -196,6 +196,7 @@ function Navbar() {
                   <a
                     href={item.href}
                     className="text-sm font-medium text-slate-600 hover:text-orange-500 transition-colors py-8 inline-block"
+                    aria-label={`Navigate to ${item.name}`}
                   >
                     {item.name}
                   </a>
@@ -211,6 +212,7 @@ function Navbar() {
                           target={dropItem.external ? "_blank" : undefined}
                           rel={dropItem.external ? "noopener noreferrer" : undefined}
                           className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
+                          aria-label={`Navigate to ${dropItem.name}`}
                         >
                           {dropItem.name}
                         </a>
@@ -220,17 +222,17 @@ function Navbar() {
                 )}
               </div>
             ))}
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95">
+            <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95" aria-label="Book an Appointment">
               Book Appointment
             </button>
-            <a href="https://desk.makeeazy.in/login" target="_blank" rel="noopener noreferrer" className="bg-[#3150A0] hover:bg-[#243d7d] text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 inline-block text-center">
+            <a href="https://desk.makeeazy.in/login" target="_blank" rel="noopener noreferrer" className="bg-[#3150A0] hover:bg-[#243d7d] text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 inline-block text-center" aria-label="Client Login Portal (opens in a new tab)">
               Client Login
             </a>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-600 hover:text-slate-900">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-600 hover:text-slate-900" aria-label={isOpen ? "Close main navigation menu" : "Open main navigation menu"}>
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -252,6 +254,7 @@ function Navbar() {
                     <button
                       onClick={() => setMobileDropdown(mobileDropdown === item.name ? null : item.name)}
                       className="flex items-center justify-between text-base font-medium text-slate-600 hover:text-orange-500 py-2"
+                      aria-label={`Toggle ${item.name} dropdown menu`}
                     >
                       {item.name}
                       <ChevronDown className={`w-5 h-5 transition-transform ${mobileDropdown === item.name ? 'rotate-180' : ''}`} />
@@ -266,6 +269,7 @@ function Navbar() {
                             rel={dropItem.external ? "noopener noreferrer" : undefined}
                             className="text-sm font-medium text-slate-500 hover:text-orange-500"
                             onClick={() => setIsOpen(false)}
+                            aria-label={`Navigate to ${dropItem.name}`}
                           >
                             {dropItem.name}
                           </a>
@@ -278,6 +282,7 @@ function Navbar() {
                     href={item.href}
                     className="text-base font-medium text-slate-600 hover:text-orange-500 py-2"
                     onClick={() => setIsOpen(false)}
+                    aria-label={`Navigate to ${item.name}`}
                   >
                     {item.name}
                   </a>
@@ -285,10 +290,10 @@ function Navbar() {
               </div>
             ))}
             <div className="flex gap-3 mt-4">
-              <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 text-center">
+              <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 text-center" aria-label="Book an Appointment">
                 Book Appointment
               </button>
-              <a href="https://desk.makeeazy.in/login" target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#3150A0] hover:bg-[#243d7d] text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 text-center">
+              <a href="https://desk.makeeazy.in/login" target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#3150A0] hover:bg-[#243d7d] text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 text-center" aria-label="Client Login Portal (opens in a new tab)">
                 Client Login
               </a>
             </div>
@@ -1765,10 +1770,10 @@ function CTAAndFooter() {
             </p>
           </div>
           <div className="flex-shrink-0 flex flex-col sm:flex-row gap-4">
-            <button className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-full text-base font-semibold transition-all shadow-lg">
+            <button className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-full text-base font-semibold transition-all shadow-lg" aria-label="Book your Appointment now">
               Book your Appointment now
             </button>
-            <button className="bg-blue-950 hover:bg-slate-900 border border-blue-800 text-white px-8 py-4 rounded-full text-base font-semibold transition-all">
+            <button className="bg-blue-950 hover:bg-slate-900 border border-blue-800 text-white px-8 py-4 rounded-full text-base font-semibold transition-all" aria-label="Contact us">
               Contact us
             </button>
           </div>
@@ -1800,28 +1805,28 @@ function CTAAndFooter() {
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Company</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="#about-us" className="hover:text-orange-400 transition-colors">About us</a></li>
-              <li><a href="#contact-us" className="hover:text-orange-400 transition-colors">Contact us</a></li>
-              <li><a href="#careers" className="hover:text-orange-400 transition-colors">Employee Login</a></li>
+              <li><a href="#about-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to About us page">About us</a></li>
+              <li><a href="#contact-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Contact us page">Contact us</a></li>
+              <li><a href="#careers" className="hover:text-orange-400 transition-colors" aria-label="Employee Login portal">Employee Login</a></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Resources</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="https://makeeazy.in/blog" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 transition-colors">Blogs</a></li>
-              <li><a href="#calculators" className="hover:text-orange-400 transition-colors">Calculators</a></li>
-              <li><a href="#downloads" className="hover:text-orange-400 transition-colors">Downloads</a></li>
-              <li><a href="#other-resources" className="hover:text-orange-400 transition-colors">Other Resources</a></li>
+              <li><a href="https://makeeazy.in/blog" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 transition-colors" aria-label="MakeEazy Blogs (opens in a new tab)">Blogs</a></li>
+              <li><a href="#calculators" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Calculators page">Calculators</a></li>
+              <li><a href="#downloads" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Downloads page">Downloads</a></li>
+              <li><a href="#other-resources" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Other Resources page">Other Resources</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Legal</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="#terms" className="hover:text-orange-400 transition-colors">Terms & Conditions</a></li>
-              <li><a href="#privacy" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
-              <li><a href="#refund" className="hover:text-orange-400 transition-colors">Refund Policy</a></li>
+              <li><a href="#terms" className="hover:text-orange-400 transition-colors" aria-label="Terms & Conditions section">Terms & Conditions</a></li>
+              <li><a href="#privacy" className="hover:text-orange-400 transition-colors" aria-label="Privacy Policy section">Privacy Policy</a></li>
+              <li><a href="#refund" className="hover:text-orange-400 transition-colors" aria-label="Refund Policy section">Refund Policy</a></li>
             </ul>
           </div>
         </div>
@@ -1928,6 +1933,7 @@ function WhatsAppWidget() {
             <button 
               onClick={() => setShowCallout(false)}
               className="text-slate-400 hover:text-slate-600 ml-1 cursor-pointer shrink-0"
+              aria-label="Close message callout"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -1945,6 +1951,7 @@ function WhatsAppWidget() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-3 rounded-full shadow-xl transition-all cursor-pointer pointer-events-auto group"
+        aria-label="Chat with us on WhatsApp"
       >
         <div className="relative flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-5 h-5">
