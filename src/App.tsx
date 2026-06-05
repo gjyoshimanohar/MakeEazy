@@ -69,6 +69,7 @@ import OtherRegistrationPage from './OtherRegistrationPage';
 import AdvisoryPage from './AdvisoryPage';
 import LegalAndDocumentationPage from './LegalAndDocumentationPage';
 import TermsPage from './TermsPage';
+import BlogPage from './BlogPage';
 
 const TESTIMONIALS = [
   {
@@ -126,7 +127,19 @@ const SERVICES = [
   },
 ];
 
-const NAV_ITEMS = [
+interface NavDropdownItem {
+  name: string;
+  href: string;
+  external?: boolean;
+}
+
+interface NavItem {
+  name: string;
+  href?: string;
+  dropdown?: NavDropdownItem[];
+}
+
+const NAV_ITEMS: NavItem[] = [
   { name: 'Home', href: '#home' },
   {
     name: 'Services',
@@ -141,7 +154,7 @@ const NAV_ITEMS = [
   {
     name: 'Resources',
     dropdown: [
-      { name: 'Blogs', href: 'https://makeeazy.in/blog', external: true },
+      { name: 'Blogs', href: '#blogs' },
       { name: 'Calculators', href: '#calculators' },
       { name: 'FAQs', href: '#faq' },
       { name: 'Downloads', href: '#downloads' },
@@ -1814,7 +1827,7 @@ function CTAAndFooter() {
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Resources</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="https://makeeazy.in/blog" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 transition-colors" aria-label="MakeEazy Blogs (opens in a new tab)">Blogs</a></li>
+              <li><a href="#blogs" className="hover:text-orange-400 transition-colors" aria-label="MakeEazy Blogs and Insights Guide">Blogs</a></li>
               <li><a href="#calculators" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Calculators page">Calculators</a></li>
               <li><a href="#downloads" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Downloads page">Downloads</a></li>
               <li><a href="#other-resources" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Other Resources page">Other Resources</a></li>
@@ -2044,6 +2057,7 @@ export default function App() {
     if (currentHash === '#trust-or-society') return <TrustOrSocietyPage />;
     if (currentHash === '#foreign-company') return <ForeignCompanyPage />;
     if (currentHash === '#careers') return <CareersPage />;
+    if (currentHash === '#blogs') return <BlogPage />;
 
     return (
       <main>
