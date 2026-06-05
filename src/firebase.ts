@@ -4,16 +4,14 @@ import { initializeFirestore } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
 // Support connecting a custom user Firebase project via standard environment variables or fallback to the platform default config.
-const env = (import.meta as { env?: Record<string, string> }).env || {};
-
 const config = {
-  apiKey: (env.VITE_FIREBASE_API_KEY as string) || firebaseConfig.apiKey,
-  authDomain: (env.VITE_FIREBASE_AUTH_DOMAIN as string) || firebaseConfig.authDomain,
-  projectId: (env.VITE_FIREBASE_PROJECT_ID as string) || firebaseConfig.projectId,
-  storageBucket: (env.VITE_FIREBASE_STORAGE_BUCKET as string) || firebaseConfig.storageBucket,
-  messagingSenderId: (env.VITE_FIREBASE_MESSAGING_SENDER_ID as string) || firebaseConfig.messagingSenderId,
-  appId: (env.VITE_FIREBASE_APP_ID as string) || firebaseConfig.appId,
-  firestoreDatabaseId: (env.VITE_FIREBASE_DATABASE_ID as string) || firebaseConfig.firestoreDatabaseId || '(default)',
+  apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || firebaseConfig.apiKey,
+  authDomain: (import.meta as any).env.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfig.authDomain,
+  projectId: (import.meta as any).env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
+  storageBucket: (import.meta as any).env.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfig.storageBucket,
+  messagingSenderId: (import.meta as any).env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseConfig.messagingSenderId,
+  appId: (import.meta as any).env.VITE_FIREBASE_APP_ID || firebaseConfig.appId,
+  firestoreDatabaseId: (import.meta as any).env.VITE_FIREBASE_DATABASE_ID || firebaseConfig.firestoreDatabaseId || '(default)',
 };
 
 const app = initializeApp({

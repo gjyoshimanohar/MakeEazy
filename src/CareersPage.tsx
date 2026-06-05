@@ -74,7 +74,7 @@ export default function CareersPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <a href="/#about-us" className="inline-flex items-center text-sm font-semibold text-[#3150A0] hover:text-orange-500 transition-colors">
+          <a href="/about-us" className="inline-flex items-center text-sm font-semibold text-[#3150A0] hover:text-orange-500 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </a>

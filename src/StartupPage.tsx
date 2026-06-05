@@ -105,27 +105,22 @@ export default function StartupPage() {
                 <div 
                   key={index} 
                   className="group relative bg-white border border-slate-200 rounded-3xl p-6 hover:shadow-xl hover:border-slate-300 transition-all cursor-pointer overflow-hidden flex flex-col text-left block"
-                  onClick={() => {
-                    if (model.title === "Sole Proprietorship") {
-                      window.location.hash = "#sole-proprietorship";
-                    } else if (model.title === "Partnership Firm") {
-                      window.location.hash = "#partnership-firm";
-                    } else if (model.title === "Limited Liability Partnership") {
-                      window.location.hash = "#limited-liability-partnership";
-                    } else if (model.title === "One Person Company") {
-                      window.location.hash = "#one-person-company";
-                    } else if (model.title === "Private Limited Company") {
-                      window.location.hash = "#private-limited-company";
-                    } else if (model.title === "Public Limited Company") {
-                      window.location.hash = "#public-limited-company";
-                    } else if (model.title === "Section 8 Company") {
-                      window.location.hash = "#section-8-company";
-                    } else if (model.title === "Trust or Society") {
-                      window.location.hash = "#trust-or-society";
-                    } else if (model.title === "Branch Office or Subsidiary of Foreign Company") {
-                      window.location.hash = "#foreign-company";
-                    }
-                  }}
+                  onClick={(e) => {
+    const paths = {
+      "Sole Proprietorship": "/sole-proprietorship",
+      "Partnership Firm": "/partnership-firm",
+      "Limited Liability Partnership": "/limited-liability-partnership",
+      "One Person Company": "/one-person-company",
+      "Private Limited Company": "/private-limited-company",
+      "Public Limited Company": "/public-limited-company",
+      "Section 8 Company": "/section-8-company",
+      "Trust or Society": "/trust-or-society",
+      "Branch Office or Subsidiary of Foreign Company": "/foreign-company"
+    };
+    if (paths[model.title as keyof typeof paths]) {
+      window.location.href = paths[model.title as keyof typeof paths];
+    }
+  }}
                 >
                   <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
                     <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-orange-500" />

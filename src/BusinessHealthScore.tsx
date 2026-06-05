@@ -51,7 +51,7 @@ export default function BusinessHealthScore() {
           <p className="text-lg text-slate-600 mb-8 leading-normal max-w-md mx-auto text-justify">
             We are bringing more advanced features. Stay connected to know more about "Business Health Score".
           </p>
-          <a href="#" className="inline-flex bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg shadow-orange-500/20 items-center justify-center gap-2 group">
+          <a href="/" className="inline-flex bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg shadow-orange-500/20 items-center justify-center gap-2 group">
             <X className="w-5 h-5 group-hover:-rotate-90 transition-transform" />
             Go Back
           </a>

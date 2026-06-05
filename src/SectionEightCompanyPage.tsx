@@ -6,7 +6,7 @@ export default function SectionEightCompanyPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900 pb-20 pt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <a 
-          href="#startup"
+          href="/startup"
           className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-orange-500 transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

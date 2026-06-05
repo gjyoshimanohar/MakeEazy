@@ -48,13 +48,13 @@ export default function OtherRegistrationPage() {
                   reg.title === "PF Registration" ? "#pf-registration" :
                   reg.title === "ESI Registration" ? "#esi-registration" :
                   reg.title === "Udyam (MSME)" ? "#udyam-registration" :
-                  reg.title === "Trade Mark" ? "#trademark-registration" :
-                  reg.title === "Legal Entity Identification" ? "#lei-registration" :
-                  reg.title === "Professional Tax" ? "#professional-tax-registration" :
-                  reg.title === "Shop & Establishment" ? "#shop-establishment-registration" :
-                  reg.title === "Trade License" ? "#trade-license-registration" :
-                  reg.title === "FSSAI License" ? "#fssai-license-registration" :
-                  "#under-construction";
+                  reg.title === "Trade Mark" ? "/trademark-registration" :
+                  reg.title === "Legal Entity Identification" ? "/lei-registration" :
+                  reg.title === "Professional Tax" ? "/professional-tax-registration" :
+                  reg.title === "Shop & Establishment" ? "/shop-establishment-registration" :
+                  reg.title === "Trade License" ? "/trade-license-registration" :
+                  reg.title === "FSSAI License" ? "/fssai-license-registration" :
+                  "/under-construction";
                 return (
                 <a
                   key={index}

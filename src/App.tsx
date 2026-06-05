@@ -69,6 +69,9 @@ import OtherRegistrationPage from './OtherRegistrationPage';
 import AdvisoryPage from './AdvisoryPage';
 import LegalAndDocumentationPage from './LegalAndDocumentationPage';
 import TermsPage from './TermsPage';
+import BlogPage from './BlogPage';
+import BlogAdminPage from './BlogAdminPage';
+import BlogArticlePage from './BlogArticlePage';
 
 const TESTIMONIALS = [
   {
@@ -98,31 +101,31 @@ const SERVICES = [
     title: 'Startup',
     description: 'Launch your dream business with complete registration and setup.',
     icon: Rocket,
-    href: '#startup',
+    href: '/startup',
   },
   {
     title: 'Compliances',
     description: 'Stay ahead of regulations with our end-to-end compliance management.',
     icon: ShieldCheck,
-    href: '#compliances',
+    href: '/compliances',
   },
   {
     title: 'Advisory services',
     description: 'Expert financial, tax, and strategic advisory for your business growth.',
     icon: PieChart,
-    href: '#advisory',
+    href: '/advisory',
   },
   {
     title: 'Other Registration',
     description: 'Hassle-free procurement of necessary licenses and varied registrations.',
     icon: FileText,
-    href: '#other-registration',
+    href: '/other-registration',
   },
   {
     title: 'Legal and Documentation',
     description: 'Robust legal support, contract drafting, and comprehensive documentation.',
     icon: Scale,
-    href: '#legal',
+    href: '/legal',
   },
 ];
 
@@ -139,33 +142,33 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { name: 'Home', href: '#home' },
+  { name: 'Home', href: '/home' },
   {
     name: 'Services',
     dropdown: [
-      { name: 'Startup', href: '#startup' },
-      { name: 'Compliances', href: '#compliances' },
-      { name: 'Advisory services', href: '#advisory' },
-      { name: 'Other Registration', href: '#other-registration' },
-      { name: 'Legal and Documentation', href: '#legal' }
+      { name: 'Startup', href: '/startup' },
+      { name: 'Compliances', href: '/compliances' },
+      { name: 'Advisory services', href: '/advisory' },
+      { name: 'Other Registration', href: '/other-registration' },
+      { name: 'Legal and Documentation', href: '/legal' }
     ]
   },
   {
     name: 'Resources',
     dropdown: [
-      { name: 'Blogs', href: '#blogs' },
-      { name: 'Calculators', href: '#calculators' },
-      { name: 'FAQs', href: '#faq' },
-      { name: 'Downloads', href: '#downloads' },
-      { name: 'Other Resources', href: '#other-resources' }
+      { name: 'Blogs', href: '/blogs' },
+      { name: 'Calculators', href: '/calculators' },
+      { name: 'FAQs', href: '/faq' },
+      { name: 'Downloads', href: '/downloads' },
+      { name: 'Other Resources', href: '/other-resources' }
     ]
   },
   {
     name: 'About',
     dropdown: [
-      { name: 'About Us', href: '#about-us' },
-      { name: 'Careers', href: '#careers' },
-      { name: 'Contact Us', href: '#contact-us' }
+      { name: 'About Us', href: '/about-us' },
+      { name: 'Careers', href: '/careers' },
+      { name: 'Contact Us', href: '/contact-us' }
     ]
   }
 ];
@@ -178,7 +181,7 @@ function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <a href="#" className="flex-shrink-0 flex items-center gap-2 cursor-pointer relative" aria-label="MakeEazy Home">
+          <a href="/" className="flex-shrink-0 flex items-center gap-2 cursor-pointer relative" aria-label="MakeEazy Home">
             <img 
               src="/logo.png" 
               alt="Make Eazy Logo" 
@@ -379,7 +382,7 @@ function Hero() {
                 Hire An Expert
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-              <a href="#services" className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-full text-base font-semibold transition-all flex items-center justify-center">
+              <a href="/services" className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-full text-base font-semibold transition-all flex items-center justify-center">
                 Explore Services
               </a>
             </div>
@@ -1421,7 +1424,7 @@ function FAQ() {
                     Tax slabs and thresholds can be complex depending on your nature of supply. Get verified, hassle-free guidance in minutes.
                   </p>
                   <a 
-                    href="#contact-us"
+                    href="/contact-us"
                     className="inline-flex items-center gap-2 text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors group"
                   >
                     Connect with an Accountant
@@ -1817,27 +1820,27 @@ function CTAAndFooter() {
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Company</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="#about-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to About us page">About us</a></li>
-              <li><a href="#contact-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Contact us page">Contact us</a></li>
-              <li><a href="#careers" className="hover:text-orange-400 transition-colors" aria-label="Employee Login portal">Employee Login</a></li>
+              <li><a href="/about-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to About us page">About us</a></li>
+              <li><a href="/contact-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Contact us page">Contact us</a></li>
+              <li><a href="/careers" className="hover:text-orange-400 transition-colors" aria-label="Employee Login portal">Employee Login</a></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Resources</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="#calculators" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Calculators page">Calculators</a></li>
-              <li><a href="#downloads" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Downloads page">Downloads</a></li>
-              <li><a href="#other-resources" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Other Resources page">Other Resources</a></li>
+              <li><a href="/calculators" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Calculators page">Calculators</a></li>
+              <li><a href="/downloads" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Downloads page">Downloads</a></li>
+              <li><a href="/other-resources" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Other Resources page">Other Resources</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Legal</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="#terms" className="hover:text-orange-400 transition-colors" aria-label="Terms & Conditions section">Terms & Conditions</a></li>
-              <li><a href="#privacy" className="hover:text-orange-400 transition-colors" aria-label="Privacy Policy section">Privacy Policy</a></li>
-              <li><a href="#refund" className="hover:text-orange-400 transition-colors" aria-label="Refund Policy section">Refund Policy</a></li>
+              <li><a href="/terms" className="hover:text-orange-400 transition-colors" aria-label="Terms & Conditions section">Terms & Conditions</a></li>
+              <li><a href="/privacy" className="hover:text-orange-400 transition-colors" aria-label="Privacy Policy section">Privacy Policy</a></li>
+              <li><a href="/refund" className="hover:text-orange-400 transition-colors" aria-label="Refund Policy section">Refund Policy</a></li>
             </ul>
           </div>
         </div>
@@ -1979,82 +1982,123 @@ function WhatsAppWidget() {
   );
 }
 
+import { useLocation, useNavigate } from 'react-router-dom';
+
 export default function App() {
-  const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  // Redirect hash fragments to paths if any exist
   useEffect(() => {
-    const handleHashChange = () => {
-      setCurrentHash(window.location.hash);
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  useEffect(() => {
-    if (currentHash === '' || currentHash === '#home') {
-      window.scrollTo(0, 0);
-    } else {
-      const isInternalSection = ['#home', '#about-us', '#services', '#testimonials', '#faq', '#contact-us'].includes(currentHash);
+    if (location.hash && location.pathname === '/') {
+      const isInternalSection = ['#home', '#about-us', '#services', '#testimonials', '#faq', '#contact-us'].includes(location.hash);
       if (!isInternalSection) {
-        window.scrollTo(0, 0);
-      } else {
-        // Find the element and scroll to it if it exists. We use a small timeout to let React render it first.
-        setTimeout(() => {
-          const id = currentHash.replace('#', '');
-          const element = document.getElementById(id);
-          if (element) {
-            const y = element.getBoundingClientRect().top + window.scrollY - 80;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-          }
-        }, 10);
+        navigate(location.hash.replace('#', '/'), { replace: true });
       }
     }
-  }, [currentHash]);
+  }, [location.hash, location.pathname, navigate]);
 
-  const isGlobalRoute = ['#health-score', '#privacy', '#terms', '#gst-late-fee-calculator', '#tds-late-fee-calculator', '#tds-interest-calculator', '#hra-calculator', '#income-tax-calculator'].includes(currentHash);
+  useEffect(() => {
+    const isInternalSection = ['/home', '/about-us', '/services', '/testimonials', '/faq', '/contact-us'].includes(location.pathname);
+    
+    if (location.pathname === '/' || location.pathname === '/home') {
+      window.scrollTo(0, 0);
+      if (location.pathname === '/home') {
+        window.history.replaceState(null, '', '/');
+      }
+    } else if (isInternalSection) {
+      setTimeout(() => {
+        const id = location.pathname.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          const y = element.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+          if (location.pathname !== `/${id}`) {
+             window.history.replaceState(null, '', `/${id}`);
+          }
+        }
+      }, 50);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      if (anchor) {
+        // Ignore links with target="_blank"
+        if (anchor.getAttribute('target') === '_blank') return;
+        
+        const href = anchor.getAttribute('href');
+        // Intercept internal path navigations
+        if (href && href.startsWith('/')) {
+          e.preventDefault();
+          if (href === '/home') {
+             navigate('/');
+          } else {
+             navigate(href);
+          }
+        }
+      }
+    };
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, [navigate]);
+
+  const p = location.pathname;
+
+  const isGlobalRoute = ['/health-score', '/privacy', '/terms', '/gst-late-fee-calculator', '/tds-late-fee-calculator', '/tds-interest-calculator', '/hra-calculator', '/income-tax-calculator'].includes(p);
   
   const renderGlobalContent = () => {
-    if (currentHash === '#health-score') return <BusinessHealthScore />;
-    if (currentHash === '#privacy') return <PrivacyPolicy />;
-    if (currentHash === '#terms') return <TermsPage />;
-    if (currentHash === '#gst-late-fee-calculator') return <GstLateFeeCalculator />;
-    if (currentHash === '#tds-late-fee-calculator') return <TdsLateFeeCalculator />;
-    if (currentHash === '#tds-interest-calculator') return <TdsInterestCalculator />;
-    if (currentHash === '#hra-calculator') return <HraCalculator />;
-    if (currentHash === '#income-tax-calculator') return <IncomeTaxCalculator />;
+    if (p === '/health-score') return <BusinessHealthScore />;
+    if (p === '/privacy') return <PrivacyPolicy />;
+    if (p === '/terms') return <TermsPage />;
+    if (p === '/gst-late-fee-calculator') return <GstLateFeeCalculator />;
+    if (p === '/tds-late-fee-calculator') return <TdsLateFeeCalculator />;
+    if (p === '/tds-interest-calculator') return <TdsInterestCalculator />;
+    if (p === '/hra-calculator') return <HraCalculator />;
+    if (p === '/income-tax-calculator') return <IncomeTaxCalculator />;
     return null;
   };
 
   const renderMainContent = () => {
-    if (currentHash === '#calculators') return <Calculators />;
-    if (currentHash === '#startup') return <StartupPage />;
-    if (currentHash === '#startup-india') return <StartupIndiaPage />;
-    if (currentHash === '#icegate') return <IcegatePage />;
-    if (currentHash === '#import-export-code') return <ImportExportCodePage />;
-    if (currentHash === '#pf-registration') return <PfRegistrationPage />;
-    if (currentHash === '#esi-registration') return <EsiRegistrationPage />;
-    if (currentHash === '#udyam-registration') return <UdyamRegistrationPage />;
-    if (currentHash === '#trademark-registration') return <TrademarkRegistrationPage />;
-    if (currentHash === '#lei-registration') return <LeiRegistrationPage />;
-    if (currentHash === '#professional-tax-registration') return <ProfessionalTaxPage />;
-    if (currentHash === '#shop-establishment-registration') return <ShopEstablishmentPage />;
-    if (currentHash === '#trade-license-registration') return <TradeLicensePage />;
-    if (currentHash === '#fssai-license-registration') return <FssaiLicensePage />;
-    if (currentHash === '#legal') return <LegalAndDocumentationPage />;
-    if (currentHash === '#advisory') return <AdvisoryPage />;
-    if (currentHash === '#other-registration') return <OtherRegistrationPage />;
-    if (currentHash === '#under-construction') return <UnderConstructionPage />;
-    if (currentHash === '#compliances') return <CompliancesPage />;
-    if (currentHash === '#sole-proprietorship') return <SoleProprietorshipPage />;
-    if (currentHash === '#partnership-firm') return <PartnershipFirmPage />;
-    if (currentHash === '#limited-liability-partnership') return <LimitedLiabilityPartnershipPage />;
-    if (currentHash === '#one-person-company') return <OnePersonCompanyPage />;
-    if (currentHash === '#private-limited-company') return <PrivateLimitedCompanyPage />;
-    if (currentHash === '#public-limited-company') return <PublicLimitedCompanyPage />;
-    if (currentHash === '#section-8-company') return <SectionEightCompanyPage />;
-    if (currentHash === '#trust-or-society') return <TrustOrSocietyPage />;
-    if (currentHash === '#foreign-company') return <ForeignCompanyPage />;
-    if (currentHash === '#careers') return <CareersPage />;
+    if (p === '/calculators') return <Calculators />;
+    if (p === '/startup') return <StartupPage />;
+    if (p === '/startup-india') return <StartupIndiaPage />;
+    if (p === '/icegate') return <IcegatePage />;
+    if (p === '/import-export-code') return <ImportExportCodePage />;
+    if (p === '/pf-registration') return <PfRegistrationPage />;
+    if (p === '/esi-registration') return <EsiRegistrationPage />;
+    if (p === '/udyam-registration') return <UdyamRegistrationPage />;
+    if (p === '/trademark-registration') return <TrademarkRegistrationPage />;
+    if (p === '/lei-registration') return <LeiRegistrationPage />;
+    if (p === '/professional-tax-registration') return <ProfessionalTaxPage />;
+    if (p === '/shop-establishment-registration') return <ShopEstablishmentPage />;
+    if (p === '/trade-license-registration') return <TradeLicensePage />;
+    if (p === '/fssai-license-registration') return <FssaiLicensePage />;
+    if (p === '/legal') return <LegalAndDocumentationPage />;
+    if (p === '/advisory') return <AdvisoryPage />;
+    if (p === '/other-registration') return <OtherRegistrationPage />;
+    if (p === '/under-construction') return <UnderConstructionPage />;
+    if (p === '/compliances') return <CompliancesPage />;
+    if (p === '/sole-proprietorship') return <SoleProprietorshipPage />;
+    if (p === '/partnership-firm') return <PartnershipFirmPage />;
+    if (p === '/limited-liability-partnership') return <LimitedLiabilityPartnershipPage />;
+    if (p === '/one-person-company') return <OnePersonCompanyPage />;
+    if (p === '/private-limited-company') return <PrivateLimitedCompanyPage />;
+    if (p === '/public-limited-company') return <PublicLimitedCompanyPage />;
+    if (p === '/section-8-company') return <SectionEightCompanyPage />;
+    if (p === '/trust-or-society') return <TrustOrSocietyPage />;
+    if (p === '/foreign-company') return <ForeignCompanyPage />;
+    if (p === '/careers') return <CareersPage />;
+    if (p === '/blogs') return <BlogPage />;
+    if (p === '/blogs-admin') return <BlogAdminPage />;
+    if (p.startsWith('/blog/')) {
+      const slug = p.split('/')[2];
+      return <BlogArticlePage slug={slug} />;
+    }
 
     return (
       <main>

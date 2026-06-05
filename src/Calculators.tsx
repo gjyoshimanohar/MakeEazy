@@ -3,12 +3,12 @@ import { ArrowLeft, Calculator, Calculator as CalculatorIcon } from 'lucide-reac
 
 export default function Calculators() {
   const calculators = [
-    { name: "Income Tax Calculator (Old vs New)", icon: CalculatorIcon, color: "text-emerald-500", bg: "bg-emerald-50", href: "#income-tax-calculator" },
-    { name: "GST late Fee calculator", icon: CalculatorIcon, color: "text-orange-500", bg: "bg-orange-50", href: "#gst-late-fee-calculator" },
-    { name: "TDS late fee Calculator", icon: CalculatorIcon, color: "text-blue-500", bg: "bg-blue-50", href: "#tds-late-fee-calculator" },
-    { name: "TDS Interest Calculator", icon: CalculatorIcon, color: "text-rose-500", bg: "bg-rose-50", href: "#tds-interest-calculator" },
-    { name: "HRA Calculator", icon: CalculatorIcon, color: "text-blue-500", bg: "bg-blue-50", href: "#hra-calculator" },
-    { name: "ROC late fee Calculator", icon: CalculatorIcon, color: "text-green-500", bg: "bg-green-50", href: "#" },
+    { name: "Income Tax Calculator (Old vs New)", icon: CalculatorIcon, color: "text-emerald-500", bg: "bg-emerald-50", href: "/income-tax-calculator" },
+    { name: "GST late Fee calculator", icon: CalculatorIcon, color: "text-orange-500", bg: "bg-orange-50", href: "/gst-late-fee-calculator" },
+    { name: "TDS late fee Calculator", icon: CalculatorIcon, color: "text-blue-500", bg: "bg-blue-50", href: "/tds-late-fee-calculator" },
+    { name: "TDS Interest Calculator", icon: CalculatorIcon, color: "text-rose-500", bg: "bg-rose-50", href: "/tds-interest-calculator" },
+    { name: "HRA Calculator", icon: CalculatorIcon, color: "text-blue-500", bg: "bg-blue-50", href: "/hra-calculator" },
+    { name: "ROC late fee Calculator", icon: CalculatorIcon, color: "text-green-500", bg: "bg-green-50", href: "/" },
   ];
 
   return (

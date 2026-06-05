@@ -121,7 +121,7 @@ export default function TradeLicensePage() {
         
         {/* Back Link */}
         <a 
-          href="#other-registration"
+          href="/other-registration"
           className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-orange-500 transition-colors mb-8 group"
         >
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />

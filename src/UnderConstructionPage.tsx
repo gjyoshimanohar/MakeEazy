@@ -30,7 +30,7 @@ export default function UnderConstructionPage() {
           </p>
 
           <a 
-            href="/#home" 
+            href="/home" 
             className="inline-flex items-center justify-center bg-[#3150A0] hover:bg-[#243d7d] text-white px-6 py-3 rounded-full text-base font-semibold transition-all shadow-md group"
           >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
