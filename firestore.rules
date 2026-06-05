@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for global safety
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && request.auth.token.email == 'admn.makeeazy@gmail.com';
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Entity validation helper to enforce strict structure and typed schemas
+    function isValidPost(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() >= 3 && data.title.size() <= 200
+        && data.slug is string && data.slug.size() >= 3 && data.slug.size() <= 250
+        && data.excerpt is string && data.excerpt.size() <= 500
+        && data.content is string && data.content.size() >= 10 && data.content.size() <= 600000
+        && data.category is string && (
+          data.category == 'Startups & Companies' ||
+          data.category == 'Taxation & GST' ||
+          data.category == 'Licenses & Registrations' ||
+          data.category == 'Advisory & Growth'
+        )
+        && data.readTime is string && data.readTime.size() <= 50
+        && data.date is string && data.date.size() <= 50
+        && data.author is string && data.author.size() <= 100
+        && data.gradient is string && data.gradient.size() <= 150
+        && data.isCustom is bool
+        && data.createdAt is timestamp
+        && data.authorId is string && data.authorId.size() <= 128
+        && data.tags is list && data.tags.size() <= 15;
+    }
+
+    // Default Deny Rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Posts Collection rules
+    match /posts/{postId} {
+      // 1. All visitors can read posts
+      allow get, list: if true;
+
+      // 2. Composing new blog insights (Admin only)
+      allow create: if isAdmin() 
+        && isValidId(postId)
+        && isValidPost(incoming())
+        && incoming().id is string && incoming().id.size() <= 128
+        && incoming().createdAt == request.time
+        && incoming().authorId == request.auth.uid
+        && incoming().keys().hasAll(['id', 'title', 'slug', 'excerpt', 'content', 'category', 'readTime', 'date', 'author', 'tags', 'gradient', 'isCustom', 'createdAt', 'authorId'])
+        && incoming().keys().size() == 14;
+
+      // 3. Modifying custom insights (Admin only)
+      allow update: if isAdmin()
+        && isValidId(postId)
+        && isValidPost(incoming())
+        && incoming().id == existing().id
+        && incoming().authorId == existing().authorId
+        && incoming().createdAt == existing().createdAt
+        && (
+          incoming().diff(existing()).affectedKeys().hasAny(['title', 'slug', 'excerpt', 'category', 'readTime', 'author', 'tags', 'gradient', 'content'])
+        );
+
+      // 4. Deleting custom insights (Admin only)
+      allow delete: if isAdmin()
+        && isValidId(postId);
+    }
+  }
+}

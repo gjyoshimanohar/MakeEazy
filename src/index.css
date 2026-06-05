@@ -117,3 +117,92 @@ input[type="date"] {
   box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
 }
 
+/* SunEditor Content render styles */
+.suneditor-content-view {
+  font-family: var(--font-sans);
+  color: #334155;
+  line-height: 1.85;
+  font-size: 1rem;
+}
+.suneditor-content-view h1, 
+.suneditor-content-view h2, 
+.suneditor-content-view h3, 
+.suneditor-content-view h4 {
+  font-family: var(--font-display);
+  color: #3150A0;
+  font-weight: 800;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+.suneditor-content-view h1 { font-size: 2rem; }
+.suneditor-content-view h2 { font-size: 1.6rem; }
+.suneditor-content-view h3 { font-size: 1.35rem; }
+.suneditor-content-view h4 { font-size: 1.15rem; }
+.suneditor-content-view p {
+  margin-bottom: 1.25rem;
+}
+.suneditor-content-view ul, 
+.suneditor-content-view ol {
+  padding-left: 2rem;
+  margin-bottom: 1.25rem;
+}
+.suneditor-content-view ul {
+  list-style-type: disc;
+}
+.suneditor-content-view ol {
+  list-style-type: decimal;
+}
+.suneditor-content-view li {
+  margin-bottom: 0.5rem;
+}
+.suneditor-content-view blockquote {
+  border-left: 4px solid #ea580c;
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  background-color: #fffaf0;
+  color: #7c2d12;
+  border-radius: 0 12px 12px 0;
+}
+.suneditor-content-view table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+.suneditor-content-view table th, 
+.suneditor-content-view table td {
+  border: 1px solid #f1f5f9;
+  padding: 0.85rem;
+  text-align: left;
+}
+.suneditor-content-view table th {
+  background-color: #f8fafc;
+  font-weight: 700;
+  color: #1e293b;
+}
+.suneditor-content-view img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 1.75rem 0;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+}
+.suneditor-content-view pre, 
+.suneditor-content-view code {
+  font-family: inherit;
+  background-color: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: #0f172a;
+}
+.suneditor-content-view pre {
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+

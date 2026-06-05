@@ -18,6 +18,7 @@
     "date-fns": "^4.2.1",
     "dotenv": "^17.4.2",
     "express": "^4.22.2",
+    "firebase": "^12.14.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
@@ -28,6 +29,8 @@
     "react-dom": "^19.0.1",
     "react-router-dom": "^7.15.1",
     "recharts": "^3.8.1",
+    "suneditor": "^2.47.8",
+    "suneditor-react": "^3.6.1",
     "vite": "^6.2.3"
   },
   "devDependencies": {

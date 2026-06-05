@@ -69,7 +69,6 @@ import OtherRegistrationPage from './OtherRegistrationPage';
 import AdvisoryPage from './AdvisoryPage';
 import LegalAndDocumentationPage from './LegalAndDocumentationPage';
 import TermsPage from './TermsPage';
-import BlogPage from './BlogPage';
 
 const TESTIMONIALS = [
   {
@@ -1827,7 +1826,6 @@ function CTAAndFooter() {
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Resources</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="#blogs" className="hover:text-orange-400 transition-colors" aria-label="MakeEazy Blogs and Insights Guide">Blogs</a></li>
               <li><a href="#calculators" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Calculators page">Calculators</a></li>
               <li><a href="#downloads" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Downloads page">Downloads</a></li>
               <li><a href="#other-resources" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Other Resources page">Other Resources</a></li>
@@ -2057,7 +2055,6 @@ export default function App() {
     if (currentHash === '#trust-or-society') return <TrustOrSocietyPage />;
     if (currentHash === '#foreign-company') return <ForeignCompanyPage />;
     if (currentHash === '#careers') return <CareersPage />;
-    if (currentHash === '#blogs') return <BlogPage />;
 
     return (
       <main>

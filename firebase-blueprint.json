@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "post": {
+      "title": "Advisory Blog Post",
+      "description": "Represents a dynamically created blog post or advisory insight in the system.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the post."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the blog post."
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-safe path representation of the title (e.g., standard-gst-updates)."
+        },
+        "excerpt": {
+          "type": "string",
+          "description": "Brief description or summary of the post."
+        },
+        "content": {
+          "type": "string",
+          "description": "HTML safe rich-text content representing the main article body produced by SunEditor."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Startups & Companies", "Taxation & GST", "Licenses & Registrations", "Advisory & Growth"],
+          "description": "The compliance-oriented category of the blog post."
+        },
+        "readTime": {
+          "type": "string",
+          "description": "Estimated reading duration of the article."
+        },
+        "date": {
+          "type": "string",
+          "description": "Formatted date of publishing."
+        },
+        "author": {
+          "type": "string",
+          "description": "Author name and advisory credentials."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Keywords or tags associated with this advice."
+        },
+        "gradient": {
+          "type": "string",
+          "description": "CSS gradient details."
+        },
+        "isCustom": {
+          "type": "boolean",
+          "description": "Identifies if the post was created dynamically by admin."
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Firestore server-side creation timestamp tracking."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Google UID of the administrator who created the post."
+        }
+      },
+      "required": ["id", "title", "slug", "excerpt", "content", "category", "readTime", "date", "author", "gradient", "isCustom", "createdAt", "authorId"]
+    }
+  },
+  "firestore": {
+    "/posts/{postId}": {
+      "schema": "post",
+      "description": "Collection of dynamic blog posts or business insights."
+    }
+  }
+}
