@@ -94,6 +94,10 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
     const items: { id: string; text: string; level: number }[] = [];
 
     headings.forEach((heading, idx) => {
+      // Apply scroll-margin-top to support offset scrolling nicely
+      if (heading instanceof HTMLElement) {
+        heading.style.scrollMarginTop = '120px';
+      }
       let id = heading.id;
       if (!id) {
         const cleanText = heading.textContent ? heading.textContent.trim() : '';
@@ -128,7 +132,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
         }
       },
       {
-        rootMargin: '-100px 0px -70% 0px',
+        rootMargin: '-120px 0px -60% 0px',
         threshold: 0.1
       }
     );
@@ -147,15 +151,12 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const offset = 100; // Account for the sticky/fixed header bar (z-50)
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+      if (element instanceof HTMLElement) {
+        element.style.scrollMarginTop = '120px';
+      }
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
       setIsMobileTocOpen(false);
     }
@@ -315,15 +316,6 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
             {/* Split layout for Content and Table of Contents */}
             <div className={`grid grid-cols-1 ${toc.length > 0 ? 'lg:grid-cols-12' : ''} gap-10 items-start`}>
-               {/* Core Content */}
-               <div className={`w-full ${toc.length > 0 ? 'lg:col-span-8 xl:col-span-9' : ''}`}>
-                  <div 
-                     ref={contentRef}
-                     className="suneditor-content-view text-justify max-w-none w-full mb-12"
-                     dangerouslySetInnerHTML={{ __html: post.content }}
-                  />
-               </div>
-
                {/* Table of Contents Sticky Sidebar on Desktop */}
                {toc.length > 0 && (
                   <div className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 space-y-4">
@@ -355,6 +347,15 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                      </div>
                   </div>
                )}
+
+               {/* Core Content */}
+               <div className={`w-full ${toc.length > 0 ? 'lg:col-span-8 xl:col-span-9' : ''}`}>
+                  <div 
+                     ref={contentRef}
+                     className="suneditor-content-view text-justify max-w-none w-full mb-12"
+                     dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
+               </div>
             </div>
 
             {/* Tag Cluster and Social Share Grid */}
