@@ -334,16 +334,7 @@ export default function BlogPage() {
 
           {/* Quick Newsletter / Contact CTA component removed as per request */}
 
-          {/* Desktop Link to Workspace */}
-          <div className="text-center">
-            <a
-              href="/blogs-admin"
-              className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-slate-500 hover:text-[#3150A0] transition-all bg-white hover:bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 shadow-sm"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              Blogs Admin
-            </a>
-          </div>
+
         </div>
 
         {/* Right Blogs List Feed Grid */}

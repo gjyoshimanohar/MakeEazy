@@ -154,7 +154,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
             {/* Core Advisory Content prose */}
             <div 
-               className="prose prose-slate max-w-4xl mx-auto w-full prose-headings:text-[#3150A0] prose-headings:font-extrabold prose-p:leading-relaxed prose-li:leading-relaxed prose-p:text-slate-600 prose-li:text-slate-600 prose-strong:text-slate-900 prose-headings:tracking-tight prose-a:text-orange-600 prose-a:no-underline hover:prose-a:underline mb-12"
+               className="suneditor-content-view text-justify max-w-4xl mx-auto w-full mb-12"
                dangerouslySetInnerHTML={{ __html: post.content }}
             />
 

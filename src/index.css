@@ -123,6 +123,7 @@ input[type="date"] {
   color: #334155;
   line-height: 1.85;
   font-size: 1rem;
+  text-align: justify;
 }
 .suneditor-content-view h1, 
 .suneditor-content-view h2, 
@@ -140,6 +141,7 @@ input[type="date"] {
 .suneditor-content-view h4 { font-size: 1.15rem; }
 .suneditor-content-view p {
   margin-bottom: 1.25rem;
+  text-align: justify;
 }
 .suneditor-content-view ul, 
 .suneditor-content-view ol {
@@ -203,6 +205,50 @@ input[type="date"] {
   padding: 1rem;
   overflow-x: auto;
   margin: 1.5rem 0;
+}
+
+/* SunEditor editable area overrides to match real blog rendering */
+.sun-editor {
+  border-radius: 1rem !important;
+  font-family: var(--font-sans) !important;
+  border-color: #e2e8f0 !important;
+  overflow: hidden;
+}
+
+.sun-editor .se-toolbar {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  outline: none !important;
+}
+
+.sun-editor-editable {
+  font-family: var(--font-sans) !important;
+  color: #334155 !important;
+  line-height: 1.85 !important;
+  font-size: 1rem !important;
+  text-align: justify !important;
+  padding: 1.5rem !important;
+}
+
+.sun-editor-editable h1,
+.sun-editor-editable h2,
+.sun-editor-editable h3,
+.sun-editor-editable h4 {
+  font-family: var(--font-display) !important;
+  color: #3150A0 !important;
+  font-weight: 800 !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.sun-editor-editable h1 { font-size: 2rem !important; }
+.sun-editor-editable h2 { font-size: 1.6rem !important; }
+.sun-editor-editable h3 { font-size: 1.35rem !important; }
+.sun-editor-editable h4 { font-size: 1.15rem !important; }
+
+.sun-editor-editable p {
+  margin-bottom: 1.25rem !important;
+  text-align: justify !important;
 }
 
 

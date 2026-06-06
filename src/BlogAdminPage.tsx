@@ -536,7 +536,7 @@ export default function BlogAdminPage() {
                         <span className="text-xs font-bold text-slate-600">By {author || 'CA Gyanesh Manohar'}</span>
                       </div>
 
-                      <div className="prose prose-slate max-w-none bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-left">
+                      <div className="suneditor-content-view text-justify max-w-none bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                         {editorContent ? (
                           <div dangerouslySetInnerHTML={{ __html: editorContent }} />
                         ) : (
