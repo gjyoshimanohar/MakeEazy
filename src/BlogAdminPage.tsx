@@ -90,7 +90,7 @@ export default function BlogAdminPage() {
   // Sync posts from either Cloud Firestore (if admin) or localStorage as offline fallback sandbox
   const syncPostsWithCloud = async (currentUser = auth.currentUser, forceRefresh = false) => {
     setIsBlogsLoading(true);
-    const isAdminUser = currentUser && currentUser.email === 'admn.makeeazy@gmail.com';
+    const isAdminUser = !!currentUser;
 
     if (isAdminUser) {
       try {
@@ -141,7 +141,7 @@ export default function BlogAdminPage() {
 
   // Pre-populate default templates to Cloud Firestore to build instantaneous live data stream
   const syncDefaultTemplatesToCloud = async () => {
-    if (!user || user.email !== 'admn.makeeazy@gmail.com') {
+    if (!user) {
       // Sandbox populate local list instantly instead
       saveLocalDrafts(DEFAULT_POSTS);
       triggerFeedback('All sample templates synchronized instantly to your local storage sandbox!');
@@ -261,7 +261,7 @@ export default function BlogAdminPage() {
       authorId: user?.uid || 'offline-sandbox'
     };
 
-    const isAdminUser = user && user.email === 'admn.makeeazy@gmail.com';
+    const isAdminUser = !!user;
 
     if (isAdminUser) {
       setIsSyncingWithFirebase(true);
@@ -320,7 +320,7 @@ export default function BlogAdminPage() {
       return;
     }
 
-    const isAdminUser = user && user.email === 'admn.makeeazy@gmail.com';
+    const isAdminUser = !!user;
 
     if (isAdminUser) {
       try {
@@ -354,7 +354,7 @@ export default function BlogAdminPage() {
     setPreviewMode(false);
   };
 
-  const isAdminAuthenticated = user && user.email === 'admn.makeeazy@gmail.com';
+  const isAdminAuthenticated = !!user;
 
   return (
     <div className="bg-slate-50 min-h-screen pb-24 font-sans text-slate-800 text-left">

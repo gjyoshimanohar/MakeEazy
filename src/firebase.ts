@@ -1,17 +1,17 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { initializeFirestore } from 'firebase/firestore';
-import firebaseConfig from '../firebase-applet-config.json';
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { initializeFirestore } from "firebase/firestore";
+import firebaseConfig from "../firebase-applet-config.json";
 
 // Support connecting a custom user Firebase project via standard environment variables or fallback to the platform default config.
 const config = {
-  apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || "AIzaSyA5cS4vZe9jF9hVIhHR99g8KQri0JSge-Q",
-  authDomain: (import.meta as any).env.VITE_FIREBASE_AUTH_DOMAIN || "makeeazy-main-website.firebaseapp.com",
-  projectId: (import.meta as any).env.VITE_FIREBASE_PROJECT_ID || "makeeazy-main-website",
-  storageBucket: (import.meta as any).env.VITE_FIREBASE_STORAGE_BUCKET || "makeeazy-main-website.firebasestorage.app",
-  messagingSenderId: (import.meta as any).env.VITE_FIREBASE_MESSAGING_SENDER_ID || "507428167571",
-  appId: (import.meta as any).env.VITE_FIREBASE_APP_ID || "1:507428167571:web:0cff98e15dace16cdb5266",
-  firestoreDatabaseId: (import.meta as any).env.VITE_FIREBASE_DATABASE_ID || '(default)',
+  apiKey: "AIzaSyA5cS4vZe9jF9hVIhHR99g8KQri0JSge-Q",
+  authDomain: "makeeazy-main-website.firebaseapp.com",
+  projectId: "makeeazy-main-website",
+  storageBucket: "makeeazy-main-website.firebasestorage.app",
+  messagingSenderId: "507428167571",
+  appId: "1:507428167571:web:0cff98e15dace16cdb5266",
+  firestoreDatabaseId: "(default)",
 };
 
 const app = initializeApp({
@@ -23,20 +23,24 @@ const app = initializeApp({
   appId: config.appId,
 });
 
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-}, config.firestoreDatabaseId); /* CRITICAL: The app will break without this line */
+export const db = initializeFirestore(
+  app,
+  {
+    experimentalForceLongPolling: true,
+  },
+  config.firestoreDatabaseId,
+); /* CRITICAL: The app will break without this line */
 
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
+  CREATE = "create",
+  UPDATE = "update",
+  DELETE = "delete",
+  LIST = "list",
+  GET = "get",
+  WRITE = "write",
 }
 
 export interface FirestoreErrorInfo {
@@ -53,10 +57,14 @@ export interface FirestoreErrorInfo {
       providerId?: string | null;
       email?: string | null;
     }[];
-  }
+  };
 }
 
-export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null): never {
+export function handleFirestoreError(
+  error: unknown,
+  operationType: OperationType,
+  path: string | null,
+): never {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
     authInfo: {
@@ -65,14 +73,15 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
       emailVerified: auth.currentUser?.emailVerified,
       isAnonymous: auth.currentUser?.isAnonymous,
       tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData?.map(provider => ({
-        providerId: provider.providerId,
-        email: provider.email,
-      })) || []
+      providerInfo:
+        auth.currentUser?.providerData?.map((provider) => ({
+          providerId: provider.providerId,
+          email: provider.email,
+        })) || [],
     },
     operationType,
-    path
+    path,
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  console.error("Firestore Error: ", JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
