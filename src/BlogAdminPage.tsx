@@ -32,6 +32,8 @@ import {
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { db, auth, handleFirestoreError, OperationType } from './firebase';
 import { BlogPost, DEFAULT_POSTS } from './BlogPage';
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css';
 
 const CATEGORIES = [
   'Startups & Companies',
@@ -173,33 +175,6 @@ export default function BlogAdminPage() {
     }
   };
 
-  // Helper formatting injectors into textarea
-  const injectTag = (tagType: 'h2' | 'p' | 'ul' | 'table' | 'b') => {
-    const textarea = document.getElementById('composing-textarea') as HTMLTextAreaElement;
-    if (!textarea) return;
-
-    const startPos = textarea.selectionStart;
-    const endPos = textarea.selectionEnd;
-    const oldText = textarea.value;
-    const selectedText = oldText.substring(startPos, endPos) || 'text';
-
-    let replacement = '';
-    if (tagType === 'h2') replacement = `<h2>${selectedText || 'Main Subheading'}</h2>`;
-    if (tagType === 'p') replacement = `<p>${selectedText || 'Provide compliance text details here.'}</p>`;
-    if (tagType === 'b') replacement = `<strong>${selectedText || 'bold text'}</strong>`;
-    if (tagType === 'ul') {
-      replacement = `<ul>\n  <li>${selectedText || 'Compliance Checklist Step 1'}</li>\n  <li>Checklist Step 2</li>\n</ul>`;
-    }
-    if (tagType === 'table') {
-      replacement = `<table>\n  <thead>\n    <tr>\n      <th>Compliance Event</th>\n      <th>Due Date</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Board Meeting</td>\n      <td>By September 5th</td>\n    </tr>\n  </tbody>\n</table>`;
-    }
-
-    const newText = oldText.substring(0, startPos) + replacement + oldText.substring(endPos);
-    setEditorContent(newText);
-    textarea.value = newText;
-    textarea.focus();
-    textarea.setSelectionRange(startPos + replacement.length, startPos + replacement.length);
-  };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -690,59 +665,31 @@ export default function BlogAdminPage() {
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <label className="text-xs font-bold text-slate-705 uppercase tracking-wider inline-flex items-center gap-1">
                             <BookOpen className="w-4 h-4 text-[#3150A0]" />
-                            Corporate Advisory Text Prose (HTML elements accepted)
+                            Corporate Advisory Content
                           </label>
-                          
-                          {/* Formatting helpers bar */}
-                          <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
-                            <button
-                              type="button"
-                              onClick={() => injectTag('h2')}
-                              className="px-2 py-1 text-[10px] font-bold text-slate-600 hover:bg-white rounded cursor-pointer border-0"
-                            >
-                              h2 Subheading
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => injectTag('p')}
-                              className="px-2 py-1 text-[10px] font-bold text-slate-600 hover:bg-white rounded cursor-pointer border-0"
-                            >
-                              Paragraph
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => injectTag('b')}
-                              className="px-2 py-1 text-[10px] font-bold text-slate-600 hover:bg-white rounded cursor-pointer border-0"
-                            >
-                              Bold Text
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => injectTag('ul')}
-                              className="px-2 py-1 text-[10px] font-bold text-slate-600 hover:bg-white rounded cursor-pointer border-0"
-                            >
-                              List
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => injectTag('table')}
-                              className="px-2 py-1 text-[10px] font-bold text-slate-600 hover:bg-white rounded cursor-pointer border-0"
-                            >
-                              Add Table
-                            </button>
-                          </div>
                         </div>
 
-                        {/* Text Content Field */}
-                        <textarea
-                          id="composing-textarea"
-                          rows={12}
-                          required
-                          value={editorContent}
-                          onChange={(e) => setEditorContent(e.target.value)}
-                          placeholder="<h2>Overview</h2> <p>Begin writing corporate compliance information here.</p> ..."
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none text-sm font-mono leading-relaxed"
-                        />
+                        {/* Rich Text Editor */}
+                        <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+                          <SunEditor
+                            setContents={editorContent}
+                            onChange={(content) => setEditorContent(content)}
+                            setOptions={{
+                              buttonList: [
+                                ['undo', 'redo', 'font', 'fontSize', 'formatBlock'],
+                                ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+                                ['fontColor', 'hiliteColor', 'textStyle', 'removeFormat'],
+                                '/',
+                                ['outdent', 'indent', 'align', 'horizontalRule', 'list', 'lineHeight'],
+                                ['table', 'link', 'image', 'video'],
+                                ['fullScreen', 'showBlocks', 'codeView'],
+                                ['preview']
+                              ],
+                              minHeight: '400px',
+                              resizingBar: false
+                            }}
+                          />
+                        </div>
                       </div>
 
                       {/* Submit and Cancel drawers */}
