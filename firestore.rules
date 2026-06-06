@@ -78,7 +78,7 @@ service cloud.firestore {
         && incoming().authorId == existing().authorId
         && incoming().createdAt == existing().createdAt
         && (
-          incoming().diff(existing()).affectedKeys().hasAny(['title', 'slug', 'excerpt', 'category', 'readTime', 'author', 'tags', 'gradient', 'content'])
+          incoming().diff(existing()).affectedKeys().hasAny(['title', 'slug', 'excerpt', 'category', 'readTime', 'author', 'tags', 'gradient', 'content', 'date'])
         );
 
       // 4. Deleting custom insights (Admin only)

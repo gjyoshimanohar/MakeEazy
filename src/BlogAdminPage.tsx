@@ -54,6 +54,25 @@ const GRADIENTS: GradientPreset[] = [
   { name: 'Orange Amber Flare', val: 'from-amber-600 to-orange-500' }
 ];
 
+const convertToInputDateFormat = (dateStr: string) => {
+  if (!dateStr) return new Date().toISOString().split('T')[0];
+  const dateObj = new Date(dateStr);
+  if (isNaN(dateObj.getTime())) {
+    return new Date().toISOString().split('T')[0];
+  }
+  const yyyy = dateObj.getFullYear();
+  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const dd = String(dateObj.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const formatDateToDisplay = (dateStr: string) => {
+  if (!dateStr) return '';
+  const dateObj = new Date(dateStr);
+  if (isNaN(dateObj.getTime())) return dateStr;
+  return dateObj.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+};
+
 export default function BlogAdminPage() {
   const [user, setUser] = useState(auth.currentUser);
   const [customBlogs, setCustomBlogs] = useState<BlogPost[]>([]);
@@ -73,6 +92,13 @@ export default function BlogAdminPage() {
   const [tagsString, setTagsString] = useState('ROC, Startups, Compliances');
   const [gradient, setGradient] = useState('from-[#3150A0] to-slate-900');
   const [editorContent, setEditorContent] = useState('');
+  const [postDate, setPostDate] = useState(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  });
 
   // Status flags
   const [writerFeedback, setWriterFeedback] = useState<string>('');
@@ -228,7 +254,7 @@ export default function BlogAdminPage() {
       content: editorContent,
       category,
       readTime: readTime.trim(),
-      date: new Date().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
+      date: formatDateToDisplay(postDate),
       author: author.trim() || 'CA Gyanesh Manohar',
       tags: tagsArr,
       gradient,
@@ -286,6 +312,7 @@ export default function BlogAdminPage() {
     setTagsString(post.tags.join(', '));
     setGradient(post.gradient);
     setEditorContent(post.content);
+    setPostDate(convertToInputDateFormat(post.date));
     setPreviewMode(false);
     setIsWriting(true);
   };
@@ -326,6 +353,11 @@ export default function BlogAdminPage() {
     setTagsString('ROC, Startups, Compliances');
     setGradient('from-[#3150A0] to-slate-900');
     setEditorContent('');
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    setPostDate(`${yyyy}-${mm}-${dd}`);
     setPreviewMode(false);
   };
 
@@ -519,8 +551,10 @@ export default function BlogAdminPage() {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3.5 text-xs font-bold text-slate-500 font-mono text-left">
+                      <div className="flex flex-wrap items-center gap-3.5 text-xs font-bold text-slate-500 font-mono text-left font-semibold">
                         <span className="text-orange-500 uppercase tracking-wider">{category}</span>
+                        <span>•</span>
+                        <span>{formatDateToDisplay(postDate)}</span>
                         <span>•</span>
                         <span>{readTime || '5 min read'}</span>
                       </div>
@@ -577,7 +611,7 @@ export default function BlogAdminPage() {
                         </div>
                       </div>
 
-                      <div className="grid md:grid-cols-3 gap-6">
+                      <div className="grid md:grid-cols-4 gap-6">
                         {/* Category Selection */}
                         <div className="space-y-1.5 text-left">
                           <label className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Primary Category</label>
@@ -592,6 +626,18 @@ export default function BlogAdminPage() {
                               </option>
                             ))}
                           </select>
+                        </div>
+
+                        {/* Posting Date Selection */}
+                        <div className="space-y-1.5 text-left">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Publish Date</label>
+                          <input
+                            type="date"
+                            required
+                            value={postDate}
+                            onChange={(e) => setPostDate(e.target.value)}
+                            className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none text-slate-800 font-semibold"
+                          />
                         </div>
 
                         {/* Estimated Reading Duration */}
@@ -686,7 +732,10 @@ export default function BlogAdminPage() {
                                 ['preview']
                               ],
                               minHeight: '400px',
-                              resizingBar: false
+                              resizingBar: false,
+                              attributesBlacklist: {
+                                '*': 'style'
+                              }
                             }}
                           />
                         </div>
