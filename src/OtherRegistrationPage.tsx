@@ -42,12 +42,12 @@ export default function OtherRegistrationPage() {
               {REGISTRATIONS.map((reg, index) => {
                 const IconContent = reg.icon;
                 const hrefPath = 
-                  reg.title === "Startup India" ? "#startup-india" : 
-                  reg.title === "ICEGATE" ? "#icegate" : 
-                  reg.title === "Import Export Code" ? "#import-export-code" : 
-                  reg.title === "PF Registration" ? "#pf-registration" :
-                  reg.title === "ESI Registration" ? "#esi-registration" :
-                  reg.title === "Udyam (MSME)" ? "#udyam-registration" :
+                  reg.title === "Startup India" ? "/startup-india" : 
+                  reg.title === "ICEGATE" ? "/icegate" : 
+                  reg.title === "Import Export Code" ? "/import-export-code" : 
+                  reg.title === "PF Registration" ? "/pf-registration" :
+                  reg.title === "ESI Registration" ? "/esi-registration" :
+                  reg.title === "Udyam (MSME)" ? "/udyam-registration" :
                   reg.title === "Trade Mark" ? "/trademark-registration" :
                   reg.title === "Legal Entity Identification" ? "/lei-registration" :
                   reg.title === "Professional Tax" ? "/professional-tax-registration" :

@@ -984,13 +984,24 @@ export default function BlogAdminPage() {
                   ) : (
                     /* Dashboard Moderator Feed Grid */
                     <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs p-6 md:p-8 space-y-2">
-                      {customBlogs.map((post, index) => (
-                        <div
-                          key={post.id}
-                          className={`group flex items-center justify-between py-5 text-left ${
-                            index !== 0 ? 'border-t border-slate-100' : ''
-                          }`}
-                        >
+                      {[...customBlogs]
+                        .sort((a, b) => {
+                          const dateA = Date.parse(a.date) || 0;
+                          const dateB = Date.parse(b.date) || 0;
+                          if (dateA !== dateB) {
+                            return dateB - dateA;
+                          }
+                          const timeA = a.createdAt ? (a.createdAt.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt).getTime()) : 0;
+                          const timeB = b.createdAt ? (b.createdAt.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt).getTime()) : 0;
+                          return timeB - timeA;
+                        })
+                        .map((post, index) => (
+                          <div
+                            key={post.id}
+                            className={`group flex items-center justify-between py-5 text-left ${
+                              index !== 0 ? 'border-t border-slate-100' : ''
+                            }`}
+                          >
                           <div className="flex-1 pr-6 cursor-pointer" onClick={() => handleEditClick(post)}>
                             <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold tracking-widest uppercase mb-1 font-mono">
                               <span className="text-[#f97316]">{post.category.split(' ')[0]}</span>

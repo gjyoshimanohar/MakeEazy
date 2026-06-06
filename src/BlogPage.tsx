@@ -256,8 +256,24 @@ function NewsletterSubscription() {
   );
 }
 
+const getBlogTime = (blog: BlogPost) => {
+  if (!blog.date) return 0;
+  const parsed = Date.parse(blog.date);
+  if (!isNaN(parsed)) return parsed;
+  if (blog.createdAt) {
+    if (typeof blog.createdAt.toDate === 'function') {
+      return blog.createdAt.toDate().getTime();
+    }
+    const seconds = blog.createdAt.seconds;
+    if (seconds) return seconds * 1000;
+  }
+  return 0;
+};
+
 export default function BlogPage() {
-  const [blogs, setBlogs] = useState<BlogPost[]>(DEFAULT_POSTS);
+  const [blogs, setBlogs] = useState<BlogPost[]>(() => {
+    return [...DEFAULT_POSTS].sort((a, b) => getBlogTime(b) - getBlogTime(a));
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [isLoading, setIsLoading] = useState(false);
@@ -278,19 +294,31 @@ export default function BlogPage() {
           fetchedBlogs.push({ id: doc.id, ...doc.data() } as BlogPost);
         });
 
+        const sortedDefaults = [...DEFAULT_POSTS].sort((a, b) => getBlogTime(b) - getBlogTime(a));
+
         if (fetchedBlogs.length > 0) {
           // Merge custom posts from Cloud Firestore with our beautiful defaults
           const customIds = new Set(fetchedBlogs.map((b) => b.id));
           const nonDuplicatedDefaults = DEFAULT_POSTS.filter((p) => !customIds.has(p.id));
-          setBlogs([...fetchedBlogs, ...nonDuplicatedDefaults]);
+          const merged = [...fetchedBlogs, ...nonDuplicatedDefaults];
+          merged.sort((a, b) => {
+            const timeA = getBlogTime(a);
+            const timeB = getBlogTime(b);
+            if (timeA !== timeB) return timeB - timeA;
+            // secondary fallback sorting by createdAt order
+            const aCreated = a.createdAt?.seconds || 0;
+            const bCreated = b.createdAt?.seconds || 0;
+            return bCreated - aCreated;
+          });
+          setBlogs(merged);
         } else {
-          setBlogs(DEFAULT_POSTS);
+          setBlogs(sortedDefaults);
         }
         setIsLoading(false);
       },
       (error) => {
         console.error('Failed to load posts from cloud database. Falling back to local static logs.', error);
-        setBlogs(DEFAULT_POSTS);
+        setBlogs([...DEFAULT_POSTS].sort((a, b) => getBlogTime(b) - getBlogTime(a)));
         setIsLoading(false);
       }
     );
