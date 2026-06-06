@@ -392,7 +392,7 @@ export default function BlogPage() {
                       : 'text-slate-600 hover:bg-slate-50 border border-transparent hover:border-slate-100'
                   }`}
                 >
-                  <span>{cat === 'All' ? 'All Advisory Logs' : cat}</span>
+                  <span>{cat === 'All' ? 'All Advisory Blogs' : cat}</span>
                   <ChevronRight className={`w-3.5 h-3.5 transition-transform ${selectedCategory === cat ? 'translate-x-1 text-orange-500' : 'text-slate-300'}`} />
                 </button>
               ))}
