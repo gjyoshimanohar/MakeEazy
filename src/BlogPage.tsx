@@ -14,9 +14,10 @@ import {
   ArrowUpRight,
   Sparkles,
   ShieldCheck,
-  FileText
+  FileText,
+  Mail
 } from 'lucide-react';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
 
 export interface BlogPost {
@@ -32,6 +33,11 @@ export interface BlogPost {
   tags: string[];
   gradient: string;
   isCustom: boolean;
+  authorLinkedin?: string;
+  authorDesignation?: string;
+  authorFirm?: string;
+  authorBio?: string;
+  authorAvatar?: string;
   createdAt?: any;
   authorId?: string;
 }
@@ -103,6 +109,152 @@ export const DEFAULT_POSTS: BlogPost[] = [
     `
   }
 ];
+
+function NewsletterSubscription() {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanEmail = email.trim();
+    if (!cleanEmail) return;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      setFeedback({ type: 'error', message: 'Please enter a valid business email address.' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFeedback(null);
+
+    const targetPath = 'newsletter_subscribers';
+    try {
+      const docRef = doc(collection(db, targetPath));
+      await setDoc(docRef, {
+        id: docRef.id,
+        email: cleanEmail,
+        createdAt: Timestamp.now()
+      });
+      setFeedback({
+        type: 'success',
+        message: 'Wonderful! You have successfully subscribed to the MakeEazy newsletter.'
+      });
+      setEmail('');
+    } catch (err: any) {
+      console.error('Failed subscribing to newsletter:', err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, targetPath);
+      } catch (formattedErr: any) {
+        setFeedback({
+          type: 'error',
+          message: 'Error saving subscription. Please try again soon.'
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 rounded-3xl p-8 md:p-12 text-white border border-blue-800 shadow-xl relative overflow-hidden mt-16" id="blog-newsletter-footer">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12 justify-between">
+        <div className="space-y-4 text-left max-w-lg">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+            Weekly Advisory Digests
+          </div>
+          <h2 className="font-display text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
+            Stay ahead of Indian Tax, compliance & ROC updates!
+          </h2>
+          <p className="text-slate-300 text-xs md:text-sm leading-relaxed font-medium">
+            Join 5,000+ founders and professionals receiving actionable compliance checklists, tax-saving tips, and filing deadlines every Sunday. Get ₹0-cost advisory updates directly in your inbox.
+          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold text-slate-400 font-mono">
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-green-400" />
+              Strictly No Spam
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-orange-400" />
+              ₹0 Lifetime Cost
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-400" />
+              Secure Unsubscribe
+            </span>
+          </div>
+        </div>
+
+        <div className="w-full md:max-w-md shrink-0">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-slate-400" />
+              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                disabled={isSubmitting || (feedback?.type === 'success')}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address..."
+                className="block w-full pl-11 pr-4 py-3.5 bg-slate-800/80 hover:bg-slate-800/90 focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-xl border border-slate-700/80 text-sm font-semibold text-white placeholder-slate-400 transition-all outline-none"
+              />
+            </div>
+            
+            <button
+              type="submit"
+              disabled={isSubmitting || (feedback?.type === 'success')}
+              className={`w-full py-3.5 px-6 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 ${
+                isSubmitting 
+                  ? 'bg-orange-500/80 text-white cursor-wait' 
+                  : feedback?.type === 'success'
+                   ? 'bg-green-600 text-white hover:bg-green-700'
+                   : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-orange-500/20'
+              }`}
+            >
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Securing Connection...
+                </>
+              ) : feedback?.type === 'success' ? (
+                'Subscribed Successfully!'
+              ) : (
+                'Subscribe to Advisory'
+              )}
+            </button>
+          </form>
+
+          {feedback && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`mt-4 p-3.5 rounded-xl text-xs font-semibold text-left border flex items-start gap-2.5 ${
+                feedback.type === 'success' 
+                  ? 'bg-green-950/40 text-green-300 border-green-800/40' 
+                  : 'bg-red-950/40 text-red-300 border-red-800/40'
+              }`}
+            >
+              <AlertCircle className={`w-4 h-4 shrink-0 mt-0.5 ${feedback.type === 'success' ? 'text-green-400' : 'text-red-400'}`} />
+              <span>{feedback.message}</span>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>(DEFAULT_POSTS);
@@ -312,6 +464,8 @@ export default function BlogPage() {
           )}
         </div>
       </div>
+
+      <NewsletterSubscription />
 
       </div>
       

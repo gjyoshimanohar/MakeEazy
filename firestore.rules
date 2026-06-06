@@ -47,7 +47,18 @@ service cloud.firestore {
         && data.isCustom is bool
         && data.createdAt is timestamp
         && data.authorId is string && data.authorId.size() <= 128
+        && data.authorLinkedin is string && data.authorLinkedin.size() <= 200
+        && data.authorDesignation is string && data.authorDesignation.size() <= 200
+        && data.authorFirm is string && data.authorFirm.size() <= 200
+        && data.authorBio is string && data.authorBio.size() <= 2000
+        && data.authorAvatar is string && data.authorAvatar.size() <= 600000
         && data.tags is list && data.tags.size() <= 15;
+    }
+
+    function isValidSubscriber(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 150
+        && data.createdAt is timestamp;
     }
 
     // Default Deny Rule
@@ -67,8 +78,8 @@ service cloud.firestore {
         && incoming().id is string && incoming().id.size() <= 128
         && incoming().createdAt == request.time
         && incoming().authorId == request.auth.uid
-        && incoming().keys().hasAll(['id', 'title', 'slug', 'excerpt', 'content', 'category', 'readTime', 'date', 'author', 'tags', 'gradient', 'isCustom', 'createdAt', 'authorId'])
-        && incoming().keys().size() == 14;
+        && incoming().keys().hasAll(['id', 'title', 'slug', 'excerpt', 'content', 'category', 'readTime', 'date', 'author', 'tags', 'gradient', 'isCustom', 'createdAt', 'authorId', 'authorLinkedin', 'authorDesignation', 'authorFirm', 'authorBio', 'authorAvatar'])
+        && incoming().keys().size() == 19;
 
       // 3. Modifying custom insights (Admin only)
       allow update: if isAdmin()
@@ -78,12 +89,25 @@ service cloud.firestore {
         && incoming().authorId == existing().authorId
         && incoming().createdAt == existing().createdAt
         && (
-          incoming().diff(existing()).affectedKeys().hasAny(['title', 'slug', 'excerpt', 'category', 'readTime', 'author', 'tags', 'gradient', 'content', 'date'])
+          incoming().diff(existing()).affectedKeys().hasAny(['title', 'slug', 'excerpt', 'category', 'readTime', 'author', 'tags', 'gradient', 'content', 'date', 'authorLinkedin', 'authorDesignation', 'authorFirm', 'authorBio', 'authorAvatar'])
         );
 
       // 4. Deleting custom insights (Admin only)
       allow delete: if isAdmin()
         && isValidId(postId);
+    }
+
+    // Newsletter Subscribers Collection rules
+    match /newsletter_subscribers/{subscriberId} {
+      allow create: if isValidId(subscriberId)
+        && isValidSubscriber(incoming())
+        && incoming().id == subscriberId
+        && incoming().createdAt == request.time
+        && incoming().keys().hasAll(['id', 'email', 'createdAt'])
+        && incoming().keys().size() == 3;
+
+      allow read: if isAdmin();
+      allow update, delete: if false;
     }
   }
 }

@@ -61,15 +61,59 @@
         "authorId": {
           "type": "string",
           "description": "Google UID of the administrator who created the post."
+        },
+        "authorLinkedin": {
+          "type": "string",
+          "description": "LinkedIn profile link for the blog post author."
+        },
+        "authorDesignation": {
+          "type": "string",
+          "description": "Professional title or credential of the author."
+        },
+        "authorFirm": {
+          "type": "string",
+          "description": "Workplace or corporate affiliate of the author."
+        },
+        "authorBio": {
+          "type": "string",
+          "description": "Detailed background story or advisory credentials bio."
+        },
+        "authorAvatar": {
+          "type": "string",
+          "description": "URL or base64 placeholder for author profile headshot photo."
         }
       },
-      "required": ["id", "title", "slug", "excerpt", "content", "category", "readTime", "date", "author", "gradient", "isCustom", "createdAt", "authorId"]
+      "required": ["id", "title", "slug", "excerpt", "content", "category", "readTime", "date", "author", "gradient", "isCustom", "createdAt", "authorId", "authorLinkedin", "authorDesignation", "authorFirm", "authorBio", "authorAvatar"]
+    },
+    "newsletter_subscriber": {
+      "title": "Newsletter Subscriber",
+      "description": "Represents a captured user interest subscription for advisory and tax newsletter logs.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Generated record identifier."
+        },
+        "email": {
+          "type": "string",
+          "description": "Validated visitor email."
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Subscribed timestamp logging."
+        }
+      },
+      "required": ["id", "email", "createdAt"]
     }
   },
   "firestore": {
     "/posts/{postId}": {
       "schema": "post",
       "description": "Collection of dynamic blog posts or business insights."
+    },
+    "/newsletter_subscribers/{subscriberId}": {
+      "schema": "newsletter_subscriber",
+      "description": "Newsletter interest subscription leads collection."
     }
   }
 }

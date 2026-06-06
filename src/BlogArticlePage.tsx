@@ -4,12 +4,31 @@ import {
   Clock,
   Calendar,
   Tag,
-  ArrowLeft
+  ArrowLeft,
+  Linkedin
 } from 'lucide-react';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from './firebase';
 import { BlogPost, DEFAULT_POSTS } from './BlogPage';
 import { useParams, useNavigate } from 'react-router-dom';
+
+const getAuthorBio = (author: string) => {
+  const norm = author.toLowerCase();
+  if (norm.includes('gyanesh') || norm.includes('manohar')) {
+    return {
+      description: 'CA Gyanesh Manohar is a practicing Chartered Accountant and senior corporate advisor with over 12 years of core statutory practice in GST litigations, private corporate formulations, auditing procedures, and foreign investments (FDI). He has advised hundreds of Indian startup founders on scaling in a tax-efficient, fully compliant framework.',
+      avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=200',
+      designation: 'Senior Chartered Accountant',
+      firm: 'MakeEazy Statutory Board'
+    };
+  }
+  return {
+    description: `${author} is a dedicated compliance specialist and professional legal consultant. They represent prominent enterprises across corporate filing preparations, trademark clearances, legal drafting, and general statutory structures.`,
+    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
+    designation: 'Senior Compliance Specialist',
+    firm: 'MakeEazy Advisory'
+  };
+};
 
 export default function BlogArticlePage({ slug }: { slug?: string }) {
   const defaultPost = slug ? DEFAULT_POSTS.find(p => p.slug === slug) || null : null;
@@ -171,6 +190,71 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                ))}
                </div>
             </div>
+
+            {/* Author Bio Section */}
+            {(() => {
+               const authorName = post.author || 'CA Gyanesh Manohar';
+               const fallbackBio = getAuthorBio(authorName);
+               const authorInfo = {
+                  description: post.authorBio || fallbackBio.description,
+                  avatarUrl: post.authorAvatar || fallbackBio.avatarUrl,
+                  designation: post.authorDesignation || fallbackBio.designation,
+                  firm: post.authorFirm || fallbackBio.firm
+               };
+               const linkedinUrl = post.authorLinkedin || (
+                  (authorName.toLowerCase().includes('gyanesh') || authorName.toLowerCase().includes('manohar')) 
+                     ? 'https://www.linkedin.com' 
+                     : ''
+               );
+               return (
+                  <div className="border-t border-b border-slate-100 py-8 mb-10 text-left bg-slate-50/35 px-4 sm:px-6 rounded-2xl border border-slate-150/70" id="blog-author-bio">
+                     <h4 className="text-xs font-bold uppercase tracking-widest text-[#3150A0] mb-4">
+                        Author & Publisher Profile
+                     </h4>
+                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                        <div className="flex-shrink-0">
+                           <div className="relative">
+                              <img
+                                 src={authorInfo.avatarUrl}
+                                 alt={authorName}
+                                 referrerPolicy="no-referrer"
+                                 className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-orange-200 shadow-md"
+                              />
+                              <div className="absolute -bottom-1 -right-1 bg-green-500 w-3.5 h-3.5 rounded-full border-2 border-white animate-pulse" title="Verified Professional" />
+                           </div>
+                        </div>
+                        
+                        <div className="space-y-2 text-center sm:text-left flex-1">
+                           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                              <h3 className="font-display font-extrabold text-base md:text-lg text-[#3150A0]">
+                                 {authorName}
+                              </h3>
+                              <span className="hidden sm:inline text-slate-350 select-none">•</span>
+                              <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider bg-orange-100/60 px-2.5 py-1 rounded-full inline-block leading-none">
+                                 {authorInfo.designation}
+                              </span>
+                              {linkedinUrl && (
+                                 <a 
+                                    href={linkedinUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 border border-blue-100 px-2.5 py-1 rounded-full transition-all"
+                                    title="Connect on LinkedIn"
+                                 >
+                                    <Linkedin className="w-3 h-3 text-blue-600 shrink-0" />
+                                    LinkedIn
+                                 </a>
+                              )}
+                           </div>
+                           
+                           <p className="text-slate-600 text-xs md:text-sm leading-relaxed max-w-3xl">
+                              {authorInfo.description}
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+               );
+            })()}
 
             {/* Immersive Footer Call To Action */}
             <div className="bg-slate-50 rounded-2xl flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 border border-slate-100">

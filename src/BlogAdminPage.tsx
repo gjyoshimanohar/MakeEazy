@@ -89,6 +89,11 @@ export default function BlogAdminPage() {
   const [category, setCategory] = useState<BlogPost['category']>('Startups & Companies');
   const [readTime, setReadTime] = useState('5 min read');
   const [author, setAuthor] = useState('CA Gyanesh Manohar');
+  const [authorLinkedin, setAuthorLinkedin] = useState('');
+  const [authorDesignation, setAuthorDesignation] = useState('');
+  const [authorFirm, setAuthorFirm] = useState('');
+  const [authorBio, setAuthorBio] = useState('');
+  const [authorAvatar, setAuthorAvatar] = useState('');
   const [tagsString, setTagsString] = useState('ROC, Startups, Compliances');
   const [gradient, setGradient] = useState('from-[#3150A0] to-slate-900');
   const [editorContent, setEditorContent] = useState('');
@@ -183,6 +188,11 @@ export default function BlogAdminPage() {
         const blogDocRef = doc(db, 'posts', post.id);
         const serverDoc = {
           ...post,
+          authorLinkedin: post.authorLinkedin || '',
+          authorDesignation: post.authorDesignation || '',
+          authorFirm: post.authorFirm || '',
+          authorBio: post.authorBio || '',
+          authorAvatar: post.authorAvatar || '',
           createdAt: Timestamp.now(),
           authorId: user.uid,
           isCustom: true
@@ -256,6 +266,11 @@ export default function BlogAdminPage() {
       readTime: readTime.trim(),
       date: formatDateToDisplay(postDate),
       author: author.trim() || 'CA Gyanesh Manohar',
+      authorLinkedin: authorLinkedin.trim(),
+      authorDesignation: authorDesignation.trim(),
+      authorFirm: authorFirm.trim(),
+      authorBio: authorBio.trim(),
+      authorAvatar: authorAvatar.trim(),
       tags: tagsArr,
       gradient,
       isCustom: true,
@@ -270,9 +285,12 @@ export default function BlogAdminPage() {
         const path = `posts/${computedId}`;
         const docRef = doc(db, 'posts', computedId);
         
+        const currentPost = customBlogs.find(b => b.id === computedId);
+        const existingCreatedAt = currentPost?.createdAt || Timestamp.now();
+
         const dbPayload = {
           ...postPayload,
-          createdAt: Timestamp.now()
+          createdAt: existingCreatedAt
         };
 
         await setDoc(docRef, dbPayload);
@@ -309,6 +327,11 @@ export default function BlogAdminPage() {
     setCategory(post.category);
     setReadTime(post.readTime);
     setAuthor(post.author);
+    setAuthorLinkedin(post.authorLinkedin || '');
+    setAuthorDesignation(post.authorDesignation || '');
+    setAuthorFirm(post.authorFirm || '');
+    setAuthorBio(post.authorBio || '');
+    setAuthorAvatar(post.authorAvatar || '');
     setTagsString(post.tags.join(', '));
     setGradient(post.gradient);
     setEditorContent(post.content);
@@ -350,6 +373,11 @@ export default function BlogAdminPage() {
     setCategory('Startups & Companies');
     setReadTime('5 min read');
     setAuthor('CA Gyanesh Manohar');
+    setAuthorLinkedin('');
+    setAuthorDesignation('');
+    setAuthorFirm('');
+    setAuthorBio('');
+    setAuthorAvatar('');
     setTagsString('ROC, Startups, Compliances');
     setGradient('from-[#3150A0] to-slate-900');
     setEditorContent('');
@@ -611,7 +639,7 @@ export default function BlogAdminPage() {
                         </div>
                       </div>
 
-                      <div className="grid md:grid-cols-4 gap-6">
+                      <div className="grid md:grid-cols-3 gap-6">
                         {/* Category Selection */}
                         <div className="space-y-1.5 text-left">
                           <label className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Primary Category</label>
@@ -650,16 +678,144 @@ export default function BlogAdminPage() {
                             className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none text-slate-800"
                           />
                         </div>
+                      </div>
 
-                        {/* custom author */}
+                      {/* Author Info Section */}
+                      <div className="border-[1.5px] border-slate-100 bg-slate-50/25 rounded-2xl p-5 md:p-6 space-y-6">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                          <h4 className="text-xs font-extrabold uppercase tracking-widest text-[#3150A0]">Advisory Author Profile</h4>
+                          <span className="text-[10px] font-mono bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-bold">Dynamic Credentials Card</span>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-2 gap-5">
+                          {/* custom author */}
+                          <div className="space-y-1.5 text-left">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Advisory Specialist Name</label>
+                            <input
+                              type="text"
+                              value={author}
+                              onChange={(e) => setAuthor(e.target.value)}
+                              placeholder="e.g. CA Gyanesh Manohar"
+                              className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 font-semibold"
+                            />
+                          </div>
+
+                          {/* author designation */}
+                          <div className="space-y-1.5 text-left">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Author Designation</label>
+                            <input
+                              type="text"
+                              value={authorDesignation}
+                              onChange={(e) => setAuthorDesignation(e.target.value)}
+                              placeholder="e.g. Senior Chartered Accountant (or leave blank for default)"
+                              className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 font-semibold"
+                            />
+                          </div>
+
+                          {/* author firm */}
+                          <div className="space-y-1.5 text-left">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Firm / Affiliation</label>
+                            <input
+                              type="text"
+                              value={authorFirm}
+                              onChange={(e) => setAuthorFirm(e.target.value)}
+                              placeholder="e.g. MakeEazy Statutory Board (or leave blank for default)"
+                              className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800"
+                            />
+                          </div>
+
+                          {/* author linkedin */}
+                          <div className="space-y-1.5 text-left">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Author LinkedIn URL</label>
+                            <input
+                              type="url"
+                              value={authorLinkedin}
+                              onChange={(e) => setAuthorLinkedin(e.target.value)}
+                              placeholder="e.g. https://www.linkedin.com/in/ca-gyanesh-manohar"
+                              className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        {/* author bio description */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Advisory Specialist Name</label>
-                          <input
-                            type="text"
-                            value={author}
-                            onChange={(e) => setAuthor(e.target.value)}
-                            className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none text-slate-800"
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Professional Bio / description</label>
+                          <textarea
+                            rows={3}
+                            value={authorBio}
+                            onChange={(e) => setAuthorBio(e.target.value)}
+                            placeholder="Detail the specialist's advisory qualifications, corporate consulting background, or statutory domain expertise. Leave empty to use the default compliance master biography."
+                            className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 leading-normal"
                           />
+                        </div>
+
+                        {/* author avatar placeholder uploader */}
+                        <div className="space-y-2 text-left border-t border-dashed border-slate-100 pt-4">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Author Profile Photo</label>
+                          <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-xl">
+                            <div className="relative shrink-0">
+                              <img
+                                src={authorAvatar || 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=200'}
+                                alt="Author Preview"
+                                className="w-16 h-16 rounded-full object-cover border-2 border-orange-200 bg-slate-200 shadow-sm"
+                              />
+                              {authorAvatar && (
+                                <button
+                                  type="button"
+                                  onClick={() => setAuthorAvatar('')}
+                                  className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-all text-[8px] leading-none font-bold"
+                                  title="Clear Photo"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                            
+                            <div className="flex-1 space-y-2 w-full">
+                              <div className="flex flex-wrap items-center gap-2">
+                                {/* Hidden file input */}
+                                <input
+                                  type="file"
+                                  id="author-avatar-file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      if (file.size > 400 * 1024) {
+                                        alert('Please keep your dynamic avatar image files under 400KB to ensure rapid compliance database Sync.');
+                                        return;
+                                      }
+                                      const reader = new FileReader();
+                                      reader.onload = (event) => {
+                                        if (event.target?.result) {
+                                          setAuthorAvatar(event.target.result as string);
+                                        }
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => document.getElementById('author-avatar-file')?.click()}
+                                  className="px-4 py-2 text-xs bg-[#3150A0] text-white font-semibold rounded-lg hover:bg-slate-800 transition-all cursor-pointer shadow-sm"
+                                >
+                                  Upload Profile Photo File
+                                </button>
+                                
+                                <span className="text-[10px] text-slate-400">or paste a custom web image URL:</span>
+                              </div>
+                              
+                              <input
+                                type="url"
+                                value={authorAvatar.startsWith('data:') ? '' : authorAvatar}
+                                onChange={(e) => setAuthorAvatar(e.target.value)}
+                                placeholder="Paste image web link (e.g. https://images.unsplash.com/...)"
+                                className="w-full px-3 py-2 text-[11px] bg-white border border-slate-200 rounded-lg focus:outline-none text-slate-800 font-mono"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
