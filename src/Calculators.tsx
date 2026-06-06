@@ -8,7 +8,7 @@ export default function Calculators() {
     { name: "TDS late fee Calculator", icon: CalculatorIcon, color: "text-blue-500", bg: "bg-blue-50", href: "/tds-late-fee-calculator" },
     { name: "TDS Interest Calculator", icon: CalculatorIcon, color: "text-rose-500", bg: "bg-rose-50", href: "/tds-interest-calculator" },
     { name: "HRA Calculator", icon: CalculatorIcon, color: "text-blue-500", bg: "bg-blue-50", href: "/hra-calculator" },
-    { name: "ROC late fee Calculator", icon: CalculatorIcon, color: "text-green-500", bg: "bg-green-50", href: "/" },
+    { name: "ROC late fee Calculator", icon: CalculatorIcon, color: "text-green-500", bg: "bg-green-50", href: "/under-construction" },
   ];
 
   return (

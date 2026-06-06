@@ -2083,6 +2083,7 @@ export default function App() {
     if (p === '/legal') return <LegalAndDocumentationPage />;
     if (p === '/advisory') return <AdvisoryPage />;
     if (p === '/other-registration') return <OtherRegistrationPage />;
+    if (p === '/downloads' || p === '/other-resources' || p === '/refund') return <UnderConstructionPage />;
     if (p === '/under-construction') return <UnderConstructionPage />;
     if (p === '/compliances') return <CompliancesPage />;
     if (p === '/sole-proprietorship') return <SoleProprietorshipPage />;
