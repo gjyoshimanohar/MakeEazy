@@ -72,6 +72,7 @@ import TermsPage from './TermsPage';
 import BlogPage from './BlogPage';
 import BlogAdminPage from './BlogAdminPage';
 import BlogArticlePage from './BlogArticlePage';
+import EmployeePortalPage from './EmployeePortalPage';
 
 const TESTIMONIALS = [
   {
@@ -1822,7 +1823,7 @@ function CTAAndFooter() {
             <ul className="space-y-4 text-blue-200/80">
               <li><a href="/about-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to About us page">About us</a></li>
               <li><a href="/contact-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Contact us page">Contact us</a></li>
-              <li><a href="/careers" className="hover:text-orange-400 transition-colors" aria-label="Employee Login portal">Employee Login</a></li>
+              <li><a href="/employee-portal" className="hover:text-orange-400 transition-colors" aria-label="Employee Login portal">Employee Login</a></li>
               <li><a href="/blogs-admin" className="hover:text-orange-400 transition-colors" aria-label="Blogs Admin Portal">Blogs Admin</a></li>
             </ul>
           </div>
@@ -2096,6 +2097,7 @@ export default function App() {
     if (p === '/trust-or-society') return <TrustOrSocietyPage />;
     if (p === '/foreign-company') return <ForeignCompanyPage />;
     if (p === '/careers') return <CareersPage />;
+    if (p === '/employee-portal') return <EmployeePortalPage />;
     if (p === '/blogs') return <BlogPage />;
     if (p === '/blogs-admin') return <BlogAdminPage />;
     if (p.startsWith('/blog/')) {

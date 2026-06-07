@@ -73,10 +73,14 @@ export default function CareersPage() {
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <a href="/about-us" className="inline-flex items-center text-sm font-semibold text-[#3150A0] hover:text-orange-500 transition-colors">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <a href="/about-us" className="inline-flex items-center text-sm font-semibold text-[#3150A0] hover:text-orange-500 transition-colors" id="back-to-home-link">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
+          </a>
+          <a href="/employee-portal" className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#3150A0]/10 hover:bg-[#3150A0] text-[#3150A0] hover:text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95" id="career-to-employee-portal-link">
+            <Users className="w-3.5 h-3.5" />
+            Looking for Employee Portal? Log In
           </a>
         </div>
 
