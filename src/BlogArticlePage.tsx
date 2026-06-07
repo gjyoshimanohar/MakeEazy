@@ -32,7 +32,7 @@ const getAuthorBio = (author: string) => {
     description: `${author} is a dedicated compliance specialist and professional legal consultant. They represent prominent enterprises across corporate filing preparations, trademark clearances, legal drafting, and general statutory structures.`,
     avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
     designation: 'Senior Compliance Specialist',
-    firm: 'MakeEazy Advisory'
+    firm: 'MakeEazy Consultants Private Limited'
   };
 };
 
@@ -199,17 +199,17 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900">
       <Helmet>
-        <title>{post.title} | MakeEazy Advisory Insights</title>
+        <title>{post.title} | MakeEazy Consultants Private Limited Insights</title>
         <meta name="description" content={post.excerpt} />
         <meta name="keywords" content={post.tags?.join(', ') || 'Tax, Compliance, Startups, Advisory'} />
         <meta name="author" content={post.author} />
         
         {/* Open Graph Meta Tags */}
-        <meta property="og:title" content={`${post.title} - MakeEazy Advisory`} />
+        <meta property="og:title" content={`${post.title} - MakeEazy Consultants Private Limited`} />
         <meta property="og:description" content={post.excerpt} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={window.location.href} />
-        <meta property="og:site_name" content="MakeEazy Advisory" />
+        <meta property="og:site_name" content="MakeEazy Consultants Private Limited" />
         <meta property="article:published_time" content={post.date} />
         <meta property="article:author" content={post.author} />
         <meta property="article:section" content={post.category} />

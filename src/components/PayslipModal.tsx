@@ -58,7 +58,7 @@ export default function PayslipModal({
         <div className="bg-[#3150A0] text-white px-6 py-4.5 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-orange-400" />
-            <span className="font-extrabold text-sm uppercase tracking-wider">MakeEazy Advisory Private Limited</span>
+            <span className="font-extrabold text-sm uppercase tracking-wider">MakeEazy Consultants Private Limited</span>
           </div>
           <button 
             onClick={onClose}

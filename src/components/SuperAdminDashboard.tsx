@@ -25,7 +25,8 @@ import {
   ChevronDown,
   ChevronUp,
   Briefcase,
-  Edit
+  Edit,
+  Bell
 } from 'lucide-react';
 import { EmployeeProfile, Timesheet, LeaveApplication, ExpenseClaim, BusinessTask } from '../types/employee';
 
@@ -58,6 +59,13 @@ export default function SuperAdminDashboard({
   // Tab states
   const [adminTab, setAdminTab] = useState<'approvals' | 'tasks' | 'employees'>('approvals');
   const [approvalSubTab, setApprovalSubTab] = useState<'timesheets' | 'leaves' | 'expenses'>('timesheets');
+
+  // Leave history filters and search
+  const [adminLeaveSearch, setAdminLeaveSearch] = useState('');
+  const [adminLeaveFilter, setAdminLeaveFilter] = useState<'All' | 'Approved' | 'Rejected'>('All');
+
+  // Operational alerts & notification controls
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // Task assignment form states
   const [taskEmployee, setTaskEmployee] = useState(employees[0]?.email || '');
@@ -331,9 +339,164 @@ export default function SuperAdminDashboard({
   const completedTasksCount = tasks.filter(t => t.status === 'Completed').length;
   const activeTasksCount = tasks.filter(t => t.status !== 'Completed').length;
 
+  // Filtered and sorted previously processed leaves for the chronological office attendance timeline
+  const filteredHistoryLeaves = React.useMemo(() => {
+    return [...leaves]
+      .filter(l => l.status === 'Approved' || l.status === 'Rejected')
+      .filter(l => {
+        const matchesSearch = l.employeeName.toLowerCase().includes(adminLeaveSearch.toLowerCase()) || 
+                              l.employeeEmail.toLowerCase().includes(adminLeaveSearch.toLowerCase());
+        const matchesTrigger = adminLeaveFilter === 'All' || l.status === adminLeaveFilter;
+        return matchesSearch && matchesTrigger;
+      })
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+  }, [leaves, adminLeaveSearch, adminLeaveFilter]);
+
+  // Operational notification lists
+  const pendingLeavesList = React.useMemo(() => {
+    return leaves.filter(l => l.status === 'Pending');
+  }, [leaves]);
+
+  const pendingTasksList = React.useMemo(() => {
+    return tasks.filter(t => t.status === 'To Do' || t.status === 'In Progress');
+  }, [tasks]);
+
+  const totalNotificationsCount = pendingLeavesList.length + pendingTasksList.length;
+
   return (
     <div className="space-y-8" id="super-admin-layout">
       
+      {/* Super Admin Control Room Head & Notifications */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/80 backdrop-blur-md p-5 rounded-3xl border border-slate-200 shadow-sm relative" id="super-admin-control-header">
+        <div>
+          <h2 className="text-base font-extrabold text-[#3150A0] flex items-center gap-2">
+            <span className="p-1 px-1.5 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center">💼</span>
+            Management Control Room
+          </h2>
+          <p className="text-4xs text-slate-500 font-medium mt-0.5">Configure corporate roster allocations, authorize staff leaves, and direct operational compliance guidelines.</p>
+        </div>
+
+        {/* Notification Bell Dropdown */}
+        <div className="relative self-stretch sm:self-auto shrink-0 flex justify-end">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className={`p-3 rounded-2xl border transition-all relative flex items-center justify-center cursor-pointer ${
+              showNotifications 
+                ? 'bg-[#3150A0]/10 border-[#3150A0]/30 text-[#3150A0] ring-2 ring-[#3150A0]/10' 
+                : 'bg-white border-slate-205 hover:bg-slate-50 text-slate-600 hover:text-slate-800'
+            }`}
+            aria-label="Toggle notifications"
+            id="admin-notification-bell-btn"
+          >
+            <Bell className={`w-5 h-5 ${totalNotificationsCount > 0 ? 'animate-bounce' : ''}`} />
+            {totalNotificationsCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full border border-white shadow-xs animate-pulse">
+                {totalNotificationsCount}
+              </span>
+            )}
+          </button>
+
+          {/* Dropdown panel */}
+          {showNotifications && (
+            <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-3xl shadow-xl z-50 overflow-hidden text-left" id="admin-notifications-dropdown">
+              <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Pending Tasks & Leaves Alerts</span>
+                <span className="text-[10px] bg-rose-600 text-white font-extrabold px-2 py-0.5 rounded-full">
+                  {totalNotificationsCount} Actionable
+                </span>
+              </div>
+
+              <div className="max-h-[320px] overflow-y-auto divide-y divide-slate-100 no-scrollbar">
+                {totalNotificationsCount === 0 ? (
+                  <div className="p-8 text-center text-slate-400">
+                    <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+                    <p className="text-xs font-extrabold text-slate-700">All Systems Clear</p>
+                    <p className="text-4xs text-slate-400 mt-0.5">No new leave applications or uncompleted tasks exist.</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Pending Leaves */}
+                    {pendingLeavesList.map(l => (
+                      <button
+                        key={`notif-leave-${l.id}`}
+                        onClick={() => {
+                          setAdminTab('approvals');
+                          setApprovalSubTab('leaves');
+                          setShowNotifications(false);
+                          setTimeout(() => {
+                            const approvalsEl = document.getElementById('admin-module-tabs');
+                            if (approvalsEl) {
+                              approvalsEl.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }, 100);
+                        }}
+                        className="w-full text-left p-4 hover:bg-indigo-50/40 transition-colors flex gap-3.5 items-start focus:bg-indigo-50/40 outline-none cursor-pointer"
+                      >
+                        <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100/70 flex items-center justify-center shrink-0 mt-0.5">
+                          <CalendarCheck2 className="w-4.5 h-4.5 text-[#3150A0]" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center">
+                            <span className="text-[9px] font-extrabold text-[#3150A0] uppercase tracking-wide">Leave Request</span>
+                            <span className="text-[9px] font-extrabold bg-orange-100 text-orange-700 px-1.5 py-0.25 rounded">
+                              {l.totalDays}d
+                            </span>
+                          </div>
+                          <p className="text-xs font-bold text-slate-800 mt-0.5 truncate">{l.employeeName}</p>
+                          <p className="text-4xs text-slate-500 mt-1 line-clamp-1 italic">
+                            “{l.reason}”
+                          </p>
+                          <p className="text-[9px] text-[#3150A0] font-black mt-1.5 flex items-center gap-1">
+                            Click to Authorize <span className="text-xs">→</span>
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+
+                    {/* Pending Tasks */}
+                    {pendingTasksList.map(t => (
+                      <button
+                        key={`notif-task-${t.id}`}
+                        onClick={() => {
+                          setAdminTab('tasks');
+                          setShowNotifications(false);
+                          setTimeout(() => {
+                            const tasksEl = document.getElementById('admin-module-tabs');
+                            if (tasksEl) {
+                              tasksEl.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }, 100);
+                        }}
+                        className="w-full text-left p-4 hover:bg-orange-50/25 transition-colors flex gap-3.5 items-start focus:bg-orange-50/25 outline-none cursor-pointer"
+                      >
+                        <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100/70 flex items-center justify-center shrink-0 mt-0.5">
+                          <FolderKanban className="w-4.5 h-4.5 text-orange-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center">
+                            <span className="text-[9px] font-extrabold text-orange-655 uppercase tracking-wide">Outstanding Task</span>
+                            <span className={`text-[8px] font-black px-1.5 py-0.25 rounded text-white ${
+                              t.priority === 'High' ? 'bg-rose-500' : t.priority === 'Medium' ? 'bg-amber-500' : 'bg-blue-500'
+                            }`}>
+                              {t.priority}
+                            </span>
+                          </div>
+                          <p className="text-xs font-bold text-slate-800 mt-0.5 truncate">{t.title}</p>
+                          <p className="text-4xs text-slate-500 mt-0.5 truncate">Assigned: {t.employeeName}</p>
+                          <p className="text-[9px] text-orange-655 font-black mt-1.5 flex items-center gap-1">
+                            Manage Directive <span className="text-xs">→</span>
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Admin metrics strip */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="admin-analytics-grid">
         
@@ -588,6 +751,107 @@ export default function SuperAdminDashboard({
                           </div>
                         </div>
                       ))
+                    )}
+                  </div>
+
+                  {/* Chronological Leave History Tracking Timeline (Office Attendance) */}
+                  <div className="mt-8 pt-6 border-t border-slate-100" id="admin-leave-history-section">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+                      <div>
+                        <h4 className="text-xs font-extrabold text-slate-850 flex items-center gap-1.5 uppercase tracking-wider">
+                          <CalendarCheck2 className="w-4 h-4 text-[#3150A0]" />
+                          Office Attendance & Leave History Timeline
+                        </h4>
+                        <p className="text-4xs text-slate-400 mt-0.5">Chronological audit ledger of approved and rejected staff vacancies.</p>
+                      </div>
+
+                      {/* Timeline filter triggers */}
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <div className="relative flex-1 sm:w-48">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                            <Search className="h-3.5 w-3.5 text-slate-400" />
+                          </span>
+                          <input
+                            type="text"
+                            placeholder="Search employee or reason..."
+                            value={adminLeaveSearch}
+                            onChange={(e) => setAdminLeaveSearch(e.target.value)}
+                            className="w-full pl-7.5 pr-2.5 py-1.5 text-4xs font-medium rounded-xl border border-slate-200 outline-none focus:ring-1 focus:ring-[#3150A0] bg-slate-50 hover:bg-white text-slate-800"
+                          />
+                        </div>
+                        <select
+                          value={adminLeaveFilter}
+                          onChange={(e) => setAdminLeaveFilter(e.target.value as any)}
+                          className="px-2.5 py-1.5 text-4xs font-bold rounded-xl border border-slate-200 bg-white text-slate-755 cursor-pointer outline-none focus:ring-1 focus:ring-[#3150A0]"
+                        >
+                          <option value="All">All Statuses</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {filteredHistoryLeaves.length === 0 ? (
+                      <div className="text-center py-10 bg-slate-50 border border-slate-150 rounded-2xl">
+                        <p className="text-xs font-bold text-slate-600">No Historical Records Found</p>
+                        <p className="text-4xs text-slate-400 mt-0.5">Adjust search criteria or select another status filter.</p>
+                      </div>
+                    ) : (
+                      <div className="relative border-l border-slate-200 ml-2.5 pl-6 space-y-5.5 mt-4">
+                        {filteredHistoryLeaves.map((lv) => {
+                          const isApproved = lv.status === 'Approved';
+                          return (
+                            <div key={lv.id} className="relative group text-left">
+                              {/* Connector dot indicator */}
+                              <div className={`absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full border-2 bg-white flex items-center justify-center transition-all ${
+                                isApproved 
+                                  ? 'border-emerald-500' 
+                                  : 'border-rose-500'
+                              }`}>
+                                <div className={`w-1.5 h-1.5 rounded-full ${
+                                  isApproved ? 'bg-emerald-500' : 'bg-rose-500'
+                                }`} />
+                              </div>
+
+                              <div className="p-4 rounded-2xl bg-slate-50/50 hover:bg-slate-50 border border-slate-150 transition-all duration-150 hover:shadow-2xs">
+                                <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
+                                  <div>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="font-extrabold text-xs text-slate-800">{lv.employeeName}</span>
+                                      <span className="text-4xs text-slate-500 font-medium">{lv.employeeEmail}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 mt-1.5">
+                                      <span className="text-4xs font-bold bg-indigo-50 text-[#3150A0] px-1.5 py-0.5 rounded-md border border-indigo-100/50">
+                                        {lv.leaveType}
+                                      </span>
+                                      <span className="text-4xs font-extrabold text-orange-655 bg-orange-50 px-1.5 py-0.5 rounded-md border border-orange-100/50">
+                                        {lv.totalDays} Days
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div className="text-right flex sm:flex-col items-center sm:items-end gap-1.5 shrink-0 self-start sm:self-auto">
+                                    <span className={`px-2 py-0.5 rounded-md text-5xs font-black uppercase tracking-wider ${
+                                      isApproved 
+                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                                        : 'bg-rose-50 text-rose-700 border border-rose-100'
+                                    }`}>
+                                      {lv.status}
+                                    </span>
+                                    <span className="text-4xs text-slate-400 font-medium">Period: {lv.startDate} to {lv.endDate}</span>
+                                  </div>
+                                </div>
+
+                                {lv.reason && (
+                                  <p className="text-xs text-slate-650 italic mt-3 bg-white p-2.5 rounded-xl border border-slate-100 leading-relaxed">
+                                    “{lv.reason}”
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 </div>

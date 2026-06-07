@@ -51,7 +51,7 @@ export const DEFAULT_POSTS: BlogPost[] = [
     category: 'Startups & Companies',
     readTime: '6 min read',
     date: 'June 05, 2026',
-    author: 'CA Gyanesh Manohar, MakeEazy Advisory',
+    author: 'CA Gyanesh Manohar, MakeEazy Consultants Private Limited',
     tags: ['ROC filings', 'MGT-7', 'AOC-4', 'Startups', 'Compliances'],
     gradient: 'from-[#3150A0] to-slate-900',
     isCustom: false,

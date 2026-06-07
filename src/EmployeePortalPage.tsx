@@ -286,10 +286,10 @@ export default function EmployeePortalPage() {
   };
 
   // Derived dashboard metrics (for active employee)
-  const loggedTimesheets = timesheets.filter((t) => t.employeeEmail === activeUser?.email);
-  const loggedLeaves = leaves.filter((l) => l.employeeEmail === activeUser?.email);
-  const loggedClaims = expenses.filter((e) => e.employeeEmail === activeUser?.email);
-  const loggedTasks = tasks.filter((tk) => tk.assignedToEmail === activeUser?.email);
+  const loggedTimesheets = timesheets.filter((t) => t.employeeEmail === currentUserProfile?.email);
+  const loggedLeaves = leaves.filter((l) => l.employeeEmail === currentUserProfile?.email);
+  const loggedClaims = expenses.filter((e) => e.employeeEmail === currentUserProfile?.email);
+  const loggedTasks = tasks.filter((tk) => tk.assignedToEmail === currentUserProfile?.email);
 
   const totalHoursThisMonth = loggedTimesheets
     .filter((t) => t.status === 'Approved')
@@ -335,7 +335,7 @@ export default function EmployeePortalPage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-[#3150A0]">Consultant Desk</h2>
-                  <p className="text-xs text-slate-500">MakeEazy Advisory & Team Portal</p>
+                  <p className="text-xs text-slate-500">MakeEazy Consultants Private Limited & Team Portal</p>
                 </div>
               </div>
 
@@ -517,59 +517,124 @@ export default function EmployeePortalPage() {
                 <>
                   {/* Status metrics grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="employee-stats-row">
-                    
-                    <div className="bg-[#3150A0] text-white p-5 rounded-3xl border border-blue-800 shadow-sm relative overflow-hidden">
-                      <div className="absolute right-3 top-3 w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center animate-pulse">
-                        <Clock className="w-5 h-5 text-blue-100" />
+                      {/* Tile 1: Logged Monthly Audited Shift */}
+                    <div 
+                      onClick={() => setCurrentTab('timesheet')}
+                      className="bg-[#3150A0] text-white p-5 rounded-3xl border border-blue-800 shadow-sm relative overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out active:translate-y-0 active:scale-[0.98] focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 group min-h-[148px] flex flex-col justify-between"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrentTab('timesheet'); } }}
+                      title="Click to manage timesheets"
+                    >
+                      <div>
+                        <div className="absolute right-3 top-3 w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Clock className="w-5 h-5 text-blue-100" />
+                        </div>
+                        <p className="text-xs text-blue-200/90 font-medium">Logged Monthly Audited Shift</p>
+                        <p className="text-3xl font-extrabold tracking-tight mt-1">{totalHoursThisMonth.toFixed(1)} hrs</p>
+                        <div className="mt-3 w-full bg-white/20 rounded-full h-1.5 max-w-[65%]">
+                          <div 
+                            className="bg-orange-500 h-1.5 rounded-full transition-all duration-500" 
+                            style={{ width: `${Math.min(100, (totalHoursThisMonth / 160) * 100)}%` }} 
+                          />
+                        </div>
                       </div>
-                      <p className="text-xs text-blue-200/90 font-medium">Logged Monthly Audited Shift</p>
-                      <p className="text-3xl font-extrabold tracking-tight mt-1">{totalHoursThisMonth.toFixed(1)} hrs</p>
-                      <div className="mt-3 w-full bg-white/20 rounded-full h-1.5">
-                        <div 
-                          className="bg-orange-500 h-1.5 rounded-full" 
-                          style={{ width: `${Math.min(100, (totalHoursThisMonth / 160) * 100)}%` }} 
-                        />
+                      
+                      <div className="mt-2.5 flex items-center justify-between text-4xs text-blue-200 font-bold max-w-[65%]">
+                        <span>Target: 160.0 hours monthly</span>
                       </div>
-                      <p className="text-4xs text-blue-200 mt-1.5 font-bold">Target standard: 160.0 hours monthly</p>
+
+                      {/* CTA at Bottom Right */}
+                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-blue-800/80 border border-blue-700/60 text-blue-100 font-extrabold text-4xs flex items-center gap-1 group-hover:bg-white group-hover:text-[#3150A0] transition-all shadow-3xs">
+                        View Shift <span className="text-3xs">→</span>
+                      </span>
                     </div>
 
-                    <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
-                      <div className="absolute right-3 top-3 w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-                        <CalendarCheck2 className="w-5 h-5 text-emerald-600" />
+                    {/* Tile 2: Vacation Leave Balance */}
+                    <div 
+                      onClick={() => setCurrentTab('leaves')}
+                      className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out active:translate-y-0 active:scale-[0.98] focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-slate-350 group min-h-[148px] flex flex-col justify-between"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrentTab('leaves'); } }}
+                      title="Click to apply for leave"
+                    >
+                      <div>
+                        <div className="absolute right-3 top-3 w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <CalendarCheck2 className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium">Vacation Leave Balance</p>
+                        <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">
+                          {(currentUserProfile?.leavesLeft?.casual ?? 0) + (currentUserProfile?.leavesLeft?.sick ?? 0) + (currentUserProfile?.leavesLeft?.earned ?? 0)} days
+                        </p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Vacation Leave Balance</p>
-                      <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">
-                        {activeUser.leavesLeft.casual + activeUser.leavesLeft.sick + activeUser.leavesLeft.earned} days
-                      </p>
-                      <div className="mt-2.5 flex items-center gap-2 text-4xs font-bold text-slate-500">
-                        <span className="text-orange-500">{activeUser.leavesLeft.casual} Casual</span>
-                        <span className="text-blue-500">{activeUser.leavesLeft.sick} Sick</span>
-                        <span className="text-emerald-500">{activeUser.leavesLeft.earned} Earned</span>
+
+                      <div className="mt-2.5 flex items-center gap-1 text-4xs font-bold text-slate-500 max-w-[65%] flex-wrap">
+                        <span className="px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-600 font-extrabold">{(currentUserProfile?.leavesLeft?.casual ?? 0)}C</span>
+                        <span className="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 font-extrabold">{(currentUserProfile?.leavesLeft?.sick ?? 0)}S</span>
+                        <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 font-extrabold">{(currentUserProfile?.leavesLeft?.earned ?? 0)}E</span>
                       </div>
+
+                      {/* CTA at Bottom Right */}
+                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-[#3150A0] font-extrabold text-4xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-3xs">
+                        Request Leave <span className="text-3xs">→</span>
+                      </span>
                     </div>
 
-                    <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
-                      <div className="absolute right-3 top-3 w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                        <Award className="w-5 h-5 text-indigo-600" />
+                    {/* Tile 3: Consulting KPI Quotient / Directive Deliverables */}
+                    <div 
+                      onClick={() => setCurrentTab('directives')}
+                      className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out active:translate-y-0 active:scale-[0.98] focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-slate-350 group min-h-[148px] flex flex-col justify-between"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrentTab('directives'); } }}
+                      title="Click to view assigned tasks"
+                    >
+                      <div>
+                        <div className="absolute right-3 top-3 w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Award className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium">Consulting KPI Quotient</p>
+                        <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">{currentUserProfile?.kpiScore ?? '9.0/10'}</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Consulting KPI Quotient</p>
-                      <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">{activeUser.kpiScore}</p>
-                      <div className="mt-2.5 flex items-center gap-1.5 text-4xs font-semibold text-emerald-600">
-                        <TrendingUp className="w-3.5 h-3.5" />
-                        <span>Consistent Top Performer</span>
+
+                      <div className="mt-2.5 flex items-center gap-1 text-4xs font-semibold text-slate-500 max-w-[65%]">
+                        <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600 font-bold">{loggedTasks.filter(t => t.status === 'Completed').length}/{loggedTasks.length} Completed</span>
                       </div>
+
+                      {/* CTA at Bottom Right */}
+                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-[#3150A0] font-extrabold text-4xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-3xs">
+                        Directives <span className="text-3xs">→</span>
+                      </span>
                     </div>
 
-                    <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
-                      <div className="absolute right-3 top-3 w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
-                        <PiggyBank className="w-5 h-5 text-orange-600" />
+                    {/* Tile 4: Expense Claim Pending */}
+                    <div 
+                      onClick={() => setCurrentTab('expenses')}
+                      className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out active:translate-y-0 active:scale-[0.98] focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-slate-350 group min-h-[148px] flex flex-col justify-between"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrentTab('expenses'); } }}
+                      title="Click to claim expenses"
+                    >
+                      <div>
+                        <div className="absolute right-3 top-3 w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <PiggyBank className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium">Expense Claim Pending</p>
+                        {/* Indian Rupee: ALWAYS ₹ */}
+                        <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">₹{pendingClaimsTotal}</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Expense Claim Pending</p>
-                      {/* Indian Rupee: ALWAYS ₹ */}
-                      <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">₹{pendingClaimsTotal}</p>
-                      <div className="mt-2.5 flex items-center gap-1 text-4xs text-slate-500 font-semibold">
-                        <span className="font-bold text-emerald-600">₹{approvedClaimsTotal}</span> Approved this cycle
+
+                      <div className="mt-2.5 flex items-center text-4xs text-slate-500 font-bold max-w-[65%]">
+                        <span><span className="font-bold text-emerald-600">₹{approvedClaimsTotal}</span> Approved</span>
                       </div>
+
+                      {/* CTA at Bottom Right */}
+                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-[#3150A0] font-extrabold text-4xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-3xs">
+                        File Claim <span className="text-3xs">→</span>
+                      </span>
                     </div>
 
                   </div>
@@ -975,40 +1040,113 @@ export default function EmployeePortalPage() {
                         {/* Leave balance history */}
                         <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
                           <div>
-                            <h2 className="text-base font-bold text-slate-900">Your Requested Vacancies</h2>
-                            <p className="text-4xs text-slate-500 mt-0.5">Clearing progress tracking of leaves requested</p>
+                            <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+                              <CalendarCheck2 className="w-5 h-5 text-[#3150A0]" />
+                              Absence Tracker & Leave Attendance
+                            </h2>
+                            <p className="text-4xs text-slate-500 mt-0.5">Track your pending requests and chronological attendance logs</p>
                           </div>
 
-                          <div className="space-y-4">
-                            {loggedLeaves.map((lv) => (
-                              <div 
-                                key={lv.id}
-                                className="border border-slate-100 bg-slate-50/45 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start gap-4"
-                              >
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xs font-extrabold text-slate-850">{lv.leaveType}</span>
-                                    <span className="bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded text-4xs">
-                                      {lv.totalDays} {lv.totalDays === 1 ? 'day' : 'days'}
+                          {/* Active / Pending Requests Section */}
+                          <div className="space-y-3.5">
+                            <span className="text-5xs font-black text-slate-400 uppercase tracking-widest block">Awaiting Assessment ({loggedLeaves.filter(lv => lv.status === 'Pending').length})</span>
+                            
+                            {loggedLeaves.filter(lv => lv.status === 'Pending').length === 0 ? (
+                              <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-150 text-center py-5 text-slate-400">
+                                <p className="text-4xs font-semibold text-slate-500">No active pending leave requests.</p>
+                              </div>
+                            ) : (
+                              <div className="space-y-3">
+                                {loggedLeaves.filter(lv => lv.status === 'Pending').map((lv) => (
+                                  <div 
+                                    key={lv.id}
+                                    className="border border-slate-150 bg-orange-50/25 p-4 rounded-2xl flex justify-between items-center gap-4 hover:bg-orange-50/30 transition-colors text-left"
+                                  >
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs font-extrabold text-slate-800">{lv.leaveType}</span>
+                                        <span className="bg-orange-100 text-orange-700 font-extrabold px-1.5 py-0.5 rounded text-4xs">
+                                          {lv.totalDays} Days
+                                        </span>
+                                      </div>
+                                      <p className="text-4xs text-slate-500 mt-1 select-none">
+                                        Period: <span className="font-semibold text-slate-705">{lv.startDate}</span> to <span className="font-semibold text-slate-705">{lv.endDate}</span>
+                                      </p>
+                                      <p className="text-xs text-slate-600 mt-1.5 italic">“{lv.reason}”</p>
+                                    </div>
+
+                                    <span className="px-2.5 py-1 rounded-full text-5xs font-black shrink-0 bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-wider">
+                                      {lv.status}
                                     </span>
                                   </div>
-                                  <p className="text-xs text-slate-500 mt-1 font-medium select-none">
-                                    Period: <span className="text-slate-705">{lv.startDate}</span> to <span className="text-slate-705">{lv.endDate}</span>
-                                  </p>
-                                  <p className="text-xs text-slate-600 mt-2 italic">“{lv.reason}”</p>
-                                </div>
-
-                                <span className={`px-2.5 py-1 rounded-full text-5xs font-black shrink-0 self-start sm:self-center ${
-                                  lv.status === 'Approved' 
-                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
-                                    : lv.status === 'Rejected'
-                                    ? 'bg-rose-50 text-rose-700 border border-rose-100'
-                                    : 'bg-orange-50 text-orange-700 border border-orange-100'
-                                }`}>
-                                  {lv.status}
-                                </span>
+                                ))}
                               </div>
-                            ))}
+                            )}
+                          </div>
+
+                          {/* Chronological Timeline or History of Approved & Rejected Leaves */}
+                          <div className="space-y-3.5 pt-5 border-t border-slate-100 text-left">
+                            <span className="text-5xs font-black text-slate-400 uppercase tracking-widest block">Attendance & Leave History Timeline ({loggedLeaves.filter(lv => lv.status !== 'Pending').length})</span>
+                            
+                            {loggedLeaves.filter(lv => lv.status !== 'Pending').length === 0 ? (
+                              <div className="p-5 rounded-xl bg-slate-50/50 border border-slate-150 text-center py-7 text-slate-400">
+                                <p className="text-4xs font-semibold text-slate-500">No leave history or attendance logs available.</p>
+                                <p className="text-5xs text-slate-400 mt-0.5">Approved or rejected requests will populate as a chronological timeline here.</p>
+                              </div>
+                            ) : (
+                              <div className="relative border-l border-slate-200 ml-2 pl-5 space-y-5 mt-3">
+                                {[...loggedLeaves]
+                                  .filter(lv => lv.status !== 'Pending')
+                                  .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+                                  .map((lv) => {
+                                    const isApproved = lv.status === 'Approved';
+                                    return (
+                                      <div key={lv.id} className="relative group text-left">
+                                        {/* Timeline Dot Indicator */}
+                                        <div className={`absolute -left-[27px] top-1.5 w-3 h-3 rounded-full border bg-white flex items-center justify-center transition-all ${
+                                          isApproved 
+                                            ? 'border-emerald-500 ring-2 ring-emerald-100' 
+                                            : 'border-rose-500 ring-2 ring-rose-100'
+                                        }`}>
+                                        </div>
+
+                                        <div className="border border-slate-150 bg-slate-50/25 hover:bg-slate-50 p-4 rounded-2xl transition-all duration-200">
+                                          <div className="flex justify-between items-start gap-3">
+                                            <div>
+                                              <div className="flex items-center gap-2 flex-wrap">
+                                                <span className="text-xs font-extrabold text-slate-800">{lv.leaveType}</span>
+                                                <span className={`text-4xs font-extrabold px-1.5 py-0.5 rounded ${
+                                                  isApproved 
+                                                    ? 'bg-emerald-50 text-emerald-700' 
+                                                    : 'bg-rose-50 text-rose-700'
+                                                }`}>
+                                                  {lv.totalDays} Days
+                                                </span>
+                                              </div>
+                                              <p className="text-4xs text-slate-500 mt-1 select-none">
+                                                Period: <span className="font-semibold text-slate-705">{lv.startDate}</span> to <span className="font-semibold text-slate-705">{lv.endDate}</span>
+                                              </p>
+                                              {lv.reason && (
+                                                <p className="text-xs text-slate-600 italic mt-2.5 bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 leading-relaxed">
+                                                  “{lv.reason}”
+                                                </p>
+                                              )}
+                                            </div>
+
+                                            <span className={`px-2 py-0.5 rounded-md text-5xs font-black uppercase shrink-0 ${
+                                              isApproved 
+                                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                                                : 'bg-rose-50 text-rose-700 border border-rose-100'
+                                            }`}>
+                                              {lv.status}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                            )}
                           </div>
                         </div>
 
