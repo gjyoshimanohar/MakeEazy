@@ -34,14 +34,14 @@ export const DEFAULT_EMPLOYEES: EmployeeProfile[] = [
 export const SUPER_ADMIN_PROFILE = {
   email: 'admin@makeeazy.in',
   pin: 'admin123',
-  name: 'Advocate Anirudh Deshmukh',
-  role: 'Chief Compliance Officer & MD',
-  department: 'Executive Board of Management',
+  name: 'Admin MakeEazy',
+  role: '',
+  department: '',
   empId: 'MK-BOSS-01',
-  doj: '01-Apr-2018',
+  doj: '',
   leavesLeft: { casual: 15, sick: 10, earned: 30 },
   kpiScore: '10/10',
-  achievements: ['Lifetime Compliance Excellence Excellence Award'],
+  achievements: [],
   isSuperAdmin: true
 };
 

@@ -367,13 +367,13 @@ export default function SuperAdminDashboard({
     <div className="space-y-8" id="super-admin-layout">
       
       {/* Super Admin Control Room Head & Notifications */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/80 backdrop-blur-md p-5 rounded-3xl border border-slate-200 shadow-sm relative" id="super-admin-control-header">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/80 backdrop-blur-md p-5 rounded-3xl border border-slate-200 shadow-sm relative z-50" id="super-admin-control-header">
         <div>
-          <h2 className="text-base font-extrabold text-[#3150A0] flex items-center gap-2">
+          <h2 className="text-base font-bold text-[#3150A0] flex items-center gap-2">
             <span className="p-1 px-1.5 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center">💼</span>
             Management Control Room
           </h2>
-          <p className="text-4xs text-slate-500 font-medium mt-0.5">Configure corporate roster allocations, authorize staff leaves, and direct operational compliance guidelines.</p>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">Configure corporate roster allocations, authorize staff leaves, and direct operational compliance guidelines.</p>
         </div>
 
         {/* Notification Bell Dropdown */}
@@ -390,7 +390,7 @@ export default function SuperAdminDashboard({
           >
             <Bell className={`w-5 h-5 ${totalNotificationsCount > 0 ? 'animate-bounce' : ''}`} />
             {totalNotificationsCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full border border-white shadow-xs animate-pulse">
+              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-[10px] font-bold bg-rose-600 text-white rounded-full border border-white shadow-xs animate-pulse">
                 {totalNotificationsCount}
               </span>
             )}
@@ -400,8 +400,8 @@ export default function SuperAdminDashboard({
           {showNotifications && (
             <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-3xl shadow-xl z-50 overflow-hidden text-left" id="admin-notifications-dropdown">
               <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Pending Tasks & Leaves Alerts</span>
-                <span className="text-[10px] bg-rose-600 text-white font-extrabold px-2 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Pending Tasks & Leaves Alerts</span>
+                <span className="text-[10px] bg-rose-600 text-white font-semibold px-2 py-0.5 rounded-full">
                   {totalNotificationsCount} Actionable
                 </span>
               </div>
@@ -410,8 +410,8 @@ export default function SuperAdminDashboard({
                 {totalNotificationsCount === 0 ? (
                   <div className="p-8 text-center text-slate-400">
                     <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                    <p className="text-xs font-extrabold text-slate-700">All Systems Clear</p>
-                    <p className="text-4xs text-slate-400 mt-0.5">No new leave applications or uncompleted tasks exist.</p>
+                    <p className="text-xs font-bold text-slate-700">All Systems Clear</p>
+                    <p className="text-xs text-slate-400 mt-0.5">No new leave applications or uncompleted tasks exist.</p>
                   </div>
                 ) : (
                   <>
@@ -437,16 +437,16 @@ export default function SuperAdminDashboard({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-center">
-                            <span className="text-[9px] font-extrabold text-[#3150A0] uppercase tracking-wide">Leave Request</span>
-                            <span className="text-[9px] font-extrabold bg-orange-100 text-orange-700 px-1.5 py-0.25 rounded">
+                            <span className="text-[10px] font-semibold text-[#3150A0] uppercase tracking-wide">Leave Request</span>
+                            <span className="text-[10px] font-semibold bg-orange-100 text-orange-700 px-1.5 py-0.25 rounded">
                               {l.totalDays}d
                             </span>
                           </div>
                           <p className="text-xs font-bold text-slate-800 mt-0.5 truncate">{l.employeeName}</p>
-                          <p className="text-4xs text-slate-500 mt-1 line-clamp-1 italic">
+                          <p className="text-xs text-slate-500 mt-1 line-clamp-1 italic">
                             “{l.reason}”
                           </p>
-                          <p className="text-[9px] text-[#3150A0] font-black mt-1.5 flex items-center gap-1">
+                          <p className="text-xs text-[#3150A0] font-semibold mt-1.5 flex items-center gap-1">
                             Click to Authorize <span className="text-xs">→</span>
                           </p>
                         </div>
@@ -474,16 +474,16 @@ export default function SuperAdminDashboard({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-center">
-                            <span className="text-[9px] font-extrabold text-orange-655 uppercase tracking-wide">Outstanding Task</span>
-                            <span className={`text-[8px] font-black px-1.5 py-0.25 rounded text-white ${
+                            <span className="text-[10px] font-semibold text-orange-655 uppercase tracking-wide">Outstanding Task</span>
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.25 rounded text-white ${
                               t.priority === 'High' ? 'bg-rose-500' : t.priority === 'Medium' ? 'bg-amber-500' : 'bg-blue-500'
                             }`}>
                               {t.priority}
                             </span>
                           </div>
                           <p className="text-xs font-bold text-slate-800 mt-0.5 truncate">{t.title}</p>
-                          <p className="text-4xs text-slate-500 mt-0.5 truncate">Assigned: {t.employeeName}</p>
-                          <p className="text-[9px] text-orange-655 font-black mt-1.5 flex items-center gap-1">
+                          <p className="text-xs text-slate-500 mt-0.5 truncate">Assigned: {t.employeeName}</p>
+                          <p className="text-xs text-orange-655 font-semibold mt-1.5 flex items-center gap-1">
                             Manage Directive <span className="text-xs">→</span>
                           </p>
                         </div>
@@ -505,8 +505,8 @@ export default function SuperAdminDashboard({
             <Clock className="w-5 h-5 text-orange-600" />
           </div>
           <p className="text-xs text-slate-500 font-medium">Pending Timesheets Auditor</p>
-          <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">{pendingTimesheetsCount} Drafts</p>
-          <div className="mt-2.5 flex items-center gap-1.5 text-4xs font-semibold text-orange-600">
+          <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">{pendingTimesheetsCount} Drafts</p>
+          <div className="mt-2.5 flex items-center gap-1.5 text-xs font-semibold text-orange-600">
             <Activity className="w-3 h-3 anim-pulse" />
             <span>Awaiting legal shift confirmation</span>
           </div>
@@ -517,8 +517,8 @@ export default function SuperAdminDashboard({
             <CalendarCheck2 className="w-5 h-5 text-indigo-600" />
           </div>
           <p className="text-xs text-slate-500 font-medium">Pending Leave Requests</p>
-          <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">{pendingLeavesCount} Requests</p>
-          <div className="mt-2.5 text-4xs text-slate-400 font-medium">
+          <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">{pendingLeavesCount} Requests</p>
+          <div className="mt-2.5 text-xs text-slate-500 font-medium">
             Requires active staff capacity review
           </div>
         </div>
@@ -527,9 +527,9 @@ export default function SuperAdminDashboard({
           <div className="absolute right-3 top-3 w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
             <PiggyBank className="w-5 h-5 text-rose-600" />
           </div>
-          <p className="text-xs text-slate-500 font-medium">Unsanctioned Expense Claims</p>
-          <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">₹{pendingExpensesTotal}</p>
-          <div className="mt-2.5 text-4xs text-slate-500 font-semibold">
+          <p className="text-xs text-slate-500 font-medium font-sans">Unsanctioned Expense Claims</p>
+          <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">₹{pendingExpensesTotal}</p>
+          <div className="mt-2.5 text-xs text-slate-500 font-semibold font-sans">
             Approved liability so far: <span className="text-emerald-600 font-bold">₹{approvedExpensesTotal}</span>
           </div>
         </div>
@@ -538,15 +538,15 @@ export default function SuperAdminDashboard({
           <div className="absolute right-3 top-3 w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
             <FolderKanban className="w-5 h-5 text-blue-100" />
           </div>
-          <p className="text-xs text-blue-200/90 font-medium">Active Directives Queue</p>
-          <p className="text-3xl font-extrabold tracking-tight mt-1">{activeTasksCount} of {totalAssignedTasksCount}</p>
+          <p className="text-xs text-blue-200/90 font-medium font-sans">Active Directives Queue</p>
+          <p className="text-3xl font-bold tracking-tight mt-1">{activeTasksCount} of {totalAssignedTasksCount}</p>
           <div className="mt-3 w-full bg-white/20 rounded-full h-1.5">
             <div 
               className="bg-orange-500 h-1.5 rounded-full" 
               style={{ width: `${totalAssignedTasksCount ? (completedTasksCount / totalAssignedTasksCount) * 100 : 0}%` }} 
             />
           </div>
-          <p className="text-4xs text-blue-200 mt-1.5">{completedTasksCount} assigned targets completed</p>
+          <p className="text-xs text-blue-200 mt-1.5 font-medium font-sans">{completedTasksCount} assigned targets completed</p>
         </div>
 
       </div>
@@ -817,28 +817,28 @@ export default function SuperAdminDashboard({
                                 <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
                                   <div>
                                     <div className="flex items-center gap-2 flex-wrap">
-                                      <span className="font-extrabold text-xs text-slate-800">{lv.employeeName}</span>
-                                      <span className="text-4xs text-slate-500 font-medium">{lv.employeeEmail}</span>
+                                      <span className="font-bold text-xs text-slate-800">{lv.employeeName}</span>
+                                      <span className="text-xs text-slate-500 font-medium">{lv.employeeEmail}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 mt-1.5">
-                                      <span className="text-4xs font-bold bg-indigo-50 text-[#3150A0] px-1.5 py-0.5 rounded-md border border-indigo-100/50">
+                                      <span className="text-xs font-semibold bg-indigo-50 text-[#3150A0] px-1.5 py-0.5 rounded-md border border-indigo-100/50">
                                         {lv.leaveType}
                                       </span>
-                                      <span className="text-4xs font-extrabold text-orange-655 bg-orange-50 px-1.5 py-0.5 rounded-md border border-orange-100/50">
+                                      <span className="text-xs font-semibold text-orange-655 bg-orange-50 px-1.5 py-0.5 rounded-md border border-orange-100/50">
                                         {lv.totalDays} Days
                                       </span>
                                     </div>
                                   </div>
 
                                   <div className="text-right flex sm:flex-col items-center sm:items-end gap-1.5 shrink-0 self-start sm:self-auto">
-                                    <span className={`px-2 py-0.5 rounded-md text-5xs font-black uppercase tracking-wider ${
+                                    <span className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider ${
                                       isApproved 
                                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
                                         : 'bg-rose-50 text-rose-700 border border-rose-100'
                                     }`}>
                                       {lv.status}
                                     </span>
-                                    <span className="text-4xs text-slate-400 font-medium">Period: {lv.startDate} to {lv.endDate}</span>
+                                    <span className="text-xs text-slate-400 font-medium">Period: {lv.startDate} to {lv.endDate}</span>
                                   </div>
                                 </div>
 

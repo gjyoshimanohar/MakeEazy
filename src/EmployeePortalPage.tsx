@@ -324,23 +324,26 @@ export default function EmployeePortalPage() {
               className="max-w-md mx-auto mt-8 bg-white rounded-3xl border border-slate-200 p-8 shadow-xl relative"
               id="login-form-card"
             >
-              <div className="absolute top-4 right-4 bg-orange-50 text-orange-600 px-2.5 py-1 rounded-full text-2xs font-extrabold tracking-widest uppercase">
-                Internal Portal
+              <div className="absolute top-5 right-5 bg-orange-50 border border-orange-100/50 text-orange-600 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase">
+                Staff Node
               </div>
 
               {/* Logo / Heading */}
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#3150A0] text-white flex items-center justify-center font-bold text-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#3150A0] to-indigo-700 text-white flex items-center justify-center text-lg font-bold shadow-sm">
                   ME
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#3150A0]">Consultant Desk</h2>
-                  <p className="text-xs text-slate-500">MakeEazy Consultants Private Limited & Team Portal</p>
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-xl tracking-tight text-[#3150A0]">Make</span>
+                    <span className="font-bold text-xl tracking-tight text-orange-500">Eazy</span>
+                  </div>
+                  <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Consultant Portal</p>
                 </div>
               </div>
 
               {/* Login Role Toggle Switch */}
-              <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-2xl mb-5">
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100/70 rounded-2xl mb-5">
                 <button
                   type="button"
                   id="btn-role-employee"
@@ -348,10 +351,10 @@ export default function EmployeePortalPage() {
                     setLoginRoleTab('employee');
                     setLoginError('');
                   }}
-                  className={`py-2 px-3 text-xs font-bold rounded-xl transition-all ${
+                  className={`py-2 px-3 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                     loginRoleTab === 'employee' 
                       ? 'bg-white text-slate-800 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-800'
+                      : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
                   }`}
                 >
                   Team Employee
@@ -363,10 +366,10 @@ export default function EmployeePortalPage() {
                     setLoginRoleTab('admin');
                     setLoginError('');
                   }}
-                  className={`py-2 px-3 text-xs font-bold rounded-xl transition-all ${
+                  className={`py-2 px-3 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                     loginRoleTab === 'admin' 
                       ? 'bg-white text-slate-800 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-800'
+                      : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
                   }`}
                 >
                   Admin
@@ -374,11 +377,11 @@ export default function EmployeePortalPage() {
               </div>
 
               <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-100 mb-6 text-xs text-slate-600 leading-relaxed">
-                <p className="font-bold text-slate-700 mb-1">Secure Authorization:</p>
+                <p className="font-semibold text-slate-850 mb-1 animate-pulse-subtle">Secure Workspace Portal</p>
                 {loginRoleTab === 'admin' ? (
-                  <p>Management Administrative Node. Admin can assign advisory tasks, review leaves clearances, and sanction cash claims.</p>
+                  <p>Access the administrative workspace to assign client tasks, manage team leave applications, and process expense reimbursements.</p>
                 ) : (
-                  <p>Welcome to your personal workstation. Log GST consultation sheets, request vacancies, and preview payroll slips securely.</p>
+                  <p>Access your advisor desk to log service consultations, request leave, and securely view monthly payslip summaries.</p>
                 )}
               </div>
 
@@ -394,7 +397,7 @@ export default function EmployeePortalPage() {
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     placeholder={loginRoleTab === 'admin' ? 'admin@makeeazy.in' : 'e.g. shivani.nair@makeeazy.in'}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-[#3150A0] outline-none text-sm transition-all focus:shadow-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-[#3150A0]/10 focus:border-[#3150A0] outline-none text-sm font-normal text-slate-800 transition-all focus:shadow-sm"
                   />
                 </div>
 
@@ -403,7 +406,7 @@ export default function EmployeePortalPage() {
                     <label htmlFor="loginPin" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                       Pass Code PIN
                     </label>
-                    <span className="text-3xs text-[#3150A0] font-semibold">Self-Service PIN</span>
+                    <span className="text-[11px] text-[#3150A0] font-medium">Self-Service PIN</span>
                   </div>
                   <div className="relative">
                     <input
@@ -413,14 +416,14 @@ export default function EmployeePortalPage() {
                       value={loginPin}
                       onChange={(e) => setLoginPin(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-[#3150A0] outline-none text-sm transition-all focus:shadow-sm"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-[#3150A0]/10 focus:border-[#3150A0] outline-none text-sm font-normal text-slate-800 transition-all focus:shadow-sm"
                     />
                     <Lock className="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5" />
                   </div>
                 </div>
 
                 {loginError && (
-                  <div className="p-3.5 bg-rose-50 border border-rose-100 rounded-2xl text-rose-700 text-xs flex gap-2 items-start shrink-0">
+                  <div className="p-3.5 bg-rose-50 border border-rose-100 rounded-2xl text-rose-700 text-xs flex gap-2 items-start shrink-0 font-medium">
                     <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                     <span>{loginError}</span>
                   </div>
@@ -428,9 +431,9 @@ export default function EmployeePortalPage() {
 
                 <button
                   type="submit"
-                  className="w-full bg-[#3150A0] hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                  className="w-full bg-[#3150A0] hover:bg-[#243d7d] text-white font-bold py-3 px-4 rounded-xl text-sm transition-all duration-300 ease-out shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer mt-2"
                 >
-                  <Lock className="w-3.5 h-3.5" />
+                  <Lock className="w-4 h-4" />
                   Authenticate Account
                 </button>
               </form>
@@ -448,36 +451,42 @@ export default function EmployeePortalPage() {
             >
               
               {/* Header profile panel */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-md p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#3150A0] to-indigo-700 text-white flex items-center justify-center text-xl font-black relative shadow-lg">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#3150A0] to-indigo-700 text-white flex items-center justify-center text-xl font-bold relative shadow-md">
                     {currentUserProfile.name.split(' ').map((n: string) => n[0]).join('')}
                     <div className="absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-white" title="Internal workstation connected">
                       <div className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                     </div>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h1 className="text-lg sm:text-xl font-extrabold text-[#3150A0]">{currentUserProfile.name}</h1>
-                      <span className="bg-blue-50 border border-blue-100 text-[#3150A0] text-3xs font-extrabold px-2 py-0.5 rounded-md">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-lg sm:text-xl font-bold text-[#3150A0]">{currentUserProfile.name}</h1>
+                      <span className="bg-blue-50 border border-blue-100 text-[#3150A0] text-xs font-semibold px-2 py-0.5 rounded-md">
                         {currentUserProfile.empId}
                       </span>
                       {currentUserProfile.isSuperAdmin && (
-                        <span className="bg-amber-500 text-white text-4xs font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
+                        <span className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md uppercase tracking-wider">
                           Chief Admin
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-600 font-semibold mt-0.5">{currentUserProfile.role}</p>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-1.5 text-3xs text-slate-400 font-semibold">
-                      <span className="flex items-center gap-1">
-                        <Building2 className="w-3.5 h-3.5 text-slate-400" /> {currentUserProfile.department}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400" /> Joined {currentUserProfile.doj}
-                      </span>
+                    {currentUserProfile.role && (
+                      <p className="text-sm text-slate-600 font-medium mt-0.5">{currentUserProfile.role}</p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-1.5 text-xs text-slate-500 font-medium">
+                      {currentUserProfile.department && (
+                        <span className="flex items-center gap-1">
+                          <Building2 className="w-4 h-4 text-slate-400" /> {currentUserProfile.department}
+                        </span>
+                      )}
+                      {currentUserProfile.doj && (
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4 text-slate-400" /> Joined {currentUserProfile.doj}
+                        </span>
+                      )}
                       {currentUserProfile.qualification && (
-                        <span className="flex items-center gap-1.5 bg-indigo-50/70 border border-indigo-100/50 text-[#3150A0] text-4xs font-extrabold px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1.5 bg-indigo-50/70 border border-indigo-100/50 text-[#3150A0] text-xs font-semibold px-2.5 py-0.5 rounded-full">
                           🎓 {currentUserProfile.qualification}
                         </span>
                       )}
@@ -485,10 +494,10 @@ export default function EmployeePortalPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto justify-end border-t md:border-t-0 pt-4 md:pt-0">
+                <div className="flex items-center gap-3 w-full md:w-auto justify-end border-t border-slate-100 md:border-t-0 pt-4 md:pt-0">
                   <button
                     onClick={logout}
-                    className="flex items-center gap-1.5 px-4.5 py-2 rounded-xl border border-slate-205 hover:bg-slate-50 text-slate-600 hover:text-rose-600 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-xs"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-205 hover:bg-slate-50 text-slate-600 hover:text-rose-600 font-semibold text-xs transition-all active:scale-95 cursor-pointer shadow-xs"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     End Session (Logout)
@@ -531,7 +540,7 @@ export default function EmployeePortalPage() {
                           <Clock className="w-5 h-5 text-blue-100" />
                         </div>
                         <p className="text-xs text-blue-200/90 font-medium">Logged Monthly Audited Shift</p>
-                        <p className="text-3xl font-extrabold tracking-tight mt-1">{totalHoursThisMonth.toFixed(1)} hrs</p>
+                        <p className="text-3xl font-bold tracking-tight mt-1">{totalHoursThisMonth.toFixed(1)} hrs</p>
                         <div className="mt-3 w-full bg-white/20 rounded-full h-1.5 max-w-[65%]">
                           <div 
                             className="bg-orange-500 h-1.5 rounded-full transition-all duration-500" 
@@ -540,13 +549,13 @@ export default function EmployeePortalPage() {
                         </div>
                       </div>
                       
-                      <div className="mt-2.5 flex items-center justify-between text-4xs text-blue-200 font-bold max-w-[65%]">
+                      <div className="mt-2 text-xs text-blue-200 font-medium max-w-[65%]">
                         <span>Target: 160.0 hours monthly</span>
                       </div>
 
                       {/* CTA at Bottom Right */}
-                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-blue-800/80 border border-blue-700/60 text-blue-100 font-extrabold text-4xs flex items-center gap-1 group-hover:bg-white group-hover:text-[#3150A0] transition-all shadow-3xs">
-                        View Shift <span className="text-3xs">→</span>
+                      <span className="absolute bottom-3 right-4 px-2.5 py-1 rounded-xl bg-blue-800/80 border border-blue-700/60 text-blue-100 font-semibold text-xs flex items-center gap-1 group-hover:bg-white group-hover:text-[#3150A0] transition-all shadow-xs">
+                        View Shift <span className="text-xs">→</span>
                       </span>
                     </div>
 
@@ -564,20 +573,20 @@ export default function EmployeePortalPage() {
                           <CalendarCheck2 className="w-5 h-5 text-emerald-600" />
                         </div>
                         <p className="text-xs text-slate-500 font-medium">Vacation Leave Balance</p>
-                        <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">
+                        <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">
                           {(currentUserProfile?.leavesLeft?.casual ?? 0) + (currentUserProfile?.leavesLeft?.sick ?? 0) + (currentUserProfile?.leavesLeft?.earned ?? 0)} days
                         </p>
                       </div>
 
-                      <div className="mt-2.5 flex items-center gap-1 text-4xs font-bold text-slate-500 max-w-[65%] flex-wrap">
-                        <span className="px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-600 font-extrabold">{(currentUserProfile?.leavesLeft?.casual ?? 0)}C</span>
-                        <span className="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 font-extrabold">{(currentUserProfile?.leavesLeft?.sick ?? 0)}S</span>
-                        <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 font-extrabold">{(currentUserProfile?.leavesLeft?.earned ?? 0)}E</span>
+                      <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-slate-500 max-w-[65%] flex-wrap">
+                        <span className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-600 font-semibold">{(currentUserProfile?.leavesLeft?.casual ?? 0)}C</span>
+                        <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 font-semibold">{(currentUserProfile?.leavesLeft?.sick ?? 0)}S</span>
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 font-semibold">{(currentUserProfile?.leavesLeft?.earned ?? 0)}E</span>
                       </div>
 
                       {/* CTA at Bottom Right */}
-                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-[#3150A0] font-extrabold text-4xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-3xs">
-                        Request Leave <span className="text-3xs">→</span>
+                      <span className="absolute bottom-3 right-4 px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 text-[#3150A0] font-semibold text-xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-xs">
+                        Request Leave <span className="text-xs">→</span>
                       </span>
                     </div>
 
@@ -595,17 +604,17 @@ export default function EmployeePortalPage() {
                           <Award className="w-5 h-5 text-indigo-600" />
                         </div>
                         <p className="text-xs text-slate-500 font-medium">Consulting KPI Quotient</p>
-                        <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">{currentUserProfile?.kpiScore ?? '9.0/10'}</p>
+                        <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">{currentUserProfile?.kpiScore ?? '9.0/10'}</p>
                       </div>
 
-                      <div className="mt-2.5 flex items-center gap-1 text-4xs font-semibold text-slate-500 max-w-[65%]">
+                      <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-slate-500 max-w-[65%]">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
                         <span className="text-emerald-600 font-bold">{loggedTasks.filter(t => t.status === 'Completed').length}/{loggedTasks.length} Completed</span>
                       </div>
 
                       {/* CTA at Bottom Right */}
-                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-[#3150A0] font-extrabold text-4xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-3xs">
-                        Directives <span className="text-3xs">→</span>
+                      <span className="absolute bottom-3 right-4 px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 text-[#3150A0] font-semibold text-xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-xs">
+                        Directives <span className="text-xs">→</span>
                       </span>
                     </div>
 
@@ -624,16 +633,16 @@ export default function EmployeePortalPage() {
                         </div>
                         <p className="text-xs text-slate-500 font-medium">Expense Claim Pending</p>
                         {/* Indian Rupee: ALWAYS ₹ */}
-                        <p className="text-3xl font-extrabold tracking-tight text-slate-800 mt-1">₹{pendingClaimsTotal}</p>
+                        <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">₹{pendingClaimsTotal}</p>
                       </div>
 
-                      <div className="mt-2.5 flex items-center text-4xs text-slate-500 font-bold max-w-[65%]">
+                      <div className="mt-2 flex items-center text-xs text-slate-500 font-medium max-w-[65%]">
                         <span><span className="font-bold text-emerald-600">₹{approvedClaimsTotal}</span> Approved</span>
                       </div>
 
                       {/* CTA at Bottom Right */}
-                      <span className="absolute bottom-3 right-4 px-2 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-[#3150A0] font-extrabold text-4xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-3xs">
-                        File Claim <span className="text-3xs">→</span>
+                      <span className="absolute bottom-3 right-4 px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 text-[#3150A0] font-semibold text-xs flex items-center gap-1 group-hover:bg-[#3150A0] group-hover:text-white transition-all shadow-xs">
+                        File Claim <span className="text-xs">→</span>
                       </span>
                     </div>
 
@@ -904,13 +913,13 @@ export default function EmployeePortalPage() {
                                 >
                                   <div className="space-y-2 flex-grow">
                                     <div className="flex flex-wrap items-center gap-2">
-                                      <span className="text-xs font-extrabold text-slate-800">{ts.serviceType}</span>
-                                      <span className="text-4xs text-slate-500 bg-slate-100 border border-slate-200/50 px-2 py-0.5 rounded">
+                                      <span className="text-xs font-bold text-slate-800">{ts.serviceType}</span>
+                                      <span className="text-xs text-slate-500 bg-slate-100 border border-slate-200/50 px-2 py-0.5 rounded">
                                         {ts.date}
                                       </span>
                                     </div>
                                     <p className="text-xs text-slate-600 leading-relaxed text-justify">{ts.description}</p>
-                                    <div className="flex items-center gap-2 text-4xs font-semibold text-slate-500">
+                                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
                                       <span className="bg-blue-50 text-[#3150A0] font-bold px-1.5 py-0.5 rounded">
                                         {ts.hours} HRs Asserted
                                       </span>
@@ -918,7 +927,7 @@ export default function EmployeePortalPage() {
                                   </div>
 
                                   <div className="sm:text-right flex sm:flex-col justify-between items-center sm:items-end w-full sm:w-auto shrink-0 gap-2 sm:gap-4 border-t sm:border-t-0 pt-2 sm:pt-0">
-                                    <span className={`px-2.5 py-1 rounded-full text-5xs font-black ${
+                                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                                       ts.status === 'Approved' 
                                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
                                         : ts.status === 'Pending' 
@@ -1044,16 +1053,16 @@ export default function EmployeePortalPage() {
                               <CalendarCheck2 className="w-5 h-5 text-[#3150A0]" />
                               Absence Tracker & Leave Attendance
                             </h2>
-                            <p className="text-4xs text-slate-500 mt-0.5">Track your pending requests and chronological attendance logs</p>
+                            <p className="text-xs text-slate-500 mt-0.5">Track your pending requests and chronological attendance logs</p>
                           </div>
 
                           {/* Active / Pending Requests Section */}
                           <div className="space-y-3.5">
-                            <span className="text-5xs font-black text-slate-400 uppercase tracking-widest block">Awaiting Assessment ({loggedLeaves.filter(lv => lv.status === 'Pending').length})</span>
+                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Awaiting Assessment ({loggedLeaves.filter(lv => lv.status === 'Pending').length})</span>
                             
                             {loggedLeaves.filter(lv => lv.status === 'Pending').length === 0 ? (
                               <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-150 text-center py-5 text-slate-400">
-                                <p className="text-4xs font-semibold text-slate-500">No active pending leave requests.</p>
+                                <p className="text-xs font-semibold text-slate-500">No active pending leave requests.</p>
                               </div>
                             ) : (
                               <div className="space-y-3">
@@ -1064,18 +1073,18 @@ export default function EmployeePortalPage() {
                                   >
                                     <div>
                                       <div className="flex items-center gap-2">
-                                        <span className="text-xs font-extrabold text-slate-800">{lv.leaveType}</span>
-                                        <span className="bg-orange-100 text-orange-700 font-extrabold px-1.5 py-0.5 rounded text-4xs">
+                                        <span className="text-xs font-bold text-slate-800">{lv.leaveType}</span>
+                                        <span className="bg-orange-100 text-orange-700 font-semibold px-1.5 py-0.5 rounded text-xs">
                                           {lv.totalDays} Days
                                         </span>
                                       </div>
-                                      <p className="text-4xs text-slate-500 mt-1 select-none">
+                                      <p className="text-xs text-slate-500 mt-1 select-none">
                                         Period: <span className="font-semibold text-slate-705">{lv.startDate}</span> to <span className="font-semibold text-slate-705">{lv.endDate}</span>
                                       </p>
                                       <p className="text-xs text-slate-600 mt-1.5 italic">“{lv.reason}”</p>
                                     </div>
 
-                                    <span className="px-2.5 py-1 rounded-full text-5xs font-black shrink-0 bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-wider">
+                                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold shrink-0 bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-wide">
                                       {lv.status}
                                     </span>
                                   </div>
@@ -1086,7 +1095,7 @@ export default function EmployeePortalPage() {
 
                           {/* Chronological Timeline or History of Approved & Rejected Leaves */}
                           <div className="space-y-3.5 pt-5 border-t border-slate-100 text-left">
-                            <span className="text-5xs font-black text-slate-400 uppercase tracking-widest block">Attendance & Leave History Timeline ({loggedLeaves.filter(lv => lv.status !== 'Pending').length})</span>
+                            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Attendance & Leave History Timeline ({loggedLeaves.filter(lv => lv.status !== 'Pending').length})</span>
                             
                             {loggedLeaves.filter(lv => lv.status !== 'Pending').length === 0 ? (
                               <div className="p-5 rounded-xl bg-slate-50/50 border border-slate-150 text-center py-7 text-slate-400">
