@@ -157,7 +157,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     name: 'Resources',
     dropdown: [
-      { name: 'Blogs', href: '/blogs' },
+      { name: 'Knowledge Hub', href: '/blogs' },
       { name: 'Calculators', href: '/calculators' },
       { name: 'FAQs', href: '/faq' },
       { name: 'Downloads', href: '/downloads' },
@@ -1824,14 +1824,14 @@ function CTAAndFooter() {
               <li><a href="/about-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to About us page">About us</a></li>
               <li><a href="/contact-us" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Contact us page">Contact us</a></li>
               <li><a href="/employee-portal" className="hover:text-orange-400 transition-colors" aria-label="Employee Login portal">Employee Login</a></li>
-              <li><a href="/blogs-admin" className="hover:text-orange-400 transition-colors" aria-label="Blogs Admin Portal">Blogs Admin</a></li>
+              <li><a href="/blogs-admin" className="hover:text-orange-400 transition-colors" aria-label="Knowledge Hub Admin Portal">Knowledge Hub Admin</a></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-xs">Resources</h4>
             <ul className="space-y-4 text-blue-200/80">
-              <li><a href="/blogs" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Blogs page">Blogs</a></li>
+              <li><a href="/blogs" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Knowledge Hub page">Knowledge Hub</a></li>
               <li><a href="/calculators" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Calculators page">Calculators</a></li>
               <li><a href="/downloads" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Downloads page">Downloads</a></li>
               <li><a href="/other-resources" className="hover:text-orange-400 transition-colors" aria-label="Navigate to Other Resources page">Other Resources</a></li>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Plus,
   ArrowLeft,
@@ -18,8 +18,8 @@ import {
   Sparkles,
   Lock,
   Compass,
-  Undo
-} from 'lucide-react';
+  Undo,
+} from "lucide-react";
 import {
   collection,
   doc,
@@ -27,19 +27,19 @@ import {
   deleteDoc,
   writeBatch,
   getDocs,
-  Timestamp
-} from 'firebase/firestore';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { db, auth, handleFirestoreError, OperationType } from './firebase';
-import { BlogPost, DEFAULT_POSTS } from './BlogPage';
-import SunEditor from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css';
+  Timestamp,
+} from "firebase/firestore";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { db, auth, handleFirestoreError, OperationType } from "./firebase";
+import { BlogPost, DEFAULT_POSTS } from "./BlogPage";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
 
 const CATEGORIES = [
-  'Startups & Companies',
-  'Taxation & GST',
-  'Licenses & Registrations',
-  'Advisory & Growth'
+  "Startups & Companies",
+  "Taxation & GST",
+  "Licenses & Registrations",
+  "Advisory & Growth",
 ];
 
 interface GradientPreset {
@@ -48,29 +48,33 @@ interface GradientPreset {
 }
 
 const GRADIENTS: GradientPreset[] = [
-  { name: 'Classic Slate Blue', val: 'from-[#3150A0] to-slate-900' },
-  { name: 'Dark Indigo', val: 'from-blue-900 to-indigo-950' },
-  { name: 'Advisory Ash', val: 'from-slate-800 to-[#3150A0]' },
-  { name: 'Orange Amber Flare', val: 'from-amber-600 to-orange-500' }
+  { name: "Classic Slate Blue", val: "from-[#3150A0] to-slate-900" },
+  { name: "Dark Indigo", val: "from-blue-900 to-indigo-950" },
+  { name: "Advisory Ash", val: "from-slate-800 to-[#3150A0]" },
+  { name: "Orange Amber Flare", val: "from-amber-600 to-orange-500" },
 ];
 
 const convertToInputDateFormat = (dateStr: string) => {
-  if (!dateStr) return new Date().toISOString().split('T')[0];
+  if (!dateStr) return new Date().toISOString().split("T")[0];
   const dateObj = new Date(dateStr);
   if (isNaN(dateObj.getTime())) {
-    return new Date().toISOString().split('T')[0];
+    return new Date().toISOString().split("T")[0];
   }
   const yyyy = dateObj.getFullYear();
-  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const dd = String(dateObj.getDate()).padStart(2, '0');
+  const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const dd = String(dateObj.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 };
 
 const formatDateToDisplay = (dateStr: string) => {
-  if (!dateStr) return '';
+  if (!dateStr) return "";
   const dateObj = new Date(dateStr);
   if (isNaN(dateObj.getTime())) return dateStr;
-  return dateObj.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+  return dateObj.toLocaleDateString("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+  });
 };
 
 export default function BlogAdminPage() {
@@ -83,33 +87,35 @@ export default function BlogAdminPage() {
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
 
-  const [title, setTitle] = useState('');
-  const [slug, setSlug] = useState('');
-  const [excerpt, setExcerpt] = useState('');
-  const [category, setCategory] = useState<BlogPost['category']>('Startups & Companies');
-  const [readTime, setReadTime] = useState('5 min read');
-  const [author, setAuthor] = useState('CA Gyanesh Manohar');
-  const [authorLinkedin, setAuthorLinkedin] = useState('');
-  const [authorDesignation, setAuthorDesignation] = useState('');
-  const [authorFirm, setAuthorFirm] = useState('');
-  const [authorBio, setAuthorBio] = useState('');
-  const [authorAvatar, setAuthorAvatar] = useState('');
-  const [tagsString, setTagsString] = useState('ROC, Startups, Compliances');
-  const [gradient, setGradient] = useState('from-[#3150A0] to-slate-900');
-  const [editorContent, setEditorContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [category, setCategory] = useState<BlogPost["category"]>(
+    "Startups & Companies",
+  );
+  const [readTime, setReadTime] = useState("5 min read");
+  const [author, setAuthor] = useState("CA Gyanesh Manohar");
+  const [authorLinkedin, setAuthorLinkedin] = useState("");
+  const [authorDesignation, setAuthorDesignation] = useState("");
+  const [authorFirm, setAuthorFirm] = useState("");
+  const [authorBio, setAuthorBio] = useState("");
+  const [authorAvatar, setAuthorAvatar] = useState("");
+  const [tagsString, setTagsString] = useState("ROC, Startups, Compliances");
+  const [gradient, setGradient] = useState("from-[#3150A0] to-slate-900");
+  const [editorContent, setEditorContent] = useState("");
   const [postDate, setPostDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   });
 
   // Status flags
-  const [writerFeedback, setWriterFeedback] = useState<string>('');
+  const [writerFeedback, setWriterFeedback] = useState<string>("");
   const [isSyncingWithFirebase, setIsSyncingWithFirebase] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   // Check auth state
   useEffect(() => {
@@ -121,13 +127,16 @@ export default function BlogAdminPage() {
   }, []);
 
   // Sync posts from either Cloud Firestore (if admin) or localStorage as offline fallback sandbox
-  const syncPostsWithCloud = async (currentUser = auth.currentUser, forceRefresh = false) => {
+  const syncPostsWithCloud = async (
+    currentUser = auth.currentUser,
+    forceRefresh = false,
+  ) => {
     setIsBlogsLoading(true);
     const isAdminUser = !!currentUser;
 
     if (isAdminUser) {
       try {
-        const postsCollection = collection(db, 'posts');
+        const postsCollection = collection(db, "posts");
         const querySnapshot = await getDocs(postsCollection);
         const cloudPosts: BlogPost[] = [];
         querySnapshot.forEach((docSnap) => {
@@ -144,7 +153,10 @@ export default function BlogAdminPage() {
         setCustomBlogs(cloudPosts);
         setIsBlogsLoading(false);
       } catch (err) {
-        console.warn('Error reading cloud records, loading local drafts sandbox instead...', err);
+        console.warn(
+          "Error reading cloud records, loading local drafts sandbox instead...",
+          err,
+        );
         loadLocalDrafts();
       }
     } else {
@@ -154,7 +166,7 @@ export default function BlogAdminPage() {
   };
 
   const loadLocalDrafts = () => {
-    const stored = localStorage.getItem('makeeazy_sandbox_blogs');
+    const stored = localStorage.getItem("makeeazy_sandbox_blogs");
     if (stored) {
       try {
         setCustomBlogs(JSON.parse(stored));
@@ -168,7 +180,7 @@ export default function BlogAdminPage() {
   };
 
   const saveLocalDrafts = (updatedList: BlogPost[]) => {
-    localStorage.setItem('makeeazy_sandbox_blogs', JSON.stringify(updatedList));
+    localStorage.setItem("makeeazy_sandbox_blogs", JSON.stringify(updatedList));
     setCustomBlogs(updatedList);
   };
 
@@ -177,7 +189,9 @@ export default function BlogAdminPage() {
     if (!user) {
       // Sandbox populate local list instantly instead
       saveLocalDrafts(DEFAULT_POSTS);
-      triggerFeedback('All sample templates synchronized instantly to your local storage sandbox!');
+      triggerFeedback(
+        "All sample templates synchronized instantly to your local storage sandbox!",
+      );
       return;
     }
 
@@ -185,46 +199,51 @@ export default function BlogAdminPage() {
     try {
       const batch = writeBatch(db);
       DEFAULT_POSTS.forEach((post) => {
-        const blogDocRef = doc(db, 'posts', post.id);
+        const blogDocRef = doc(db, "posts", post.id);
         const serverDoc = {
           ...post,
-          authorLinkedin: post.authorLinkedin || '',
-          authorDesignation: post.authorDesignation || '',
-          authorFirm: post.authorFirm || '',
-          authorBio: post.authorBio || '',
-          authorAvatar: post.authorAvatar || '',
+          authorLinkedin: post.authorLinkedin || "",
+          authorDesignation: post.authorDesignation || "",
+          authorFirm: post.authorFirm || "",
+          authorBio: post.authorBio || "",
+          authorAvatar: post.authorAvatar || "",
           createdAt: Timestamp.now(),
           authorId: user.uid,
-          isCustom: true
+          isCustom: true,
         };
         batch.set(blogDocRef, serverDoc);
       });
 
       await batch.commit();
-      triggerFeedback('All default compliance insights successfully deployed live to Production Cloud Firestore!');
+      triggerFeedback(
+        "All default compliance insights successfully deployed live to Production Cloud Firestore!",
+      );
       syncPostsWithCloud(user);
     } catch (err) {
-      console.error('Batch sync aborted', err);
-      triggerFeedback('Failed to sync. Ensure you have correct admin policy permissions.');
+      console.error("Batch sync aborted", err);
+      triggerFeedback(
+        "Failed to sync. Ensure you have correct admin policy permissions.",
+      );
     } finally {
       setIsSyncingWithFirebase(false);
     }
   };
 
-
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-      triggerFeedback('Authenticated successfully!');
+      triggerFeedback("Authenticated successfully!");
     } catch (error: any) {
       console.error(error);
-      if (error && error.code === 'auth/invalid-credential') {
-        triggerFeedback('Invalid email or password.');
-      } else if (error && error.code === 'auth/configuration-not-found') {
-        triggerFeedback('Error: Authentication is not enabled in your Firebase Console for this custom project. Please enable it under Authentication -> Sign-in methods.');
+      if (error && error.code === "auth/invalid-credential") {
+        triggerFeedback("Invalid email or password.");
+      } else if (error && error.code === "auth/configuration-not-found") {
+        triggerFeedback(
+          "Error: Authentication is not enabled in your Firebase Console for this custom project. Please enable it under Authentication -> Sign-in methods.",
+        );
       } else {
-        triggerFeedback(`Sign-in failed: ${error?.message || 'Network error'}`);
+        triggerFeedback(`Sign-in failed: ${error?.message || "Network error"}`);
       }
     }
   };
@@ -233,7 +252,7 @@ export default function BlogAdminPage() {
     try {
       await signOut(auth);
       setCustomBlogs([]);
-      triggerFeedback('Logged out successfully.');
+      triggerFeedback("Logged out successfully.");
     } catch (error) {
       console.error(error);
     }
@@ -241,20 +260,28 @@ export default function BlogAdminPage() {
 
   const triggerFeedback = (msg: string) => {
     setWriterFeedback(msg);
-    setTimeout(() => setWriterFeedback(''), 5500);
+    setTimeout(() => setWriterFeedback(""), 5500);
   };
 
   // Form Submission handles both cloud and sandbox
   const handleWriterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !editorContent) {
-      triggerFeedback('Title and Core Prose Content are strictly required.');
+      triggerFeedback("Title and Core Prose Content are strictly required.");
       return;
     }
 
-    const computedSlug = slug.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const computedSlug =
+      slug.trim() ||
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
     const computedId = editingPostId || `custom-insight-${Date.now()}`;
-    const tagsArr = tagsString.split(',').map((t) => t.trim()).filter(Boolean);
+    const tagsArr = tagsString
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
 
     const postPayload: BlogPost = {
       id: computedId,
@@ -265,7 +292,7 @@ export default function BlogAdminPage() {
       category,
       readTime: readTime.trim(),
       date: formatDateToDisplay(postDate),
-      author: author.trim() || 'CA Gyanesh Manohar',
+      author: author.trim() || "CA Gyanesh Manohar",
       authorLinkedin: authorLinkedin.trim(),
       authorDesignation: authorDesignation.trim(),
       authorFirm: authorFirm.trim(),
@@ -274,7 +301,7 @@ export default function BlogAdminPage() {
       tags: tagsArr,
       gradient,
       isCustom: true,
-      authorId: user?.uid || 'offline-sandbox'
+      authorId: user?.uid || "offline-sandbox",
     };
 
     const isAdminUser = !!user;
@@ -283,24 +310,28 @@ export default function BlogAdminPage() {
       setIsSyncingWithFirebase(true);
       try {
         const path = `posts/${computedId}`;
-        const docRef = doc(db, 'posts', computedId);
-        
-        const currentPost = customBlogs.find(b => b.id === computedId);
+        const docRef = doc(db, "posts", computedId);
+
+        const currentPost = customBlogs.find((b) => b.id === computedId);
         const existingCreatedAt = currentPost?.createdAt || Timestamp.now();
 
         const dbPayload = {
           ...postPayload,
-          createdAt: existingCreatedAt
+          createdAt: existingCreatedAt,
         };
 
         await setDoc(docRef, dbPayload);
-        triggerFeedback('Advisory post successfully published live on production cloud databases!');
+        triggerFeedback(
+          "Advisory post successfully published live on production cloud databases!",
+        );
         syncPostsWithCloud(user);
         setIsWriting(false);
         resetForm();
       } catch (err) {
-        console.error('Core publisher aborted.', err);
-        triggerFeedback('Access blocked. Ensure database is synchronized with matching compliance rule sets.');
+        console.error("Core publisher aborted.", err);
+        triggerFeedback(
+          "Access blocked. Ensure database is synchronized with matching compliance rule sets.",
+        );
       } finally {
         setIsSyncingWithFirebase(false);
       }
@@ -308,12 +339,16 @@ export default function BlogAdminPage() {
       // Local Sandbox Fallback
       let newList = [...customBlogs];
       if (editingPostId) {
-        newList = newList.map((b) => (b.id === editingPostId ? postPayload : b));
+        newList = newList.map((b) =>
+          b.id === editingPostId ? postPayload : b,
+        );
       } else {
         newList = [postPayload, ...newList];
       }
       saveLocalDrafts(newList);
-      triggerFeedback(`Saved draft successfully inside your Local Sandbox! (${editingPostId ? 'Modified' : 'Created'})`);
+      triggerFeedback(
+        `Saved draft successfully inside your Local Sandbox! (${editingPostId ? "Modified" : "Created"})`,
+      );
       setIsWriting(false);
       resetForm();
     }
@@ -327,12 +362,12 @@ export default function BlogAdminPage() {
     setCategory(post.category);
     setReadTime(post.readTime);
     setAuthor(post.author);
-    setAuthorLinkedin(post.authorLinkedin || '');
-    setAuthorDesignation(post.authorDesignation || '');
-    setAuthorFirm(post.authorFirm || '');
-    setAuthorBio(post.authorBio || '');
-    setAuthorAvatar(post.authorAvatar || '');
-    setTagsString(post.tags.join(', '));
+    setAuthorLinkedin(post.authorLinkedin || "");
+    setAuthorDesignation(post.authorDesignation || "");
+    setAuthorFirm(post.authorFirm || "");
+    setAuthorBio(post.authorBio || "");
+    setAuthorAvatar(post.authorAvatar || "");
+    setTagsString(post.tags.join(", "));
     setGradient(post.gradient);
     setEditorContent(post.content);
     setPostDate(convertToInputDateFormat(post.date));
@@ -341,7 +376,11 @@ export default function BlogAdminPage() {
   };
 
   const handleDeleteClick = async (postId: string) => {
-    if (!window.confirm('Are you absolutely sure you want to permanently delete this insight post? This cannot be undone.')) {
+    if (
+      !window.confirm(
+        "Are you absolutely sure you want to permanently delete this insight post? This cannot be undone.",
+      )
+    ) {
       return;
     }
 
@@ -349,42 +388,42 @@ export default function BlogAdminPage() {
 
     if (isAdminUser) {
       try {
-        const docRef = doc(db, 'posts', postId);
+        const docRef = doc(db, "posts", postId);
         await deleteDoc(docRef);
-        triggerFeedback('Advisory removed securely from cloud servers.');
+        triggerFeedback("Advisory removed securely from cloud servers.");
         syncPostsWithCloud(user);
       } catch (err) {
-        console.error('Delete rejected.', err);
-        triggerFeedback('Error deleting cloud post. Verification failed.');
+        console.error("Delete rejected.", err);
+        triggerFeedback("Error deleting cloud post. Verification failed.");
       }
     } else {
       // Local Sandbox deletion
       const filtered = customBlogs.filter((post) => post.id !== postId);
       saveLocalDrafts(filtered);
-      triggerFeedback('Advisory removed from local sandbox storage.');
+      triggerFeedback("Advisory removed from local sandbox storage.");
     }
   };
 
   const resetForm = () => {
     setEditingPostId(null);
-    setTitle('');
-    setSlug('');
-    setExcerpt('');
-    setCategory('Startups & Companies');
-    setReadTime('5 min read');
-    setAuthor('CA Gyanesh Manohar');
-    setAuthorLinkedin('');
-    setAuthorDesignation('');
-    setAuthorFirm('');
-    setAuthorBio('');
-    setAuthorAvatar('');
-    setTagsString('ROC, Startups, Compliances');
-    setGradient('from-[#3150A0] to-slate-900');
-    setEditorContent('');
+    setTitle("");
+    setSlug("");
+    setExcerpt("");
+    setCategory("Startups & Companies");
+    setReadTime("5 min read");
+    setAuthor("CA Gyanesh Manohar");
+    setAuthorLinkedin("");
+    setAuthorDesignation("");
+    setAuthorFirm("");
+    setAuthorBio("");
+    setAuthorAvatar("");
+    setTagsString("ROC, Startups, Compliances");
+    setGradient("from-[#3150A0] to-slate-900");
+    setEditorContent("");
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
     setPostDate(`${yyyy}-${mm}-${dd}`);
     setPreviewMode(false);
   };
@@ -401,7 +440,9 @@ export default function BlogAdminPage() {
                 <Lock className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="font-display text-3xl font-bold text-slate-900">Knowledge Hub</h1>
+                <h1 className="font-display text-3xl md:text-4xl font-bold text-[#3150A0]">
+                  Knowledge Hub
+                </h1>
                 <p className="text-slate-500 mt-1">Moderator Desk</p>
               </div>
             </div>
@@ -429,9 +470,13 @@ export default function BlogAdminPage() {
                 <Lock className="w-8 h-8 stroke-[1.8]" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-xl md:text-2xl font-extrabold text-[#3150A0] tracking-tight">Admin Authentication</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-[#3150A0] tracking-tight">
+                  Admin Authentication
+                </h2>
                 <p className="text-xs md:text-sm text-slate-400 leading-relaxed font-semibold">
-                  Access live Cloud Production databases by entering your Admin Account Credentials, or explore the full writer suite in Sandbox Mode immediately.
+                  Access live Cloud Production databases by entering your Admin
+                  Account Credentials, or explore the full writer suite in
+                  Sandbox Mode immediately.
                 </p>
               </div>
 
@@ -442,9 +487,14 @@ export default function BlogAdminPage() {
                 </div>
               )}
 
-              <form onSubmit={handleEmailSignIn} className="flex flex-col gap-4 text-left">
+              <form
+                onSubmit={handleEmailSignIn}
+                className="flex flex-col gap-4 text-left"
+              >
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email Address</label>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     required
@@ -455,7 +505,9 @@ export default function BlogAdminPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Password
+                  </label>
                   <input
                     type="password"
                     required
@@ -488,19 +540,27 @@ export default function BlogAdminPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-500 bg-white border border-slate-200 px-5 py-3.5 rounded-2xl gap-2 shadow-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-bold text-slate-700">Moderator Access Session Active</span>
+                  <span className="font-bold text-slate-700">
+                    Moderator Access Session Active
+                  </span>
                   {isAdminAuthenticated ? (
                     <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 font-bold text-[10px] uppercase font-mono">
                       Cloud Sync Active ({user.email})
                     </span>
                   ) : (
-                    <span className="text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-100 font-bold text-[10px] uppercase font-mono" title="Updates are saved locally to your current browser window">
+                    <span
+                      className="text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-100 font-bold text-[10px] uppercase font-mono"
+                      title="Updates are saved locally to your current browser window"
+                    >
                       Local Sandbox Mode ({user.email})
                     </span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
-                  <a href="/blogs" className="font-bold hover:text-[#3150A0] text-[#3150A0] inline-flex items-center gap-1 py-0.5">
+                  <a
+                    href="/blogs"
+                    className="font-bold hover:text-[#3150A0] text-[#3150A0] inline-flex items-center gap-1 py-0.5"
+                  >
                     <ArrowLeft className="w-3.5 h-3.5" /> View Feed
                   </a>
                   <button
@@ -519,9 +579,11 @@ export default function BlogAdminPage() {
                   initial={{ scale: 0.98, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 text-left ${
-                    writerFeedback.includes('successfully') || writerFeedback.includes('synchronized') || writerFeedback.includes('Active')
-                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                      : 'bg-amber-50 border border-amber-200 text-amber-801'
+                    writerFeedback.includes("successfully") ||
+                    writerFeedback.includes("synchronized") ||
+                    writerFeedback.includes("Active")
+                      ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+                      : "bg-amber-50 border border-amber-200 text-amber-801"
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -538,9 +600,13 @@ export default function BlogAdminPage() {
                   {/* Header row */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-5 gap-4">
                     <div className="text-left">
-                      <span className="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono">WORKSPACE</span>
-                      <h2 className="text-2xl md:text-3xl font-extrabold text-[#3150A0] tracking-tight mt-1 font-sans">
-                        {editingPostId ? 'Edit Compliance Article' : 'Draft New Advisory Insight'}
+                      <span className="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono">
+                        WORKSPACE
+                      </span>
+                      <h2 className="text-2xl md:text-3xl font-bold text-[#3150A0] tracking-tight mt-1 font-sans">
+                        {editingPostId
+                          ? "Edit Compliance Article"
+                          : "Draft New Advisory Insight"}
                       </h2>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
@@ -549,8 +615,8 @@ export default function BlogAdminPage() {
                         onClick={() => setPreviewMode(false)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                           !previewMode
-                            ? 'bg-[#3150A0] border-[#3150A0] text-white'
-                            : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                            ? "bg-[#3150A0] border-[#3150A0] text-white"
+                            : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
                         }`}
                       >
                         Compiler
@@ -560,8 +626,8 @@ export default function BlogAdminPage() {
                         onClick={() => setPreviewMode(true)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                           previewMode
-                            ? 'bg-[#3150A0] border-[#3150A0] text-white'
-                            : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                            ? "bg-[#3150A0] border-[#3150A0] text-white"
+                            : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
                         }`}
                       >
                         Review Layout Render
@@ -575,34 +641,46 @@ export default function BlogAdminPage() {
                       <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 text-xs flex gap-2 items-start text-orange-800 font-semibold mb-4">
                         <Info className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
                         <div>
-                          <span>Real-time Rendering Check:</span> This renders using the exact styling sheets and fonts applied on public visitor insights view for maximum design fidelity.
+                          <span>Real-time Rendering Check:</span> This renders
+                          using the exact styling sheets and fonts applied on
+                          public visitor insights view for maximum design
+                          fidelity.
                         </div>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-3.5 text-xs font-bold text-slate-500 font-mono text-left font-semibold">
-                        <span className="text-orange-500 uppercase tracking-wider">{category}</span>
+                        <span className="text-orange-500 uppercase tracking-wider">
+                          {category}
+                        </span>
                         <span>•</span>
                         <span>{formatDateToDisplay(postDate)}</span>
                         <span>•</span>
-                        <span>{readTime || '5 min read'}</span>
+                        <span>{readTime || "5 min read"}</span>
                       </div>
 
-                      <h1 className="font-display text-2xl md:text-3xl font-extrabold text-[#3150A0] leading-tight text-left">
-                        {title || 'Pending Strategic Title'}
+                      <h1 className="font-display text-2xl md:text-3xl font-bold text-[#3150A0] leading-tight text-left">
+                        {title || "Pending Strategic Title"}
                       </h1>
 
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xs uppercase">
-                          {author ? author.charAt(0) : 'C'}
+                          {author ? author.charAt(0) : "C"}
                         </div>
-                        <span className="text-xs font-bold text-slate-600">By {author || 'CA Gyanesh Manohar'}</span>
+                        <span className="text-xs font-bold text-slate-600">
+                          By {author || "CA Gyanesh Manohar"}
+                        </span>
                       </div>
 
                       <div className="suneditor-content-view text-justify max-w-none bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                         {editorContent ? (
-                          <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: editorContent }}
+                          />
                         ) : (
-                          <p className="text-slate-400 italic text-xs md:text-sm">Write compliance content first, then check review render!</p>
+                          <p className="text-slate-400 italic text-xs md:text-sm">
+                            Write compliance content first, then check review
+                            render!
+                          </p>
                         )}
                       </div>
                     </div>
@@ -612,14 +690,21 @@ export default function BlogAdminPage() {
                       <div className="grid md:grid-cols-2 gap-6">
                         {/* Title Input */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Advisory Title</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Advisory Title
+                          </label>
                           <input
                             type="text"
                             required
                             value={title}
                             onChange={(e) => {
                               setTitle(e.target.value);
-                              setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+                              setSlug(
+                                e.target.value
+                                  .toLowerCase()
+                                  .replace(/[^a-z0-9]+/g, "-")
+                                  .replace(/(^-|-$)/g, ""),
+                              );
                             }}
                             placeholder="e.g. Mandatory MSME Delayed Payment Rules under Section 15"
                             className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 font-semibold"
@@ -628,7 +713,9 @@ export default function BlogAdminPage() {
 
                         {/* URL Slug */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">URL Safe Slug</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            URL Safe Slug
+                          </label>
                           <input
                             type="text"
                             value={slug}
@@ -642,10 +729,16 @@ export default function BlogAdminPage() {
                       <div className="grid md:grid-cols-3 gap-6">
                         {/* Category Selection */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Primary Category</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
+                            Primary Category
+                          </label>
                           <select
                             value={category}
-                            onChange={(e) => setCategory(e.target.value as BlogPost['category'])}
+                            onChange={(e) =>
+                              setCategory(
+                                e.target.value as BlogPost["category"],
+                              )
+                            }
                             className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none cursor-pointer text-slate-800 font-semibold"
                           >
                             {CATEGORIES.map((cat) => (
@@ -658,7 +751,9 @@ export default function BlogAdminPage() {
 
                         {/* Posting Date Selection */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Publish Date</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Publish Date
+                          </label>
                           <input
                             type="date"
                             required
@@ -670,7 +765,9 @@ export default function BlogAdminPage() {
 
                         {/* Estimated Reading Duration */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Read Time duration</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Read Time duration
+                          </label>
                           <input
                             type="text"
                             value={readTime}
@@ -683,14 +780,20 @@ export default function BlogAdminPage() {
                       {/* Author Info Section */}
                       <div className="border-[1.5px] border-slate-100 bg-slate-50/25 rounded-2xl p-5 md:p-6 space-y-6">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                          <h4 className="text-xs font-extrabold uppercase tracking-widest text-[#3150A0]">Advisory Author Profile</h4>
-                          <span className="text-[10px] font-mono bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-bold">Dynamic Credentials Card</span>
+                          <h4 className="text-xs font-bold uppercase tracking-widest text-[#3150A0]">
+                            Advisory Author Profile
+                          </h4>
+                          <span className="text-[10px] font-mono bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-bold">
+                            Dynamic Credentials Card
+                          </span>
                         </div>
-                        
+
                         <div className="grid md:grid-cols-2 gap-5">
                           {/* custom author */}
                           <div className="space-y-1.5 text-left">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Advisory Specialist Name</label>
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                              Advisory Specialist Name
+                            </label>
                             <input
                               type="text"
                               value={author}
@@ -702,11 +805,15 @@ export default function BlogAdminPage() {
 
                           {/* author designation */}
                           <div className="space-y-1.5 text-left">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Author Designation</label>
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                              Author Designation
+                            </label>
                             <input
                               type="text"
                               value={authorDesignation}
-                              onChange={(e) => setAuthorDesignation(e.target.value)}
+                              onChange={(e) =>
+                                setAuthorDesignation(e.target.value)
+                              }
                               placeholder="e.g. Senior Chartered Accountant (or leave blank for default)"
                               className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 font-semibold"
                             />
@@ -714,7 +821,9 @@ export default function BlogAdminPage() {
 
                           {/* author firm */}
                           <div className="space-y-1.5 text-left">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Firm / Affiliation</label>
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                              Firm / Affiliation
+                            </label>
                             <input
                               type="text"
                               value={authorFirm}
@@ -726,11 +835,15 @@ export default function BlogAdminPage() {
 
                           {/* author linkedin */}
                           <div className="space-y-1.5 text-left">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Author LinkedIn URL</label>
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                              Author LinkedIn URL
+                            </label>
                             <input
                               type="url"
                               value={authorLinkedin}
-                              onChange={(e) => setAuthorLinkedin(e.target.value)}
+                              onChange={(e) =>
+                                setAuthorLinkedin(e.target.value)
+                              }
                               placeholder="e.g. https://www.linkedin.com/in/ca-gyanesh-manohar"
                               className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 font-mono"
                             />
@@ -739,7 +852,9 @@ export default function BlogAdminPage() {
 
                         {/* author bio description */}
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Professional Bio / description</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Professional Bio / description
+                          </label>
                           <textarea
                             rows={3}
                             value={authorBio}
@@ -751,18 +866,23 @@ export default function BlogAdminPage() {
 
                         {/* author avatar placeholder uploader */}
                         <div className="space-y-2 text-left border-t border-dashed border-slate-100 pt-4">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Author Profile Photo</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                            Author Profile Photo
+                          </label>
                           <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-xl">
                             <div className="relative shrink-0">
                               <img
-                                src={authorAvatar || 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=200'}
+                                src={
+                                  authorAvatar ||
+                                  "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=200"
+                                }
                                 alt="Author Preview"
                                 className="w-16 h-16 rounded-full object-cover border-2 border-orange-200 bg-slate-200 shadow-sm"
                               />
                               {authorAvatar && (
                                 <button
                                   type="button"
-                                  onClick={() => setAuthorAvatar('')}
+                                  onClick={() => setAuthorAvatar("")}
                                   className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-all text-[8px] leading-none font-bold"
                                   title="Clear Photo"
                                 >
@@ -770,7 +890,7 @@ export default function BlogAdminPage() {
                                 </button>
                               )}
                             </div>
-                            
+
                             <div className="flex-1 space-y-2 w-full">
                               <div className="flex flex-wrap items-center gap-2">
                                 {/* Hidden file input */}
@@ -783,13 +903,17 @@ export default function BlogAdminPage() {
                                     const file = e.target.files?.[0];
                                     if (file) {
                                       if (file.size > 400 * 1024) {
-                                        alert('Please keep your dynamic avatar image files under 400KB to ensure rapid compliance database Sync.');
+                                        alert(
+                                          "Please keep your dynamic avatar image files under 400KB to ensure rapid compliance database Sync.",
+                                        );
                                         return;
                                       }
                                       const reader = new FileReader();
                                       reader.onload = (event) => {
                                         if (event.target?.result) {
-                                          setAuthorAvatar(event.target.result as string);
+                                          setAuthorAvatar(
+                                            event.target.result as string,
+                                          );
                                         }
                                       };
                                       reader.readAsDataURL(file);
@@ -798,19 +922,31 @@ export default function BlogAdminPage() {
                                 />
                                 <button
                                   type="button"
-                                  onClick={() => document.getElementById('author-avatar-file')?.click()}
+                                  onClick={() =>
+                                    document
+                                      .getElementById("author-avatar-file")
+                                      ?.click()
+                                  }
                                   className="px-4 py-2 text-xs bg-[#3150A0] text-white font-semibold rounded-lg hover:bg-slate-800 transition-all cursor-pointer shadow-sm"
                                 >
                                   Upload Profile Photo File
                                 </button>
-                                
-                                <span className="text-[10px] text-slate-400">or paste a custom web image URL:</span>
+
+                                <span className="text-[10px] text-slate-400">
+                                  or paste a custom web image URL:
+                                </span>
                               </div>
-                              
+
                               <input
                                 type="url"
-                                value={authorAvatar.startsWith('data:') ? '' : authorAvatar}
-                                onChange={(e) => setAuthorAvatar(e.target.value)}
+                                value={
+                                  authorAvatar.startsWith("data:")
+                                    ? ""
+                                    : authorAvatar
+                                }
+                                onChange={(e) =>
+                                  setAuthorAvatar(e.target.value)
+                                }
                                 placeholder="Paste image web link (e.g. https://images.unsplash.com/...)"
                                 className="w-full px-3 py-2 text-[11px] bg-white border border-slate-200 rounded-lg focus:outline-none text-slate-800 font-mono"
                               />
@@ -821,7 +957,9 @@ export default function BlogAdminPage() {
 
                       {/* Excerpt Descriptions */}
                       <div className="space-y-1.5 text-left">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Summary Excerpt / Description</label>
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                          Summary Excerpt / Description
+                        </label>
                         <textarea
                           rows={2}
                           value={excerpt}
@@ -834,7 +972,9 @@ export default function BlogAdminPage() {
                       {/* comma-seprated tags & custom gradient presets */}
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tags (comma separated)</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Tags (comma separated)
+                          </label>
                           <input
                             type="text"
                             value={tagsString}
@@ -845,7 +985,9 @@ export default function BlogAdminPage() {
                         </div>
 
                         <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Insight Card Color Theme</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Insight Card Color Theme
+                          </label>
                           <div className="flex flex-wrap items-center gap-3 pt-1">
                             {GRADIENTS.map((g) => (
                               <button
@@ -853,7 +995,9 @@ export default function BlogAdminPage() {
                                 type="button"
                                 onClick={() => setGradient(g.val)}
                                 className={`w-8 h-8 rounded-full bg-gradient-to-r ${g.val} border-2 transition-all cursor-pointer ${
-                                  gradient === g.val ? 'border-orange-500 scale-110 shadow' : 'border-slate-200 hover:scale-105'
+                                  gradient === g.val
+                                    ? "border-orange-500 scale-110 shadow"
+                                    : "border-slate-200 hover:scale-105"
                                 }`}
                                 title={g.name}
                               />
@@ -878,20 +1022,45 @@ export default function BlogAdminPage() {
                             onChange={(content) => setEditorContent(content)}
                             setOptions={{
                               buttonList: [
-                                ['undo', 'redo', 'font', 'fontSize', 'formatBlock'],
-                                ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
-                                ['fontColor', 'hiliteColor', 'textStyle', 'removeFormat'],
-                                '/',
-                                ['outdent', 'indent', 'align', 'horizontalRule', 'list', 'lineHeight'],
-                                ['table', 'link', 'image', 'video'],
-                                ['fullScreen', 'showBlocks', 'codeView'],
-                                ['preview']
+                                [
+                                  "undo",
+                                  "redo",
+                                  "font",
+                                  "fontSize",
+                                  "formatBlock",
+                                ],
+                                [
+                                  "bold",
+                                  "underline",
+                                  "italic",
+                                  "strike",
+                                  "subscript",
+                                  "superscript",
+                                ],
+                                [
+                                  "fontColor",
+                                  "hiliteColor",
+                                  "textStyle",
+                                  "removeFormat",
+                                ],
+                                "/",
+                                [
+                                  "outdent",
+                                  "indent",
+                                  "align",
+                                  "horizontalRule",
+                                  "list",
+                                  "lineHeight",
+                                ],
+                                ["table", "link", "image", "video"],
+                                ["fullScreen", "showBlocks", "codeView"],
+                                ["preview"],
                               ],
-                              minHeight: '400px',
+                              minHeight: "400px",
                               resizingBar: false,
                               attributesBlacklist: {
-                                '*': 'style'
-                              }
+                                "*": "style",
+                              },
                             }}
                           />
                         </div>
@@ -914,7 +1083,11 @@ export default function BlogAdminPage() {
                           disabled={isSyncingWithFirebase}
                           className="px-6 py-2.5 bg-[#3150A0] hover:bg-blue-900 border border-transparent text-white font-bold rounded-xl text-xs transition-all shadow cursor-pointer disabled:opacity-50"
                         >
-                          {isSyncingWithFirebase ? 'Synchronizing Cloud...' : editingPostId ? 'Update & Deploy' : 'Publish Advisory'}
+                          {isSyncingWithFirebase
+                            ? "Synchronizing Cloud..."
+                            : editingPostId
+                              ? "Update & Deploy"
+                              : "Publish Advisory"}
                         </button>
                       </div>
                     </form>
@@ -931,11 +1104,13 @@ export default function BlogAdminPage() {
                 >
                   <div className="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs text-left">
                     <div className="space-y-1.5 max-w-xl">
-                      <h2 className="text-xl md:text-2xl font-extrabold text-[#3150A0] tracking-tight">
+                      <h2 className="text-xl md:text-2xl font-bold text-[#3150A0] tracking-tight">
                         Advisory Database Overview ({customBlogs.length})
                       </h2>
                       <p className="text-xs md:text-sm text-slate-500 font-medium leading-normal">
-                        Verify listings, update key metadata clauses, or populate initial default pre-designed legal templates dynamically under the Blogs portal.
+                        Verify listings, update key metadata clauses, or
+                        populate initial default pre-designed legal templates
+                        dynamically under the Blogs portal.
                       </p>
                     </div>
 
@@ -967,7 +1142,10 @@ export default function BlogAdminPage() {
                   {isBlogsLoading ? (
                     <div className="bg-white rounded-3xl border border-slate-200 p-8 space-y-4">
                       {[1, 2, 3].map((idx) => (
-                        <div key={idx} className="animate-pulse space-y-2 py-4 border-b border-slate-100 last:border-b-0">
+                        <div
+                          key={idx}
+                          className="animate-pulse space-y-2 py-4 border-b border-slate-100 last:border-b-0"
+                        >
                           <div className="h-4 bg-slate-250 rounded w-1/4" />
                           <div className="h-5 bg-slate-250 rounded w-3/4" />
                         </div>
@@ -976,9 +1154,13 @@ export default function BlogAdminPage() {
                   ) : customBlogs.length === 0 ? (
                     <div className="bg-white rounded-3xl border border-dashed border-slate-300 p-16 text-center space-y-4">
                       <div className="text-4xl">📝</div>
-                      <h3 className="font-display font-extrabold text-[#3150A0] text-lg">Empty Advisory Feed</h3>
+                      <h3 className="font-display font-bold text-[#3150A0] text-lg">
+                        Empty Advisory Feed
+                      </h3>
                       <p className="text-xs md:text-sm text-slate-500 max-w-xs mx-auto leading-relaxed">
-                        Click on <strong>Sync Defaults</strong> above to automatically seed standard pre-curated CAs legal templates instantly.
+                        Click on <strong>Sync Defaults</strong> above to
+                        automatically seed standard pre-curated CAs legal
+                        templates instantly.
                       </p>
                     </div>
                   ) : (
@@ -991,49 +1173,64 @@ export default function BlogAdminPage() {
                           if (dateA !== dateB) {
                             return dateB - dateA;
                           }
-                          const timeA = a.createdAt ? (a.createdAt.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt).getTime()) : 0;
-                          const timeB = b.createdAt ? (b.createdAt.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt).getTime()) : 0;
+                          const timeA = a.createdAt
+                            ? a.createdAt.seconds
+                              ? a.createdAt.seconds * 1000
+                              : new Date(a.createdAt).getTime()
+                            : 0;
+                          const timeB = b.createdAt
+                            ? b.createdAt.seconds
+                              ? b.createdAt.seconds * 1000
+                              : new Date(b.createdAt).getTime()
+                            : 0;
                           return timeB - timeA;
                         })
                         .map((post, index) => (
                           <div
                             key={post.id}
                             className={`group flex items-center justify-between py-5 text-left ${
-                              index !== 0 ? 'border-t border-slate-100' : ''
+                              index !== 0 ? "border-t border-slate-100" : ""
                             }`}
                           >
-                          <div className="flex-1 pr-6 cursor-pointer" onClick={() => handleEditClick(post)}>
-                            <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold tracking-widest uppercase mb-1 font-mono">
-                              <span className="text-[#f97316]">{post.category.split(' ')[0]}</span>
-                              <span className="text-slate-300">•</span>
-                              <span className="text-slate-400 font-medium">{post.date}</span>
-                            </div>
-                            <h3 className="text-sm md:text-base font-extrabold text-[#3150A0] tracking-tight group-hover:text-blue-700 transition-colors mb-1">
-                              {post.title}
-                            </h3>
-                            <p className="text-xs text-slate-400 line-clamp-1">
-                              {post.excerpt}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-3 shrink-0">
-                            <button
+                            <div
+                              className="flex-1 pr-6 cursor-pointer"
                               onClick={() => handleEditClick(post)}
-                              className="p-2.5 hover:bg-slate-50 border border-slate-150 rounded-xl transition-all text-slate-400 hover:text-[#3150A0] cursor-pointer"
-                              title="Edit Details"
                             >
-                              <Layout className="w-4 h-4 stroke-[2]" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteClick(post.id)}
-                              className="p-2.5 hover:bg-red-50 border border-transparent rounded-xl transition-all text-slate-400 hover:text-red-500 cursor-pointer"
-                              title="Delete permanently"
-                            >
-                              <Trash2 className="w-4 h-4 stroke-[1.8]" />
-                            </button>
+                              <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold tracking-widest uppercase mb-1 font-mono">
+                                <span className="text-[#f97316]">
+                                  {post.category.split(" ")[0]}
+                                </span>
+                                <span className="text-slate-300">•</span>
+                                <span className="text-slate-400 font-medium">
+                                  {post.date}
+                                </span>
+                              </div>
+                              <h3 className="text-sm md:text-base font-bold text-[#3150A0] tracking-tight group-hover:text-blue-700 transition-colors mb-1">
+                                {post.title}
+                              </h3>
+                              <p className="text-xs text-slate-400 line-clamp-1">
+                                {post.excerpt}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-3 shrink-0">
+                              <button
+                                onClick={() => handleEditClick(post)}
+                                className="p-2.5 hover:bg-slate-50 border border-slate-150 rounded-xl transition-all text-slate-400 hover:text-[#3150A0] cursor-pointer"
+                                title="Edit Details"
+                              >
+                                <Layout className="w-4 h-4 stroke-[2]" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick(post.id)}
+                                className="p-2.5 hover:bg-red-50 border border-transparent rounded-xl transition-all text-slate-400 hover:text-red-500 cursor-pointer"
+                                title="Delete permanently"
+                              >
+                                <Trash2 className="w-4 h-4 stroke-[1.8]" />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   )}
                 </motion.div>
