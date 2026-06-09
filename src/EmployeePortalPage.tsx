@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { db } from "./firebase";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, getDocFromServer } from "firebase/firestore";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Building2,
@@ -89,10 +89,41 @@ export default function EmployeePortalPage() {
   const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    // Cache-busting: Force fetch the absolutely latest portal data from the server directly first
+    // This ensures when you open in a new browser, you don't briefly see the Default Employees while
+    // onSnapshot establishes its socket.
+    const forceFetchLatestData = async () => {
+      try {
+        const docRef = doc(db, "makeeazy", "portal_data");
+        const docSnap = await getDocFromServer(docRef);
+        if (docSnap.exists()) {
+          isSyncingRef.current = true;
+          const data = docSnap.data();
+          if (data.employees) setEmployees(data.employees);
+          if (data.timesheets) setTimesheets(data.timesheets);
+          if (data.leaves) setLeaves(data.leaves);
+          if (data.expenses) setExpenses(data.expenses);
+          if (data.tasks) setTasks(data.tasks);
+
+          if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+          syncTimeoutRef.current = setTimeout(() => {
+            isSyncingRef.current = false;
+          }, 300);
+        }
+      } catch (err) {
+        console.error("Force fetch failed, falling back to snapshot:", err);
+      } finally {
+        isInitialLoadRef.current = false;
+      }
+    };
+
+    forceFetchLatestData();
+
+    // Regular live listener
     const unsub = onSnapshot(doc(db, "makeeazy", "portal_data"), (docSnap) => {
-      if (docSnap.exists()) {
+      if (docSnap.exists() && !isInitialLoadRef.current) {
         isSyncingRef.current = true;
-        
+
         const data = docSnap.data();
         if (data.employees) setEmployees(data.employees);
         if (data.timesheets) setTimesheets(data.timesheets);
@@ -105,7 +136,6 @@ export default function EmployeePortalPage() {
           isSyncingRef.current = false;
         }, 300);
       }
-      isInitialLoadRef.current = false;
     });
     return () => unsub();
   }, []);
