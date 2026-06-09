@@ -85,12 +85,14 @@ export default function EmployeePortalPage() {
 
   // Sync core collections with Firebase for cross-browser live updates
   const isSyncingRef = useRef(false);
+  const isInitialLoadRef = useRef(true);
   const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "makeeazy", "portal_data"), (docSnap) => {
       if (docSnap.exists()) {
         isSyncingRef.current = true;
+        
         const data = docSnap.data();
         if (data.employees) setEmployees(data.employees);
         if (data.timesheets) setTimesheets(data.timesheets);
@@ -103,6 +105,7 @@ export default function EmployeePortalPage() {
           isSyncingRef.current = false;
         }, 300);
       }
+      isInitialLoadRef.current = false;
     });
     return () => unsub();
   }, []);
@@ -121,7 +124,7 @@ export default function EmployeePortalPage() {
     localStorage.setItem("makeeazy_portal_expenses", JSON.stringify(expenses));
     localStorage.setItem("makeeazy_portal_tasks", JSON.stringify(tasks));
 
-    if (!isSyncingRef.current) {
+    if (!isSyncingRef.current && !isInitialLoadRef.current) {
       const timer = setTimeout(() => {
         setDoc(
           doc(db, "makeeazy", "portal_data"),
