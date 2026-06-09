@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { db } from "./firebase";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Building2,
@@ -81,32 +83,55 @@ export default function EmployeePortalPage() {
     return saved ? JSON.parse(saved) : DEFAULT_TASKS;
   });
 
-  // Write changes to localStorage so states persist on reload
+  // Sync core collections with Firebase for cross-browser live updates
+  const isSyncingRef = useRef(false);
+  const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "makeeazy", "portal_data"), (docSnap) => {
+      if (docSnap.exists()) {
+        isSyncingRef.current = true;
+        const data = docSnap.data();
+        if (data.employees) setEmployees(data.employees);
+        if (data.timesheets) setTimesheets(data.timesheets);
+        if (data.leaves) setLeaves(data.leaves);
+        if (data.expenses) setExpenses(data.expenses);
+        if (data.tasks) setTasks(data.tasks);
+
+        if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+        syncTimeoutRef.current = setTimeout(() => {
+          isSyncingRef.current = false;
+        }, 300);
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  // Write changes to localStorage and Firebase so states persist on reload
   useEffect(() => {
     localStorage.setItem(
       "makeeazy_portal_employees",
       JSON.stringify(employees),
     );
-  }, [employees]);
-
-  useEffect(() => {
     localStorage.setItem(
       "makeeazy_portal_timesheets",
       JSON.stringify(timesheets),
     );
-  }, [timesheets]);
-
-  useEffect(() => {
     localStorage.setItem("makeeazy_portal_leaves", JSON.stringify(leaves));
-  }, [leaves]);
-
-  useEffect(() => {
     localStorage.setItem("makeeazy_portal_expenses", JSON.stringify(expenses));
-  }, [expenses]);
-
-  useEffect(() => {
     localStorage.setItem("makeeazy_portal_tasks", JSON.stringify(tasks));
-  }, [tasks]);
+
+    if (!isSyncingRef.current) {
+      const timer = setTimeout(() => {
+        setDoc(
+          doc(db, "makeeazy", "portal_data"),
+          { employees, timesheets, leaves, expenses, tasks },
+          { merge: true },
+        ).catch(console.error);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [employees, timesheets, leaves, expenses, tasks]);
 
   // Session & UI States
   const [activeUser, setActiveUser] = useState<any>(() => {

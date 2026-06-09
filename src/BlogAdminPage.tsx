@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Plus,
@@ -127,8 +127,11 @@ export default function BlogAdminPage() {
     return () => unsub();
   }, []);
 
+  // Store the unsubscribe function to avoid memory leaks
+  const syncUnsubscribeRef = useRef<(() => void) | null>(null);
+
   // Sync posts from either Cloud Firestore (if admin) or localStorage as offline fallback sandbox
-  const syncPostsWithCloud = async (
+  const syncPostsWithCloud = (
     currentUser = auth.currentUser,
     forceRefresh = false,
   ) => {
@@ -136,31 +139,54 @@ export default function BlogAdminPage() {
     const isAdminUser = !!currentUser;
 
     if (isAdminUser) {
+      if (syncUnsubscribeRef.current) {
+        syncUnsubscribeRef.current();
+        syncUnsubscribeRef.current = null;
+      }
+
       try {
         const postsCollection = collection(db, "posts");
-        const querySnapshot = await getDocs(postsCollection);
-        const cloudPosts: BlogPost[] = [];
-        querySnapshot.forEach((docSnap) => {
-          cloudPosts.push({ id: docSnap.id, ...docSnap.data() } as BlogPost);
-        });
+        syncUnsubscribeRef.current = onSnapshot(
+          postsCollection,
+          async (snapshot) => {
+            const cloudPosts: BlogPost[] = [];
+            snapshot.forEach((docSnap) => {
+              cloudPosts.push({
+                id: docSnap.id,
+                ...docSnap.data(),
+              } as BlogPost);
+            });
 
-        // Store standard defaults too if they do not exist
-        if (cloudPosts.length === 0 && forceRefresh) {
-          // Sync defaults to Cloud
-          await syncDefaultTemplatesToCloud();
-          return;
-        }
+            // Store standard defaults too if they do not exist
+            if (cloudPosts.length === 0 && forceRefresh) {
+              // Sync defaults to Cloud
+              await syncDefaultTemplatesToCloud();
+              return;
+            }
 
-        setCustomBlogs(cloudPosts);
-        setIsBlogsLoading(false);
+            setCustomBlogs(cloudPosts);
+            setIsBlogsLoading(false);
+          },
+          (err) => {
+            console.warn(
+              "Error reading cloud records, loading local drafts sandbox instead...",
+              err,
+            );
+            loadLocalDrafts();
+          },
+        );
       } catch (err) {
         console.warn(
-          "Error reading cloud records, loading local drafts sandbox instead...",
+          "Error setting up cloud listener, loading local drafts sandbox instead...",
           err,
         );
         loadLocalDrafts();
       }
     } else {
+      if (syncUnsubscribeRef.current) {
+        syncUnsubscribeRef.current();
+        syncUnsubscribeRef.current = null;
+      }
       // Local Sandbox Mode to allow absolute free-form sandbox design
       loadLocalDrafts();
     }
