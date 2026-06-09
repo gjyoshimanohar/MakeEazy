@@ -103,6 +103,7 @@ export default function BlogAdminPage() {
   const [tagsString, setTagsString] = useState("ROC, Startups, Compliances");
   const [gradient, setGradient] = useState("from-[#3150A0] to-slate-900");
   const [editorContent, setEditorContent] = useState("");
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([]);
   const [postDate, setPostDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -298,6 +299,7 @@ export default function BlogAdminPage() {
       authorFirm: authorFirm.trim(),
       authorBio: authorBio.trim(),
       authorAvatar: authorAvatar.trim(),
+      faqs,
       tags: tagsArr,
       gradient,
       isCustom: true,
@@ -367,6 +369,7 @@ export default function BlogAdminPage() {
     setAuthorFirm(post.authorFirm || "");
     setAuthorBio(post.authorBio || "");
     setAuthorAvatar(post.authorAvatar || "");
+    setFaqs(post.faqs || []);
     setTagsString(post.tags.join(", "));
     setGradient(post.gradient);
     setEditorContent(post.content);
@@ -417,6 +420,7 @@ export default function BlogAdminPage() {
     setAuthorFirm("");
     setAuthorBio("");
     setAuthorAvatar("");
+    setFaqs([]);
     setTagsString("ROC, Startups, Compliances");
     setGradient("from-[#3150A0] to-slate-900");
     setEditorContent("");
@@ -1064,6 +1068,63 @@ export default function BlogAdminPage() {
                             }}
                           />
                         </div>
+                      </div>
+
+                      {/* FAQs section */}
+                      <div className="space-y-4 text-left border-t border-dashed border-slate-100 pt-6">
+                        <label className="text-xs font-bold text-slate-705 uppercase tracking-wider inline-flex items-center gap-1">
+                          Frequently Asked Questions (Optional)
+                        </label>
+                        {faqs.map((faq, index) => (
+                          <div
+                            key={index}
+                            className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 relative group"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newFaqs = faqs.filter(
+                                  (_, i) => i !== index,
+                                );
+                                setFaqs(newFaqs);
+                              }}
+                              className="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              ✕
+                            </button>
+                            <input
+                              type="text"
+                              value={faq.question}
+                              onChange={(e) => {
+                                const newFaqs = [...faqs];
+                                newFaqs[index].question = e.target.value;
+                                setFaqs(newFaqs);
+                              }}
+                              placeholder="Question"
+                              className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3150A0]"
+                            />
+                            <textarea
+                              value={faq.answer}
+                              onChange={(e) => {
+                                const newFaqs = [...faqs];
+                                newFaqs[index].answer = e.target.value;
+                                setFaqs(newFaqs);
+                              }}
+                              placeholder="Answer"
+                              rows={2}
+                              className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3150A0]"
+                            />
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFaqs([...faqs, { question: "", answer: "" }])
+                          }
+                          className="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl text-xs transition-all cursor-pointer inline-flex items-center gap-2"
+                        >
+                          + Add FAQ
+                        </button>
                       </div>
 
                       {/* Submit and Cancel drawers */}

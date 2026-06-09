@@ -50,6 +50,7 @@ export interface BlogPost {
   authorFirm?: string;
   authorBio?: string;
   authorAvatar?: string;
+  faqs?: Array<{ question: string; answer: string }>;
   createdAt?: any;
   authorId?: string;
 }

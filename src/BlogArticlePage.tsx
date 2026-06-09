@@ -51,6 +51,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
     [],
   );
   const [activeId, setActiveId] = useState<string>("");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -410,6 +411,42 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
               />
             </div>
           </div>
+
+          {/* FAQS */}
+          {post.faqs && post.faqs.length > 0 && (
+            <div className="space-y-6 text-left mb-12 animate-fadeIn border-t border-slate-100 pt-8">
+              <h2 className="text-2xl font-bold text-[#3150A0]">
+                Frequently Asked Questions
+              </h2>
+              <div className="space-y-3 mt-6 animate-slideUp">
+                {post.faqs.map((faq, index) => {
+                  const isOpen = openFaq === index;
+                  return (
+                    <div
+                      key={index}
+                      className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all duration-200"
+                    >
+                      <button
+                        onClick={() => setOpenFaq(isOpen ? null : index)}
+                        className="w-full flex justify-between items-center p-5 text-left font-bold text-sm md:text-base text-slate-800 hover:text-orange-500 focus:outline-none transition-colors"
+                      >
+                        <span className="pr-4">{`${index + 1}. ${faq.question}`}</span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+
+                      {isOpen && (
+                        <div className="px-5 pb-5 pt-1 text-xs md:text-sm text-slate-600 leading-relaxed border-t border-slate-100 text-justify animate-fadeIn">
+                          {faq.answer}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Tag Cluster and Social Share Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-100 pt-8 mb-10">
