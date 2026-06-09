@@ -11,7 +11,6 @@ import {
   Share2,
   MessageCircle,
   ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import { db } from "./firebase";
@@ -47,12 +46,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
   const [isLoading, setIsLoading] = useState(!defaultPost);
   const navigate = useNavigate();
 
-  const [toc, setToc] = useState<{ id: string; text: string; level: number }[]>(
-    [],
-  );
-  const [activeId, setActiveId] = useState<string>("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -93,87 +87,23 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
     fetchPost();
   }, [slug]);
 
-  // Table of Contents heading parser
+  const [scrollProgress, setScrollProgress] = useState(0);
+
   useEffect(() => {
-    if (!post || !contentRef.current) return;
-
-    // Retrieve all H2 and H3 elements inside the core content view
-    const headings = contentRef.current.querySelectorAll("h2, h3");
-    const items: { id: string; text: string; level: number }[] = [];
-
-    headings.forEach((heading, idx) => {
-      // Apply scroll-margin-top to support offset scrolling nicely
-      if (heading instanceof HTMLElement) {
-        heading.style.scrollMarginTop = "120px";
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const fullHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (fullHeight > 0) {
+        setScrollProgress((scrollY / fullHeight) * 100);
+      } else {
+        setScrollProgress(0);
       }
-      let id = heading.id;
-      if (!id) {
-        const cleanText = heading.textContent ? heading.textContent.trim() : "";
-        const slugified = cleanText
-          .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, "")
-          .replace(/\s+/g, "-");
-        id = slugified ? `heading-${slugified}-${idx}` : `heading-${idx}`;
-        heading.id = id;
-      }
-      items.push({
-        id,
-        text: heading.textContent || "",
-        level: heading.tagName.toLowerCase() === "h3" ? 3 : 2,
-      });
-    });
-
-    setToc(items);
-  }, [post, isLoading]); // Re-run when post loads or is fully fetched
-
-  // IntersectionObserver to highlight active item
-  useEffect(() => {
-    if (toc.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
-        if (visibleEntries.length > 0) {
-          // Sort visible entries by distance from the top of viewport and select the highest one
-          const sorted = visibleEntries.sort(
-            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
-          );
-          setActiveId(sorted[0].target.id);
-        }
-      },
-      {
-        rootMargin: "-120px 0px -60% 0px",
-        threshold: 0.1,
-      },
-    );
-
-    toc.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => {
-      observer.disconnect();
     };
-  }, [toc]);
 
-  const handleScrollTo = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    id: string,
-  ) => {
-    e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      if (element instanceof HTMLElement) {
-        element.style.scrollMarginTop = "120px";
-      }
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-      setIsMobileTocOpen(false);
-    }
-  };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (isLoading) {
     return (
@@ -216,6 +146,11 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900">
+      {/* Scroll Progress Bar */}
+      <div 
+        className="fixed top-0 left-0 h-1 bg-orange-500 z-50 transition-all duration-150 ease-out"
+        style={{ width: `${scrollProgress}%` }}
+      />
       <Helmet>
         <title>
           {post.title} | MakeEazy Consultants Private Limited Insights
@@ -300,116 +235,12 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
             "{post.excerpt}"
           </div>
 
-          {/* Mobile collapsible Table of Contents */}
-          {toc.length > 0 && (
-            <div className="block lg:hidden mb-8 bg-slate-50 border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
-              <button
-                onClick={() => setIsMobileTocOpen(!isMobileTocOpen)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left font-bold text-xs uppercase tracking-wider text-[#3150A0] hover:bg-slate-100/50 transition-colors"
-              >
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.5"
-                      d="M4 6h16M4 12h16M4 18h7"
-                    />
-                  </svg>
-                  Table of Contents ({toc.length})
-                </span>
-                {isMobileTocOpen ? (
-                  <ChevronUp className="w-4 h-4 text-slate-500" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-slate-500" />
-                )}
-              </button>
-              {isMobileTocOpen && (
-                <div className="border-t border-slate-250 px-5 py-4 bg-slate-50/50 space-y-2.5 max-h-[50vh] overflow-y-auto">
-                  {toc.map((item) => (
-                    <a
-                      key={item.id}
-                      href={`#${item.id}`}
-                      onClick={(e) => handleScrollTo(e, item.id)}
-                      className={`block text-xs font-medium leading-relaxed transition-all pl-3 border-l-2 py-0.5 hover:text-[#3150A0] text-left ${
-                        item.level === 3 ? "ml-3" : ""
-                      } ${
-                        activeId === item.id
-                          ? "border-orange-500 text-[#3150A0] font-bold"
-                          : "border-slate-200 text-slate-500 hover:border-slate-450"
-                      }`}
-                    >
-                      {item.text}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Split layout for Content and Table of Contents */}
-          <div
-            className={`grid grid-cols-1 ${toc.length > 0 ? "lg:grid-cols-12" : ""} gap-10 items-start`}
-          >
-            {/* Table of Contents Sticky Sidebar on Desktop */}
-            {toc.length > 0 && (
-              <div className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 space-y-4">
-                <div className="bg-slate-50/75 border border-slate-205 p-5 rounded-2xl shadow-xs">
-                  <h3 className="text-[11px] font-bold uppercase tracking-widest text-[#3150A0] mb-3.5 flex items-center gap-2 border-b border-slate-200/80 pb-2.5">
-                    <svg
-                      className="w-4 h-4 text-orange-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2.5"
-                        d="M4 6h16M4 12h16M4 18h7"
-                      />
-                    </svg>
-                    Table of Contents
-                  </h3>
-                  <nav className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
-                    {toc.map((item) => (
-                      <a
-                        key={item.id}
-                        href={`#${item.id}`}
-                        onClick={(e) => handleScrollTo(e, item.id)}
-                        className={`block text-xs leading-relaxed transition-all pl-3 border-l-2 py-0.5 hover:text-[#3150A0] text-left ${
-                          item.level === 3
-                            ? "ml-3 text-[11px] text-slate-450 font-medium"
-                            : "text-slate-600 font-semibold"
-                        } ${
-                          activeId === item.id
-                            ? "border-orange-500 text-[#3150A0] font-bold border-l-2"
-                            : "border-slate-200 hover:border-slate-400"
-                        }`}
-                      >
-                        {item.text}
-                      </a>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-            )}
-
-            {/* Core Content */}
+          <div className="w-full text-left">
             <div
-              className={`w-full ${toc.length > 0 ? "lg:col-span-8 xl:col-span-9" : ""}`}
-            >
-              <div
-                ref={contentRef}
-                className="suneditor-content-view text-justify max-w-none w-full mb-12"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
-            </div>
+              ref={contentRef}
+              className="suneditor-content-view text-justify max-w-none w-full mb-12"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
           </div>
 
           {/* FAQS */}
@@ -428,9 +259,9 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                     >
                       <button
                         onClick={() => setOpenFaq(isOpen ? null : index)}
-                        className="w-full flex justify-between items-center p-5 text-left font-bold text-sm md:text-base text-slate-800 hover:text-orange-500 focus:outline-none transition-colors"
+                        className="group w-full flex justify-between items-center p-5 text-left font-bold text-sm md:text-base text-slate-800 hover:bg-slate-50 focus:outline-none transition-all duration-300"
                       >
-                        <span className="pr-4">{`${index + 1}. ${faq.question}`}</span>
+                        <span className="pr-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-orange-500">{`${index + 1}. ${faq.question}`}</span>
                         <ChevronDown
                           className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                         />
@@ -475,7 +306,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
               <div className="flex flex-wrap gap-2 md:justify-end">
                 {/* LinkedIn Share */}
                 <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin + "/blogs/" + post.slug)}`}
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin + "/blog/" + post.slug)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-9 h-9 text-white bg-[#0a66c2] hover:bg-[#004182] rounded-full transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
@@ -486,7 +317,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
                 {/* Twitter / X Share */}
                 <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.origin + "/blogs/" + post.slug)}&text=${encodeURIComponent(post.title)}`}
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.origin + "/blog/" + post.slug)}&text=${encodeURIComponent(post.title)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-9 h-9 text-white bg-[#0f1419] hover:bg-[#272c30] rounded-full transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
@@ -497,7 +328,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
                 {/* WhatsApp Share */}
                 <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + " - " + window.location.origin + "/blogs/" + post.slug)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + " - " + window.location.origin + "/blog/" + post.slug)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-9 h-9 text-white bg-[#25d366] hover:bg-[#20ba5a] rounded-full transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
