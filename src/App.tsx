@@ -272,9 +272,9 @@ function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               className="bg-[#3150A0] hover:bg-[#243d7d] text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 inline-block text-center"
-              aria-label="Client Login Portal (opens in a new tab)"
+              aria-label="Client Portal (opens in a new tab)"
             >
-              Client Login
+              Client Portal
             </a>
           </div>
 
@@ -371,9 +371,9 @@ function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 bg-[#3150A0] hover:bg-[#243d7d] text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 text-center"
-                aria-label="Client Login Portal (opens in a new tab)"
+                aria-label="Client Portal (opens in a new tab)"
               >
-                Client Login
+                Client Portal
               </a>
             </div>
           </div>
@@ -452,7 +452,7 @@ function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full text-base font-semibold transition-all shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 group">
-                Hire An Expert
+                Schedule a Consultation
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <a
