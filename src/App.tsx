@@ -459,7 +459,7 @@ function Hero() {
                 href="/services"
                 className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-full text-base font-semibold transition-all flex items-center justify-center"
               >
-                Explore Services
+                Explore our Services
               </a>
             </div>
 
