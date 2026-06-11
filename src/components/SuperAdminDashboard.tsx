@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DownloadTimesheetModal } from "./DownloadTimesheetModal";
 import {
   Check,
   X,
@@ -143,6 +144,8 @@ export default function SuperAdminDashboard({
   // Modal view for employee full details
   const [selectedEmployeeForModal, setSelectedEmployeeForModal] =
     useState<EmployeeProfile | null>(null);
+
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   // Bulk edit state
   const [selectedForBulk, setSelectedForBulk] = useState<string[]>([]);
@@ -1099,13 +1102,22 @@ export default function SuperAdminDashboard({
               {/* Approvals -> 1. Timesheets Sub-Tab */}
               {approvalSubTab === "timesheets" && (
                 <div className="space-y-4">
-                  <div className="pb-3 border-b border-slate-100">
-                    <h3 className="text-sm font-bold text-slate-800">
-                      Timesheets Audit Board
-                    </h3>
-                    <p className="text-4xs text-slate-400 mt-0.5">
-                      Approve advisory reports submitted by senior analysts.
-                    </p>
+                  <div className="pb-3 border-b border-slate-100 flex justify-between items-center">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-800">
+                        Timesheets Audit Board
+                      </h3>
+                      <p className="text-4xs text-slate-400 mt-0.5">
+                        Approve advisory reports submitted by senior analysts.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowDownloadModal(true)}
+                      className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download Export
+                    </button>
                   </div>
 
                   <div className="space-y-3.5">
@@ -2975,6 +2987,14 @@ export default function SuperAdminDashboard({
             </div>
           </div>
         </div>
+      )}
+
+      {showDownloadModal && (
+        <DownloadTimesheetModal
+          onClose={() => setShowDownloadModal(false)}
+          timesheets={timesheets}
+          employees={employees}
+        />
       )}
     </div>
   );

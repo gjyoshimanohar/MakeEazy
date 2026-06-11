@@ -53,6 +53,7 @@ import {
 // Modular layouts
 import PayslipModal from "./components/PayslipModal";
 import SuperAdminDashboard from "./components/SuperAdminDashboard";
+import { DownloadTimesheetModal } from "./components/DownloadTimesheetModal";
 
 export default function EmployeePortalPage() {
   const timestampNow = Date.now();
@@ -199,6 +200,8 @@ export default function EmployeePortalPage() {
   const [tsService, setTsService] = useState("GST Return Filing (3B/1)");
   const [tsHours, setTsHours] = useState(4.0);
   const [tsDesc, setTsDesc] = useState("");
+
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [tsSuccessMsg, setTsSuccessMsg] = useState("");
 
   const [lvStart, setLvStart] = useState(() => {
@@ -1299,9 +1302,19 @@ export default function EmployeePortalPage() {
                                 responses
                               </p>
                             </div>
-                            <span className="text-3xs text-slate-500 font-semibold bg-slate-100 px-2.5 py-1 rounded-full">
-                              {loggedTimesheets.length} Submitted audits
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-3xs text-slate-500 font-semibold bg-slate-100 px-2.5 py-1 rounded-full">
+                                {loggedTimesheets.length} Submitted audits
+                              </span>
+                              <button
+                                onClick={() => setShowDownloadModal(true)}
+                                className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-3xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                                title="Download Timesheet CSV"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                                Download CSV
+                              </button>
+                            </div>
                           </div>
 
                           <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
@@ -2028,6 +2041,16 @@ export default function EmployeePortalPage() {
                   empId={activeUser.empId}
                   role={activeUser.role}
                   department={activeUser.department}
+                />
+              )}
+
+              {showDownloadModal && activeUser && (
+                <DownloadTimesheetModal
+                  onClose={() => setShowDownloadModal(false)}
+                  timesheets={timesheets.filter(
+                    (t) => t.employeeEmail === activeUser.email,
+                  )}
+                  fixedEmployeeName={activeUser.name}
                 />
               )}
             </motion.div>

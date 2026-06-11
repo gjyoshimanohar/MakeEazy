@@ -3648,6 +3648,8 @@ function WhatsAppWidget() {
 
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { Breadcrumbs } from "./components/Breadcrumbs";
+
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -3811,6 +3813,7 @@ export default function App() {
       ) : (
         <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900">
           <Navbar />
+          <Breadcrumbs />
           {renderMainContent()}
           <CTAAndFooter />
         </div>
