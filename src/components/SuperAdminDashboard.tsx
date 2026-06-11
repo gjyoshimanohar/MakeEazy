@@ -27,6 +27,10 @@ import {
   Briefcase,
   Edit,
   Bell,
+  Download,
+  X,
+  Mail,
+  Printer,
 } from "lucide-react";
 import {
   EmployeeProfile,
@@ -35,6 +39,15 @@ import {
   ExpenseClaim,
   BusinessTask,
 } from "../types/employee";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface SuperAdminDashboardProps {
   employees: EmployeeProfile[];
@@ -97,6 +110,9 @@ export default function SuperAdminDashboard({
   const [empName, setEmpName] = useState("");
   const [empEmail, setEmpEmail] = useState("");
   const [empPin, setEmpPin] = useState("emp123");
+  const [empStatus, setEmpStatus] = useState<
+    "Active" | "On-Leave" | "Inactive"
+  >("Active");
   const [empRole, setEmpRole] = useState("Senior GST & Tax Consultant");
   const [empDepartment, setEmpDepartment] = useState(
     "Taxation & Audit Division",
@@ -123,6 +139,159 @@ export default function SuperAdminDashboard({
   // Editing state for existing employee details
   const [editingEmployee, setEditingEmployee] =
     useState<EmployeeProfile | null>(null);
+
+  // Modal view for employee full details
+  const [selectedEmployeeForModal, setSelectedEmployeeForModal] =
+    useState<EmployeeProfile | null>(null);
+
+  // Bulk edit state
+  const [selectedForBulk, setSelectedForBulk] = useState<string[]>([]);
+
+  const handleBulkStatusUpdate = (
+    status: "Active" | "On-Leave" | "Inactive",
+  ) => {
+    const updated = employees.map((emp) => {
+      if (selectedForBulk.includes(emp.email)) {
+        return { ...emp, status };
+      }
+      return emp;
+    });
+    onUpdateEmployees(updated);
+    setSelectedForBulk([]); // clear selection after update
+  };
+
+  const handlePrintPayslip = (emp: EmployeeProfile) => {
+    const sBasic = emp.salaryDetails?.basic ?? 35000;
+    const sHra = emp.salaryDetails?.hra ?? 14000;
+    const sSpecial = emp.salaryDetails?.special ?? 8000;
+    const sPf = emp.salaryDetails?.pf ?? 1800;
+    const sProfTax = emp.salaryDetails?.profTax ?? 200;
+    const sTds = emp.salaryDetails?.taxDeducted ?? 1000;
+
+    const grossInc = sBasic + sHra + sSpecial;
+    const totalDeduct = sPf + sProfTax + sTds;
+    const netTakehome = grossInc - totalDeduct;
+
+    const printContents = `
+      <html>
+        <head>
+          <title>Payslip - ${emp.name}</title>
+          <style>
+            body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; }
+            .header { border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+            .title { font-size: 24px; font-weight: 800; margin-bottom: 5px; color: #0f172a; }
+            .subtitle { font-size: 14px; color: #64748b; }
+            .emp-details { display: flex; justify-content: space-between; margin-bottom: 40px; background: #f8fafc; padding: 20px; border-radius: 8px; }
+            .emp-details div { font-size: 14px; line-height: 1.6; }
+            .emp-details strong { font-weight: 700; color: #334155; }
+            .salary-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+            .salary-table th { background: #f1f5f9; padding: 12px; text-align: left; font-size: 12px; text-transform: uppercase; color: #475569; }
+            .salary-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+            .salary-table td.amount { text-align: right; font-weight: 600; }
+            .total-row { font-weight: 800; background: #f8fafc; }
+            .total-row td { border-bottom: none; font-size: 16px; }
+            .net-pay { margin-top: 20px; padding: 20px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; text-align: center; }
+            .net-pay-amount { font-size: 24px; font-weight: 800; color: #059669; }
+            .footer { margin-top: 60px; font-size: 12px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">MakeEazy Corporate Services</div>
+            <div class="subtitle">Official Employee Payslip</div>
+          </div>
+          
+          <div class="emp-details">
+            <div>
+              <strong>Employee Name:</strong> ${emp.name}<br/>
+              <strong>Employee ID:</strong> ${emp.empId}<br/>
+              <strong>Designation:</strong> ${emp.role}
+            </div>
+            <div style="text-align: right;">
+              <strong>Date of Joining:</strong> ${emp.doj}<br/>
+              <strong>Department:</strong> ${emp.department}<br/>
+              <strong>Status:</strong> ${emp.status || "Active"}
+            </div>
+          </div>
+
+          <table class="salary-table">
+            <thead>
+              <tr>
+                <th style="width: 50%;">Earnings</th>
+                <th style="width: 50%; text-align: right;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Basic Salary</td>
+                <td class="amount">${sBasic.toLocaleString("en-IN")}</td>
+              </tr>
+              <tr>
+                <td>House Rent Allowance (HRA)</td>
+                <td class="amount">${sHra.toLocaleString("en-IN")}</td>
+              </tr>
+              <tr>
+                <td>Special Allowance</td>
+                <td class="amount">${sSpecial.toLocaleString("en-IN")}</td>
+              </tr>
+              <tr class="total-row">
+                <td>Gross Earnings</td>
+                <td class="amount">${grossInc.toLocaleString("en-IN")}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="salary-table">
+            <thead>
+              <tr>
+                <th style="width: 50%;">Deductions</th>
+                <th style="width: 50%; text-align: right;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Provident Fund (PF)</td>
+                <td class="amount">${sPf.toLocaleString("en-IN")}</td>
+              </tr>
+              <tr>
+                <td>Professional Tax</td>
+                <td class="amount">${sProfTax.toLocaleString("en-IN")}</td>
+              </tr>
+              <tr>
+                <td>Tax Deducted at Source (TDS)</td>
+                <td class="amount">${sTds.toLocaleString("en-IN")}</td>
+              </tr>
+              <tr class="total-row">
+                <td>Total Deductions</td>
+                <td class="amount">${totalDeduct.toLocaleString("en-IN")}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="net-pay">
+            <div style="font-size: 14px; font-weight: 700; color: #065f46; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Net Take Home Pay</div>
+            <div class="net-pay-amount">₹${netTakehome.toLocaleString("en-IN")}</div>
+          </div>
+
+          <div class="footer">
+            This is a computer-generated document. No signature is required.
+          </div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(printContents);
+      printWindow.document.close();
+      printWindow.focus();
+      // Give semantic styling time to load if necessary, though it's inline
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 250);
+    }
+  };
 
   const parseFormattedDojToDateInputValue = (dojStr: string) => {
     if (!dojStr) return new Date().toISOString().substring(0, 10);
@@ -155,6 +324,7 @@ export default function SuperAdminDashboard({
     setEmpName(emp.name);
     setEmpEmail(emp.email);
     setEmpPin(emp.pin);
+    setEmpStatus(emp.status || "Active");
     setEmpRole(emp.role);
     setEmpDepartment(emp.department);
     setEmpQualification(emp.qualification || "");
@@ -264,6 +434,7 @@ export default function SuperAdminDashboard({
       name: empName.trim(),
       email: empEmail.trim().toLowerCase(),
       pin: empPin.trim() || "emp123",
+      status: empStatus,
       role: empRole,
       department: empDepartment,
       empId: uniqueSerialCode,
@@ -309,6 +480,7 @@ export default function SuperAdminDashboard({
     setEmpName("");
     setEmpEmail("");
     setEmpPin("emp123");
+    setEmpStatus("Active");
     setEmpKpi("9.0/10");
     setSalBasic("45000");
     setSalHra("18000");
@@ -328,6 +500,47 @@ export default function SuperAdminDashboard({
     const updated = employees.filter((emp) => emp.email !== email);
     onUpdateEmployees(updated);
     setConfirmDeleteEmail(null);
+  };
+
+  const handleExportEmployeesToCSV = () => {
+    if (employees.length === 0) return;
+    const headers = [
+      "Name",
+      "Email",
+      "Role",
+      "Department",
+      "Employee ID",
+      "Date of Joining",
+      "Status",
+      "KPI Score",
+      "Total Leaves",
+    ];
+    const rows = employees.map((emp) => [
+      `"${emp.name}"`,
+      `"${emp.email}"`,
+      `"${emp.role}"`,
+      `"${emp.department}"`,
+      `"${emp.empId}"`,
+      `"${emp.doj}"`,
+      `"${emp.status || "Active"}"`,
+      `"${emp.kpiScore}"`,
+      `"${emp.leavesLeft.casual + emp.leavesLeft.sick + emp.leavesLeft.earned}"`,
+    ]);
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((e) => e.join(",")),
+    ].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute(
+      "download",
+      `makeeazy_employees_${new Date().toISOString().split("T")[0]}.csv`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // Handles Timesheet approvals logic
@@ -472,7 +685,8 @@ export default function SuperAdminDashboard({
 
   const [prevNotifCount, setPrevNotifCount] = useState(totalNotificationsCount);
   const [hasViewedNotifications, setHasViewedNotifications] = useState(false);
-  const [clearedAdminNotifications, setClearedAdminNotifications] = useState(false);
+  const [clearedAdminNotifications, setClearedAdminNotifications] =
+    useState(false);
 
   React.useEffect(() => {
     if (totalNotificationsCount > prevNotifCount) {
@@ -482,8 +696,10 @@ export default function SuperAdminDashboard({
     setPrevNotifCount(totalNotificationsCount);
   }, [totalNotificationsCount, prevNotifCount]);
 
-  const badgeCount = (hasViewedNotifications || clearedAdminNotifications) ? 0 : totalNotificationsCount;
-
+  const badgeCount =
+    hasViewedNotifications || clearedAdminNotifications
+      ? 0
+      : totalNotificationsCount;
 
   return (
     <div className="space-y-8" id="super-admin-layout">
@@ -541,29 +757,32 @@ export default function SuperAdminDashboard({
                   Pending Action Alerts
                 </span>
                 <div className="flex items-center gap-2">
-                  {totalNotificationsCount > 0 && !clearedAdminNotifications && (
-                    <button
-                      onClick={() => setClearedAdminNotifications(true)}
-                      className="text-[10px] font-semibold text-slate-500 hover:text-slate-800 underline px-1 cursor-pointer"
-                    >
-                      Clear All
-                    </button>
-                  )}
+                  {totalNotificationsCount > 0 &&
+                    !clearedAdminNotifications && (
+                      <button
+                        onClick={() => setClearedAdminNotifications(true)}
+                        className="text-[10px] font-semibold text-slate-500 hover:text-slate-800 underline px-1 cursor-pointer"
+                      >
+                        Clear All
+                      </button>
+                    )}
                   <span className="text-[10px] bg-rose-600 text-white font-semibold px-2 py-0.5 rounded-full">
-                    {clearedAdminNotifications ? 0 : totalNotificationsCount} Actionable
+                    {clearedAdminNotifications ? 0 : totalNotificationsCount}{" "}
+                    Actionable
                   </span>
                 </div>
               </div>
 
               <div className="max-h-[320px] overflow-y-auto divide-y divide-slate-100 no-scrollbar">
-                {(totalNotificationsCount === 0 || clearedAdminNotifications) ? (
+                {totalNotificationsCount === 0 || clearedAdminNotifications ? (
                   <div className="p-8 text-center text-slate-400">
                     <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
                     <p className="text-xs font-bold text-slate-700">
                       All Systems Clear
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      No new leave applications, uncompleted tasks, or pending timesheets exist.
+                      No new leave applications, uncompleted tasks, or pending
+                      timesheets exist.
                     </p>
                   </div>
                 ) : (
@@ -1489,6 +1708,44 @@ export default function SuperAdminDashboard({
         {/* Module C: Employee Rosters */}
         {adminTab === "employees" && (
           <div className="space-y-6" id="consultant-registry-tab">
+            {/* Bulk Action Header */}
+            {selectedForBulk.length > 0 && (
+              <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 shadow-2xl rounded-2xl py-3 px-5 flex items-center justify-between gap-6 border border-slate-700 animate-in slide-in-from-bottom-5 w-max max-w-[90vw]">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-6 w-6 rounded-full bg-[#3150A0] text-white items-center justify-center font-bold text-[10px]">
+                    {selectedForBulk.length}
+                  </div>
+                  <span className="text-white font-bold text-xs tracking-wide">
+                    Employees Selected
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <select
+                    className="bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl border border-slate-600 focus:border-slate-500 focus:ring-2 focus:ring-slate-400 outline-none cursor-pointer"
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        handleBulkStatusUpdate(e.target.value as any);
+                      }
+                    }}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      Set Status
+                    </option>
+                    <option value="Active">Mark as Active</option>
+                    <option value="On-Leave">Mark as On-Leave</option>
+                    <option value="Inactive">Mark as Inactive</option>
+                  </select>
+                  <button
+                    onClick={() => setSelectedForBulk([])}
+                    className="bg-slate-800 text-slate-300 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors border border-slate-600 hover:bg-slate-700 shadow-sm"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Header Actions row */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-3xl border border-slate-205 shadow-xs">
               <div>
@@ -1500,42 +1757,74 @@ export default function SuperAdminDashboard({
                   compensation structures, and manage authorization keys.
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  if (editingEmployee) {
-                    setEditingEmployee(null);
-                    setEmpName("");
-                    setEmpEmail("");
-                    setEmpPin("emp123");
-                    setEmpKpi("9.0/10");
-                    setSalBasic("45000");
-                    setSalHra("18000");
-                    setSalSpecial("12000");
-                    setSalPf("2100");
-                    setSalProfTax("200");
-                    setSalTaxDeducted("1515");
-                    setShowAddForm(false);
-                  } else {
-                    setShowAddForm(!showAddForm);
-                  }
-                  setEmpErrorMsg("");
-                  setEmpSuccessMsg("");
-                }}
-                className="px-4 py-2 bg-[#3150A0] hover:bg-blue-800 text-white font-bold text-xs rounded-xl transition-all shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer"
-              >
-                {editingEmployee ? (
-                  <X className="w-3.5 h-3.5" />
-                ) : showAddForm ? (
-                  <X className="w-3.5 h-3.5" />
-                ) : (
-                  <UserPlus className="w-3.5 h-3.5" />
-                )}
-                {editingEmployee
-                  ? "Cancel Editing"
-                  : showAddForm
-                    ? "Cancel Creation"
-                    : "Register New Professional"}
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleExportEmployeesToCSV}
+                  className="bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+                  title="Export current staff list to CSV"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Export to CSV
+                </button>
+                <button
+                  onClick={() => {
+                    const confirm = window.confirm(
+                      "Are you sure you want to clear ALL portal data including employees, tasks, timesheets, expenses, and leaves? This action cannot be undone.",
+                    );
+                    if (confirm) {
+                      onUpdateEmployees([]);
+                      onUpdateTimesheets([]);
+                      onUpdateLeaves([]);
+                      onUpdateExpenses([]);
+                      onUpdateTasks([]);
+                      window.alert(
+                        "Data cleared successfully. New databases are now empty.",
+                      );
+                    }
+                  }}
+                  className="bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Erase All Data
+                </button>
+                <button
+                  onClick={() => {
+                    if (editingEmployee) {
+                      setEditingEmployee(null);
+                      setEmpName("");
+                      setEmpEmail("");
+                      setEmpPin("emp123");
+                      setEmpStatus("Active");
+                      setEmpKpi("9.0/10");
+                      setSalBasic("45000");
+                      setSalHra("18000");
+                      setSalSpecial("12000");
+                      setSalPf("2100");
+                      setSalProfTax("200");
+                      setSalTaxDeducted("1515");
+                      setShowAddForm(false);
+                    } else {
+                      setShowAddForm(!showAddForm);
+                    }
+                    setEmpErrorMsg("");
+                    setEmpSuccessMsg("");
+                  }}
+                  className="px-4 py-2 bg-[#3150A0] hover:bg-blue-800 text-white font-bold text-xs rounded-xl transition-all shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                >
+                  {editingEmployee ? (
+                    <X className="w-3.5 h-3.5" />
+                  ) : showAddForm ? (
+                    <X className="w-3.5 h-3.5" />
+                  ) : (
+                    <UserPlus className="w-3.5 h-3.5" />
+                  )}
+                  {editingEmployee
+                    ? "Cancel Editing"
+                    : showAddForm
+                      ? "Cancel Creation"
+                      : "Register New Professional"}
+                </button>
+              </div>
             </div>
 
             {/* Error / Success Feedback banner */}
@@ -1591,6 +1880,7 @@ export default function SuperAdminDashboard({
                         setEmpName("");
                         setEmpEmail("");
                         setEmpPin("emp123");
+                        setEmpStatus("Active");
                         setEmpKpi("9.0/10");
                         setSalBasic("45000");
                         setSalHra("18000");
@@ -1723,7 +2013,7 @@ export default function SuperAdminDashboard({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-4xs font-bold text-slate-500 uppercase tracking-wider mb-1">
                         Date of Joining
@@ -1735,6 +2025,20 @@ export default function SuperAdminDashboard({
                         onChange={(e) => setEmpDoj(e.target.value)}
                         className="w-full px-3.5 py-2 rounded-lg border border-slate-200 bg-slate-50/65 text-xs outline-none focus:ring-2 focus:ring-[#3150A0]/15 font-bold"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-4xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        Status
+                      </label>
+                      <select
+                        value={empStatus}
+                        onChange={(e) => setEmpStatus(e.target.value as any)}
+                        className="w-full px-3.5 py-2 rounded-lg border border-slate-200 bg-slate-50/65 text-xs outline-none focus:ring-2 focus:ring-[#3150A0]/15 font-semibold"
+                      >
+                        <option value="Active">Active</option>
+                        <option value="On-Leave">On-Leave</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
                     </div>
                     <div>
                       <label className="block text-4xs font-bold text-slate-500 uppercase tracking-wider mb-1">
@@ -1910,6 +2214,29 @@ export default function SuperAdminDashboard({
             )}
 
             {/* ROSTER GRID LIST */}
+            <div className="flex justify-between items-end mb-2 px-2 hidden sm:flex">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={
+                    employees.length > 0 &&
+                    selectedForBulk.length === employees.length
+                  }
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedForBulk(employees.map((emp) => emp.email));
+                    } else {
+                      setSelectedForBulk([]);
+                    }
+                  }}
+                  className="w-4 h-4 text-[#3150A0] bg-slate-100 border-slate-300 rounded focus:ring-[#3150A0] focus:ring-2 cursor-pointer"
+                />
+                Select All Employees
+              </label>
+              <span className="text-4xs font-bold uppercase tracking-widest text-slate-400">
+                {employees.length} Directory Records
+              </span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {employees.map((emp) => {
                 // Calculate specific aggregates
@@ -1942,7 +2269,8 @@ export default function SuperAdminDashboard({
                 return (
                   <div
                     key={emp.email}
-                    className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4 relative overflow-hidden flex flex-col justify-between"
+                    onClick={() => setSelectedEmployeeForModal(emp)}
+                    className="bg-white border border-slate-200 hover:border-[#3150A0]/30 hover:shadow-lg group hover:-translate-y-1 transition-all duration-300 cursor-pointer rounded-3xl p-6 shadow-sm space-y-4 relative overflow-hidden flex flex-col justify-between"
                   >
                     {/* Upper decorative and info */}
                     <div className="space-y-4">
@@ -1959,6 +2287,19 @@ export default function SuperAdminDashboard({
                               <h4 className="text-sm font-extrabold text-slate-850">
                                 {emp.name}
                               </h4>
+                              {emp.status && (
+                                <span
+                                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                    emp.status === "Active"
+                                      ? "bg-emerald-100 text-emerald-700"
+                                      : emp.status === "On-Leave"
+                                        ? "bg-amber-100 text-amber-700"
+                                        : "bg-slate-200 text-slate-600"
+                                  }`}
+                                >
+                                  {emp.status}
+                                </span>
+                              )}
                             </div>
                             <p className="text-4xs text-slate-500 font-extrabold uppercase mt-0.5">
                               {emp.role}
@@ -1966,7 +2307,27 @@ export default function SuperAdminDashboard({
                           </div>
                         </div>
 
-                        <div className="flex flex-col items-end gap-1.5">
+                        <div
+                          className="flex flex-col items-end gap-1.5"
+                          onClick={(e) => e.stopPropagation()} // Prevent card click when interacting with right side
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedForBulk.includes(emp.email)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedForBulk((prev) => [
+                                  ...prev,
+                                  emp.email,
+                                ]);
+                              } else {
+                                setSelectedForBulk((prev) =>
+                                  prev.filter((email) => email !== emp.email),
+                                );
+                              }
+                            }}
+                            className="w-4 h-4 text-[#3150A0] bg-slate-100 border-slate-300 rounded focus:ring-[#3150A0] focus:ring-2 cursor-pointer mb-1"
+                          />
                           <span className="bg-blue-50 border border-blue-100 text-[#3150A0] text-4xs font-extrabold px-2 py-0.5 rounded-lg uppercase tracking-wide">
                             {emp.empId}
                           </span>
@@ -2042,11 +2403,12 @@ export default function SuperAdminDashboard({
                       <div className="border border-slate-150 rounded-2xl overflow-hidden mt-2 bg-slate-50/40">
                         <button
                           type="button"
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setExpandedSalaryEmail(
                               isExpanded ? null : emp.email,
-                            )
-                          }
+                            );
+                          }}
                           className="w-full px-3.5 py-2.5 flex justify-between items-center text-4xs font-extrabold uppercase tracking-widest text-[#3150A0] bg-slate-50 border-b border-indigo-50 font-sans hover:bg-slate-100 transition-colors"
                         >
                           <span className="flex items-center gap-1">
@@ -2142,7 +2504,10 @@ export default function SuperAdminDashboard({
                     <div className="pt-4 mt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3">
                       <button
                         type="button"
-                        onClick={() => handleStartEditEmployee(emp)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStartEditEmployee(emp);
+                        }}
                         className="px-3.5 py-1.5 text-[#3150A0] hover:bg-blue-50 border border-blue-200 hover:border-blue-300 rounded-xl font-bold text-4xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
                       >
                         <Edit className="w-3 h-3" />
@@ -2156,14 +2521,20 @@ export default function SuperAdminDashboard({
                           </span>
                           <button
                             type="button"
-                            onClick={() => handleDeleteEmployee(emp.email)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteEmployee(emp.email);
+                            }}
                             className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white font-bold text-4xs transition-colors cursor-pointer"
                           >
                             Yes, Delete
                           </button>
                           <button
                             type="button"
-                            onClick={() => setConfirmDeleteEmail(null)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDeleteEmail(null);
+                            }}
                             className="px-2.5 py-1 rounded bg-slate-205 hover:bg-slate-300 text-slate-750 font-bold text-4xs transition-colors cursor-pointer"
                           >
                             Cancel
@@ -2172,7 +2543,10 @@ export default function SuperAdminDashboard({
                       ) : (
                         <button
                           type="button"
-                          onClick={() => setConfirmDeleteEmail(emp.email)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmDeleteEmail(emp.email);
+                          }}
                           className="px-3.5 py-1.5 text-rose-600 hover:bg-rose-50 border border-rose-200 hover:border-rose-300 rounded-xl font-bold text-4xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
                           title="Revoke portal access and purge employee registry records"
                         >
@@ -2188,6 +2562,346 @@ export default function SuperAdminDashboard({
           </div>
         )}
       </div>
+
+      {selectedEmployeeForModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="p-6 sm:p-8 flex items-start justify-between border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-gradient-to-tr from-[#3150A0] to-indigo-700 rounded-3xl text-white flex items-center justify-center font-black text-2xl shadow-sm">
+                  {selectedEmployeeForModal.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </div>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">
+                      {selectedEmployeeForModal.name}
+                    </h2>
+                    {selectedEmployeeForModal.status && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-widest ${selectedEmployeeForModal.status === "Active" ? "bg-emerald-100 text-emerald-700" : selectedEmployeeForModal.status === "On-Leave" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}
+                      >
+                        {selectedEmployeeForModal.status}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm font-bold text-slate-500 mt-1">
+                    {selectedEmployeeForModal.role} •{" "}
+                    {selectedEmployeeForModal.department}
+                  </p>
+                  <p className="text-xs font-semibold text-slate-400 mt-1 flex items-center gap-2">
+                    <Mail className="w-3.5 h-3.5" />
+                    {selectedEmployeeForModal.email}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedEmployeeForModal(null)}
+                className="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-center shadow-sm cursor-pointer active:scale-95"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 bg-white">
+              {/* Profile Details */}
+              <div>
+                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                  <Briefcase className="w-4 h-4 text-[#3150A0]" />
+                  Professional Profile
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                  <div>
+                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                      Employee ID
+                    </span>
+                    <span className="text-sm font-bold text-slate-800">
+                      {selectedEmployeeForModal.empId}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                      Date of Joining
+                    </span>
+                    <span className="text-sm font-bold text-slate-800">
+                      {selectedEmployeeForModal.doj}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                      KPI Score
+                    </span>
+                    <span className="text-sm font-bold text-slate-800">
+                      {selectedEmployeeForModal.kpiScore || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                      Qualification
+                    </span>
+                    <span className="text-sm font-bold text-slate-800">
+                      {selectedEmployeeForModal.qualification || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Historical Performance Chart */}
+              <div>
+                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                  <Activity className="w-4 h-4 text-[#3150A0]" />
+                  Historical Performance Tracking
+                </h3>
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={[
+                        { period: "Jan", score: 8.2, capacity: 85 },
+                        { period: "Feb", score: 8.8, capacity: 90 },
+                        { period: "Mar", score: 8.5, capacity: 88 },
+                        { period: "Apr", score: 8.9, capacity: 92 },
+                        { period: "May", score: 9.1, capacity: 95 },
+                        {
+                          period: "Jun",
+                          score:
+                            parseFloat(selectedEmployeeForModal.kpiScore) ||
+                            9.0,
+                          capacity: 94,
+                        },
+                      ]}
+                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        vertical={false}
+                        stroke="#e2e8f0"
+                      />
+                      <XAxis
+                        dataKey="period"
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{
+                          fontSize: 10,
+                          fill: "#64748b",
+                          fontWeight: "bold",
+                        }}
+                      />
+                      <YAxis
+                        yAxisId="left"
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fontSize: 10, fill: "#64748b" }}
+                        domain={[0, 10]}
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fontSize: 10, fill: "#64748b" }}
+                        domain={[0, 100]}
+                      />
+                      <Tooltip
+                        cursor={{ fill: "#f1f5f9" }}
+                        contentStyle={{
+                          borderRadius: "12px",
+                          border: "none",
+                          boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                          color: "#1e293b",
+                        }}
+                      />
+                      <Bar
+                        yAxisId="left"
+                        dataKey="score"
+                        name="KPI Score"
+                        fill="#3150A0"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={40}
+                      />
+                      <Bar
+                        yAxisId="right"
+                        dataKey="capacity"
+                        name="Bandwidth Ute (%)"
+                        fill="#cbd5e1"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={40}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Historical Data: Tasks */}
+              <div>
+                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                  <FolderKanban className="w-4 h-4 text-[#3150A0]" />
+                  Assigned Directives
+                </h3>
+                {(() => {
+                  const empTasks = tasks.filter(
+                    (t) => t.assignedToEmail === selectedEmployeeForModal.email,
+                  );
+                  if (empTasks.length === 0) {
+                    return (
+                      <p className="text-xs font-semibold text-slate-400 italic">
+                        No tasks currently assigned.
+                      </p>
+                    );
+                  }
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {empTasks.map((t) => (
+                        <div
+                          key={t.id}
+                          className="p-4 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex justify-between items-start gap-2 mb-2">
+                            <h4 className="text-xs font-bold text-slate-800 leading-snug">
+                              {t.title}
+                            </h4>
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-extrabold whitespace-nowrap ${t.status === "Completed" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
+                            >
+                              {t.status}
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-bold text-slate-500 line-clamp-2 mb-3">
+                            {t.description}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <CalendarCheck2 className="w-3 h-3" />
+                            Due: {t.dueDate}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Grid for Timesheets and Expenses */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <Clock className="w-4 h-4 text-emerald-600" />
+                    Recent Timesheets
+                  </h3>
+                  {(() => {
+                    const empTimesheets = timesheets
+                      .filter(
+                        (t) =>
+                          t.employeeEmail === selectedEmployeeForModal.email,
+                      )
+                      .slice(0, 5);
+                    if (empTimesheets.length === 0)
+                      return (
+                        <p className="text-xs font-semibold text-slate-400 italic">
+                          No recent timesheet logs.
+                        </p>
+                      );
+                    return (
+                      <div className="space-y-3">
+                        {empTimesheets.map((ts) => (
+                          <div
+                            key={ts.id}
+                            className="flex justify-between items-center p-3 rounded-xl border border-slate-100 bg-slate-50"
+                          >
+                            <div>
+                              <p className="text-xs font-bold text-slate-800">
+                                {ts.serviceType}
+                              </p>
+                              <p className="text-[10px] font-bold text-slate-400 mt-0.5">
+                                {ts.date} • {ts.hours}h logged
+                              </p>
+                            </div>
+                            <span
+                              className={`px-2 py-1 rounded text-[10px] font-extrabold ${ts.status === "Approved" ? "bg-emerald-100 text-emerald-700" : ts.status === "Rejected" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"}`}
+                            >
+                              {ts.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+                <div>
+                  <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <Coins className="w-4 h-4 text-rose-500" />
+                    Recent Expenses
+                  </h3>
+                  {(() => {
+                    const empExpenses = expenses
+                      .filter(
+                        (e) =>
+                          e.employeeEmail === selectedEmployeeForModal.email,
+                      )
+                      .slice(0, 5);
+                    if (empExpenses.length === 0)
+                      return (
+                        <p className="text-xs font-semibold text-slate-400 italic">
+                          No recent expense claims.
+                        </p>
+                      );
+                    return (
+                      <div className="space-y-3">
+                        {empExpenses.map((exp) => (
+                          <div
+                            key={exp.id}
+                            className="flex justify-between items-center p-3 rounded-xl border border-slate-100 bg-slate-50"
+                          >
+                            <div>
+                              <p className="text-xs font-bold text-slate-800">
+                                {exp.category}
+                              </p>
+                              <p className="text-[10px] font-bold text-slate-400 mt-0.5">
+                                {exp.date}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs font-black text-slate-800">
+                                ₹{exp.amount.toLocaleString("en-IN")}
+                              </p>
+                              <span
+                                className={`px-2 text-[10px] font-extrabold rounded ${exp.status === "Approved" ? "text-emerald-600" : exp.status === "Rejected" ? "text-rose-600" : "text-amber-600"}`}
+                              >
+                                {exp.status}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+              <button
+                onClick={() => handlePrintPayslip(selectedEmployeeForModal)}
+                className="px-6 py-2.5 bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-xs rounded-xl hover:bg-indigo-100 transition-colors shadow-sm cursor-pointer active:scale-95 flex items-center gap-2"
+              >
+                <Printer className="w-4 h-4" />
+                Print Payslip
+              </button>
+              <button
+                onClick={() => setSelectedEmployeeForModal(null)}
+                className="px-6 py-2.5 bg-white border border-slate-300 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 transition-colors shadow-sm cursor-pointer active:scale-95"
+              >
+                Close Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

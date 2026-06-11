@@ -109,5 +109,9 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow update, delete: if false;
     }
+
+    match /makeeazy/{document} {
+      allow read, write: if true;
+    }
   }
 }

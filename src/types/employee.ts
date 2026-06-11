@@ -66,4 +66,5 @@ export interface EmployeeProfile {
   achievements: string[];
   qualification?: string;
   salaryDetails?: SalaryDetails;
+  status?: 'Active' | 'On-Leave' | 'Inactive';
 }
