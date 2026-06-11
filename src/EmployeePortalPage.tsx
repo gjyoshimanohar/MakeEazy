@@ -1101,7 +1101,7 @@ export default function EmployeePortalPage() {
                                 <div className="flex justify-between items-start gap-4">
                                   <div>
                                     <span
-                                      className={`px-2 py-0.5 text-5xs font-extrabold rounded-md uppercase tracking-wider mb-2 inline-block ${
+                                      className={`px-2 py-0.5 text-5xs font-bold rounded-md uppercase tracking-wider mb-2 inline-block ${
                                         tk.priority === "High"
                                           ? "bg-rose-50 text-rose-700 border border-rose-100"
                                           : tk.priority === "Medium"
@@ -1125,7 +1125,7 @@ export default function EmployeePortalPage() {
                                           e.target.value as any,
                                         )
                                       }
-                                      className="py-1 px-2.5 rounded-lg text-4xs bg-white text-slate-705 border border-slate-200 outline-none font-extrabold focus:ring-2 focus:ring-[#3150A0]/10 cursor-pointer"
+                                      className="py-1 px-2.5 rounded-lg text-4xs bg-white text-slate-705 border border-slate-200 outline-none font-bold focus:ring-2 focus:ring-[#3150A0]/10 cursor-pointer"
                                     >
                                       <option value="To Do">📋 To Do</option>
                                       <option value="In Progress">
@@ -1233,7 +1233,7 @@ export default function EmployeePortalPage() {
                                 <label className="block text-4xs font-bold text-slate-500 uppercase tracking-widest">
                                   Hours Expended
                                 </label>
-                                <span className="text-xs font-extrabold text-[#3150A0] bg-blue-50 px-2 py-0.5 rounded-md">
+                                <span className="text-xs font-bold text-[#3150A0] bg-blue-50 px-2 py-0.5 rounded-md">
                                   {tsHours} Hours
                                 </span>
                               </div>
@@ -1597,11 +1597,11 @@ export default function EmployeePortalPage() {
                                           <div className="flex justify-between items-start gap-3">
                                             <div>
                                               <div className="flex items-center gap-2 flex-wrap">
-                                                <span className="text-xs font-extrabold text-slate-800">
+                                                <span className="text-xs font-bold text-slate-800">
                                                   {lv.leaveType}
                                                 </span>
                                                 <span
-                                                  className={`text-4xs font-extrabold px-1.5 py-0.5 rounded ${
+                                                  className={`text-4xs font-bold px-1.5 py-0.5 rounded ${
                                                     isApproved
                                                       ? "bg-emerald-50 text-emerald-700"
                                                       : "bg-rose-50 text-rose-700"
@@ -1628,7 +1628,7 @@ export default function EmployeePortalPage() {
                                             </div>
 
                                             <span
-                                              className={`px-2 py-0.5 rounded-md text-5xs font-black uppercase shrink-0 ${
+                                              className={`px-2 py-0.5 rounded-md text-5xs font-bold uppercase shrink-0 ${
                                                 isApproved
                                                   ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
                                                   : "bg-rose-50 text-rose-700 border border-rose-100"
@@ -1792,7 +1792,7 @@ export default function EmployeePortalPage() {
                                   <p className="text-slate-600 leading-relaxed font-normal">
                                     “{ex.description}”
                                   </p>
-                                  <div className="font-extrabold text-[#3150A0] flex items-center gap-1.5">
+                                  <div className="font-bold text-[#3150A0] flex items-center gap-1.5">
                                     <span>Amount claimed:</span>
                                     <span className="text-orange-605">
                                       ₹{ex.amount}
@@ -1801,7 +1801,7 @@ export default function EmployeePortalPage() {
                                 </div>
 
                                 <span
-                                  className={`px-2.5 py-1 rounded-full text-5xs font-black shrink-0 ${
+                                  className={`px-2.5 py-1 rounded-full text-5xs font-bold shrink-0 ${
                                     ex.status === "Approved"
                                       ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
                                       : ex.status === "Rejected"
@@ -1943,7 +1943,7 @@ export default function EmployeePortalPage() {
                                   >
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 pb-4 border-b border-dashed border-slate-200/80 font-sans">
                                       <div>
-                                        <span className="text-sm font-extrabold text-slate-800">
+                                        <span className="text-sm font-bold text-slate-800">
                                           {sl.month}
                                         </span>
                                         <p className="text-4xs text-slate-500 mt-0.5">
@@ -1958,7 +1958,7 @@ export default function EmployeePortalPage() {
                                         {/* Opens our premium custom payslip modal without calling annoying system alerts */}
                                         <button
                                           onClick={() => setSelectedPayslip(sl)}
-                                          className="px-3.5 py-1.5 rounded-xl bg-[#3150A0]/10 hover:bg-[#3150A0] text-[#3150A0] hover:text-white transition-colors text-3xs font-extrabold cursor-pointer flex items-center gap-1 shadow-xs"
+                                          className="px-3.5 py-1.5 rounded-xl bg-[#3150A0]/10 hover:bg-[#3150A0] text-[#3150A0] hover:text-white transition-colors text-3xs font-bold cursor-pointer flex items-center gap-1 shadow-xs"
                                         >
                                           <Download className="w-3.5 h-3.5" />
                                           Preview Pay Slip
@@ -1998,10 +1998,10 @@ export default function EmployeePortalPage() {
                                         </p>
                                       </div>
                                       <div>
-                                        <p className="text-4xs text-slate-400 font-bold uppercase tracking-wider font-extrabold text-[#3150A0]">
+                                        <p className="text-4xs text-slate-400 font-bold uppercase tracking-wider font-bold text-[#3150A0]">
                                           Net Salary Credited
                                         </p>
-                                        <p className="text-sm font-black text-emerald-600 mt-0.5 font-sans">
+                                        <p className="text-sm font-bold text-emerald-600 mt-0.5 font-sans">
                                           ₹{netSalary.toLocaleString("en-IN")}
                                         </p>
                                       </div>

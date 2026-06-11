@@ -1,37 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
 @import "react-datepicker/dist/react-datepicker.css";
 
 @font-face {
-  font-family: 'Gilroy';
+  font-family: "Gilroy";
   font-weight: 300;
-  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Regular.woff') format('woff');
+  src: url("https://fonts.cdnfonts.com/s/16219/Gilroy-Regular.woff")
+    format("woff");
 }
 @font-face {
-  font-family: 'Gilroy';
+  font-family: "Gilroy";
   font-weight: 400;
-  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff') format('woff');
+  src: url("https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff")
+    format("woff");
 }
 @font-face {
-  font-family: 'Gilroy';
+  font-family: "Gilroy";
   font-weight: 500;
-  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff') format('woff');
+  src: url("https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff")
+    format("woff");
 }
 @font-face {
-  font-family: 'Gilroy';
+  font-family: "Gilroy";
   font-weight: 700;
-  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Bold.woff') format('woff');
+  src: url("https://fonts.cdnfonts.com/s/16219/Gilroy-Bold.woff") format("woff");
 }
 @font-face {
-  font-family: 'Gilroy';
+  font-family: "Gilroy";
   font-weight: 800;
-  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Heavy.woff') format('woff');
+  src: url("https://fonts.cdnfonts.com/s/16219/Gilroy-Heavy.woff")
+    format("woff");
 }
 
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Gilroy", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display:
+    "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 /* Custom styles for native date picker */
@@ -56,7 +61,9 @@ input[type="date"] {
   font-family: var(--font-sans) !important;
   border-radius: 16px !important; /* rounded edges for popup container */
   border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
   overflow: hidden;
 }
 
@@ -136,34 +143,50 @@ input[type="date"] {
   text-align: justify !important;
 }
 
-.suneditor-content-view h1, 
-.suneditor-content-view h2, 
-.suneditor-content-view h3, 
+.suneditor-content-view h1,
+.suneditor-content-view h2,
+.suneditor-content-view h3,
 .suneditor-content-view h4,
 .suneditor-content-view h5,
 .suneditor-content-view h6,
-.suneditor-content-view h1 *, 
-.suneditor-content-view h2 *, 
-.suneditor-content-view h3 *, 
+.suneditor-content-view h1 *,
+.suneditor-content-view h2 *,
+.suneditor-content-view h3 *,
 .suneditor-content-view h4 *,
 .suneditor-content-view h5 *,
 .suneditor-content-view h6 * {
   font-family: var(--font-display) !important;
-  color: #3150A0 !important;
+  color: #3150a0 !important;
   font-weight: 800 !important;
   text-align: justify !important;
 }
 
-.suneditor-content-view h1 { font-size: 2rem !important; margin-top: 2rem !important; margin-bottom: 0.85rem !important; }
-.suneditor-content-view h2 { font-size: 1.6rem !important; margin-top: 1.75rem !important; margin-bottom: 0.75rem !important; }
-.suneditor-content-view h3 { font-size: 1.35rem !important; margin-top: 1.5rem !important; margin-bottom: 0.65rem !important; }
-.suneditor-content-view h4 { font-size: 1.15rem !important; margin-top: 1.25rem !important; margin-bottom: 0.55rem !important; }
+.suneditor-content-view h1 {
+  font-size: 2rem !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.85rem !important;
+}
+.suneditor-content-view h2 {
+  font-size: 1.6rem !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+.suneditor-content-view h3 {
+  font-size: 1.35rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.65rem !important;
+}
+.suneditor-content-view h4 {
+  font-size: 1.15rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.55rem !important;
+}
 
 .suneditor-content-view p {
   margin-bottom: 1.25rem !important;
   text-align: justify !important;
 }
-.suneditor-content-view ul, 
+.suneditor-content-view ul,
 .suneditor-content-view ol {
   padding-left: 2rem !important;
   margin-bottom: 1.25rem !important;
@@ -194,7 +217,7 @@ input[type="date"] {
   overflow: hidden !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
-.suneditor-content-view table th, 
+.suneditor-content-view table th,
 .suneditor-content-view table td {
   border: 1px solid #f1f5f9 !important;
   padding: 0.85rem !important;
@@ -212,7 +235,7 @@ input[type="date"] {
   margin: 1.75rem 0 !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05) !important;
 }
-.suneditor-content-view pre, 
+.suneditor-content-view pre,
 .suneditor-content-view code {
   font-family: inherit !important;
   background-color: #f1f5f9 !important;
@@ -273,15 +296,31 @@ input[type="date"] {
 .sun-editor-editable h5 *,
 .sun-editor-editable h6 * {
   font-family: var(--font-display) !important;
-  color: #3150A0 !important;
+  color: #3150a0 !important;
   font-weight: 800 !important;
   text-align: justify !important;
 }
 
-.sun-editor-editable h1 { font-size: 2rem !important; margin-top: 2rem !important; margin-bottom: 0.85rem !important; }
-.sun-editor-editable h2 { font-size: 1.6rem !important; margin-top: 1.75rem !important; margin-bottom: 0.75rem !important; }
-.sun-editor-editable h3 { font-size: 1.35rem !important; margin-top: 1.5rem !important; margin-bottom: 0.65rem !important; }
-.sun-editor-editable h4 { font-size: 1.15rem !important; margin-top: 1.25rem !important; margin-bottom: 0.55rem !important; }
+.sun-editor-editable h1 {
+  font-size: 2rem !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.85rem !important;
+}
+.sun-editor-editable h2 {
+  font-size: 1.6rem !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+.sun-editor-editable h3 {
+  font-size: 1.35rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.65rem !important;
+}
+.sun-editor-editable h4 {
+  font-size: 1.15rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.55rem !important;
+}
 
 .sun-editor-editable p {
   margin-bottom: 1.25rem !important;
@@ -294,7 +333,7 @@ input[type="date"] {
   body > * {
     visibility: hidden !important;
   }
-  
+
   /* Ensure only the modal and its nested elements are visible */
   #payslip-modal-container-wrapper,
   #payslip-modal-container-wrapper * {
@@ -328,10 +367,22 @@ input[type="date"] {
   }
 
   /* Suppress control buttons and close triggers */
-  button, 
+  button,
   .no-print {
     display: none !important;
   }
 }
 
+@keyframes float-icon {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4.5px);
+  }
+}
 
+.animate-float-icon {
+  animation: float-icon 3.5s ease-in-out infinite;
+}

@@ -5,13 +5,22 @@ import firebaseConfig from "../firebase-applet-config.json";
 
 // Support connecting a custom user Firebase project via standard environment variables or fallback to the platform default config.
 const config = {
-  apiKey: "AIzaSyA5cS4vZe9jF9hVIhHR99g8KQri0JSge-Q",
-  authDomain: "makeeazy-main-website.firebaseapp.com",
-  projectId: "makeeazy-main-website",
-  storageBucket: "makeeazy-main-website.firebasestorage.app",
-  messagingSenderId: "507428167571",
-  appId: "1:507428167571:web:0cff98e15dace16cdb5266",
-  firestoreDatabaseId: "(default)",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || firebaseConfig.apiKey,
+  authDomain:
+    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfig.authDomain,
+  projectId:
+    import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
+  storageBucket:
+    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ||
+    firebaseConfig.storageBucket,
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ||
+    firebaseConfig.messagingSenderId,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || firebaseConfig.appId,
+  firestoreDatabaseId:
+    import.meta.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID ||
+    firebaseConfig.firestoreDatabaseId ||
+    "(default)",
 };
 
 const app = initializeApp({

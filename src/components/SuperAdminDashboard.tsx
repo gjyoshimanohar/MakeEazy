@@ -147,6 +147,9 @@ export default function SuperAdminDashboard({
   // Bulk edit state
   const [selectedForBulk, setSelectedForBulk] = useState<string[]>([]);
 
+  // Department filter state
+  const [departmentFilter, setDepartmentFilter] = useState<string>("All");
+
   const handleBulkStatusUpdate = (
     status: "Active" | "On-Leave" | "Inactive",
   ) => {
@@ -353,7 +356,7 @@ export default function SuperAdminDashboard({
   };
 
   // Collapsed states for individual salary breakdowns
-  const [expandedSalaryEmail, setExpandedSalaryEmail] = useState<string | null>(
+  const [expandedCardEmail, setExpandedCardEmail] = useState<string | null>(
     null,
   );
 
@@ -1019,7 +1022,7 @@ export default function SuperAdminDashboard({
       >
         <button
           onClick={() => setAdminTab("approvals")}
-          className={`py-3 px-5 text-xs font-extrabold transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+          className={`py-3 px-5 text-xs font-bold transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
             adminTab === "approvals"
               ? "border-[#3150A0] text-[#3150A0]"
               : "border-transparent text-slate-500 hover:text-slate-900"
@@ -1030,7 +1033,7 @@ export default function SuperAdminDashboard({
         </button>
         <button
           onClick={() => setAdminTab("tasks")}
-          className={`py-3 px-5 text-xs font-extrabold transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+          className={`py-3 px-5 text-xs font-bold transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
             adminTab === "tasks"
               ? "border-[#3150A0] text-[#3150A0]"
               : "border-transparent text-slate-500 hover:text-slate-900"
@@ -1041,7 +1044,7 @@ export default function SuperAdminDashboard({
         </button>
         <button
           onClick={() => setAdminTab("employees")}
-          className={`py-3 px-5 text-xs font-extrabold transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+          className={`py-3 px-5 text-xs font-bold transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
             adminTab === "employees"
               ? "border-[#3150A0] text-[#3150A0]"
               : "border-transparent text-slate-500 hover:text-slate-900"
@@ -1128,14 +1131,14 @@ export default function SuperAdminDashboard({
                           >
                             <div className="space-y-1.5">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs font-black text-[#3150A0]">
+                                <span className="text-xs font-bold text-[#3150A0]">
                                   {ts.employeeName}
                                 </span>
                                 <span className="text-4xs font-bold px-2 py-0.5 bg-orange-100 text-orange-700 rounded-md">
                                   Pending Approval
                                 </span>
                               </div>
-                              <p className="text-xs text-slate-800 font-extrabold">
+                              <p className="text-xs text-slate-800 font-bold">
                                 {ts.serviceType}{" "}
                                 <span className="font-normal text-slate-500">
                                   ({ts.date})
@@ -1252,10 +1255,10 @@ export default function SuperAdminDashboard({
                             className="p-4 rounded-2xl bg-slate-50 border border-slate-150 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
                           >
                             <div className="space-y-1">
-                              <p className="text-xs font-black text-[#3150A0]">
+                              <p className="text-xs font-bold text-[#3150A0]">
                                 {lv.employeeName}
                               </p>
-                              <p className="text-slate-800 font-extrabold text-xs">
+                              <p className="text-slate-800 font-bold text-xs">
                                 Apply: {lv.leaveType} for{" "}
                                 <span className="text-orange-650">
                                   {lv.totalDays} Days
@@ -1301,7 +1304,7 @@ export default function SuperAdminDashboard({
                   >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                       <div>
-                        <h4 className="text-xs font-extrabold text-slate-850 flex items-center gap-1.5 uppercase tracking-wider">
+                        <h4 className="text-xs font-bold text-slate-850 flex items-center gap-1.5 uppercase tracking-wider">
                           <CalendarCheck2 className="w-4 h-4 text-[#3150A0]" />
                           Office Attendance & Leave History Timeline
                         </h4>
@@ -1464,14 +1467,14 @@ export default function SuperAdminDashboard({
                           >
                             <div className="space-y-1.5">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs font-black text-[#3150A0]">
+                                <span className="text-xs font-bold text-[#3150A0]">
                                   {ex.employeeName}
                                 </span>
                                 <span className="text-4xs font-bold text-rose-650 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
                                   Claim Amount: ₹{ex.amount}
                                 </span>
                               </div>
-                              <p className="text-xs text-slate-800 font-extrabold">
+                              <p className="text-xs text-slate-800 font-bold">
                                 {ex.category}{" "}
                                 <span className="font-normal text-slate-500">
                                   ({ex.date})
@@ -1749,7 +1752,7 @@ export default function SuperAdminDashboard({
             {/* Header Actions row */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-3xl border border-slate-205 shadow-xs">
               <div>
-                <h3 className="text-sm font-extrabold text-slate-800">
+                <h3 className="text-sm font-bold text-slate-800">
                   Internal Advisor & Consultant Directory
                 </h3>
                 <p className="text-4xs text-slate-500 mt-0.5">
@@ -1758,6 +1761,20 @@ export default function SuperAdminDashboard({
                 </p>
               </div>
               <div className="flex items-center gap-3">
+                <select
+                  value={departmentFilter}
+                  onChange={(e) => setDepartmentFilter(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition-all outline-none focus:ring-2 focus:ring-[#3150A0]/15"
+                >
+                  <option value="All">All Departments</option>
+                  {Array.from(new Set(employees.map((e) => e.department)))
+                    .filter(Boolean)
+                    .map((dep) => (
+                      <option key={dep} value={dep}>
+                        {dep}
+                      </option>
+                    ))}
+                </select>
                 <button
                   onClick={handleExportEmployeesToCSV}
                   className="bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
@@ -1890,7 +1907,7 @@ export default function SuperAdminDashboard({
                         setSalTaxDeducted("1515");
                         setShowAddForm(false);
                       }}
-                      className="text-4xs font-extrabold text-[#3150A0] hover:underline"
+                      className="text-4xs font-bold text-[#3150A0] hover:underline"
                     >
                       Reset / Cancel Edit
                     </button>
@@ -2150,7 +2167,7 @@ export default function SuperAdminDashboard({
                         <p className="text-4xs text-slate-405 font-bold uppercase">
                           Gross Income
                         </p>
-                        <p className="text-xs font-black text-[#3150A0]">
+                        <p className="text-xs font-bold text-[#3150A0]">
                           ₹
                           {(
                             Number(salBasic) +
@@ -2163,7 +2180,7 @@ export default function SuperAdminDashboard({
                         <p className="text-4xs text-slate-405 font-bold uppercase text-rose-500">
                           Gross Deducts
                         </p>
-                        <p className="text-xs font-black text-rose-600">
+                        <p className="text-xs font-bold text-rose-600">
                           ₹
                           {(
                             Number(salPf) +
@@ -2176,7 +2193,7 @@ export default function SuperAdminDashboard({
                         <p className="text-4xs text-slate-405 font-bold uppercase text-emerald-600">
                           Net Take-Home
                         </p>
-                        <p className="text-xs font-black text-emerald-600">
+                        <p className="text-xs font-bold text-emerald-600">
                           ₹
                           {Math.max(
                             0,
@@ -2219,12 +2236,26 @@ export default function SuperAdminDashboard({
                 <input
                   type="checkbox"
                   checked={
-                    employees.length > 0 &&
-                    selectedForBulk.length === employees.length
+                    employees.filter(
+                      (emp) =>
+                        departmentFilter === "All" ||
+                        emp.department === departmentFilter,
+                    ).length > 0 &&
+                    selectedForBulk.length ===
+                      employees.filter(
+                        (emp) =>
+                          departmentFilter === "All" ||
+                          emp.department === departmentFilter,
+                      ).length
                   }
                   onChange={(e) => {
+                    const filtered = employees.filter(
+                      (emp) =>
+                        departmentFilter === "All" ||
+                        emp.department === departmentFilter,
+                    );
                     if (e.target.checked) {
-                      setSelectedForBulk(employees.map((emp) => emp.email));
+                      setSelectedForBulk(filtered.map((emp) => emp.email));
                     } else {
                       setSelectedForBulk([]);
                     }
@@ -2234,330 +2265,373 @@ export default function SuperAdminDashboard({
                 Select All Employees
               </label>
               <span className="text-4xs font-bold uppercase tracking-widest text-slate-400">
-                {employees.length} Directory Records
+                {
+                  employees.filter(
+                    (emp) =>
+                      departmentFilter === "All" ||
+                      emp.department === departmentFilter,
+                  ).length
+                }{" "}
+                Directory Records
               </span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {employees.map((emp) => {
-                // Calculate specific aggregates
-                const empHrs = timesheets
-                  .filter(
+              {employees
+                .filter(
+                  (emp) =>
+                    departmentFilter === "All" ||
+                    emp.department === departmentFilter,
+                )
+                .map((emp) => {
+                  // Calculate specific aggregates
+                  const empHrs = timesheets
+                    .filter(
+                      (t) =>
+                        t.employeeEmail === emp.email &&
+                        t.status === "Approved",
+                    )
+                    .reduce((a, t) => a + t.hours, 0);
+
+                  const activeEmpTasks = tasks.filter(
                     (t) =>
-                      t.employeeEmail === emp.email && t.status === "Approved",
-                  )
-                  .reduce((a, t) => a + t.hours, 0);
+                      t.assignedToEmail === emp.email &&
+                      t.status !== "Completed",
+                  ).length;
 
-                const activeEmpTasks = tasks.filter(
-                  (t) =>
-                    t.assignedToEmail === emp.email && t.status !== "Completed",
-                ).length;
+                  const isExpanded = expandedCardEmail === emp.email;
 
-                const isExpanded = expandedSalaryEmail === emp.email;
+                  // Derive salary calculations for displaying component details
+                  const sBasic = emp.salaryDetails?.basic ?? 35000;
+                  const sHra = emp.salaryDetails?.hra ?? 14000;
+                  const sSpecial = emp.salaryDetails?.special ?? 8000;
+                  const sPf = emp.salaryDetails?.pf ?? 1800;
+                  const sProfTax = emp.salaryDetails?.profTax ?? 200;
+                  const sTds = emp.salaryDetails?.taxDeducted ?? 1000;
 
-                // Derive salary calculations for displaying component details
-                const sBasic = emp.salaryDetails?.basic ?? 35000;
-                const sHra = emp.salaryDetails?.hra ?? 14000;
-                const sSpecial = emp.salaryDetails?.special ?? 8000;
-                const sPf = emp.salaryDetails?.pf ?? 1800;
-                const sProfTax = emp.salaryDetails?.profTax ?? 200;
-                const sTds = emp.salaryDetails?.taxDeducted ?? 1000;
+                  const grossInc = sBasic + sHra + sSpecial;
+                  const totalDeduct = sPf + sProfTax + sTds;
+                  const netTakehome = grossInc - totalDeduct;
 
-                const grossInc = sBasic + sHra + sSpecial;
-                const totalDeduct = sPf + sProfTax + sTds;
-                const netTakehome = grossInc - totalDeduct;
-
-                return (
-                  <div
-                    key={emp.email}
-                    onClick={() => setSelectedEmployeeForModal(emp)}
-                    className="bg-white border border-slate-200 hover:border-[#3150A0]/30 hover:shadow-lg group hover:-translate-y-1 transition-all duration-300 cursor-pointer rounded-3xl p-6 shadow-sm space-y-4 relative overflow-hidden flex flex-col justify-between"
-                  >
-                    {/* Upper decorative and info */}
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-tr from-[#3150A0] to-indigo-700 rounded-2xl text-white flex items-center justify-center font-black text-base shadow-sm">
-                            {emp.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="text-sm font-extrabold text-slate-850">
-                                {emp.name}
-                              </h4>
-                              {emp.status && (
-                                <span
-                                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                    emp.status === "Active"
-                                      ? "bg-emerald-100 text-emerald-700"
-                                      : emp.status === "On-Leave"
-                                        ? "bg-amber-100 text-amber-700"
-                                        : "bg-slate-200 text-slate-600"
-                                  }`}
-                                >
-                                  {emp.status}
-                                </span>
-                              )}
+                  return (
+                    <div
+                      key={emp.email}
+                      onClick={() =>
+                        setExpandedCardEmail(isExpanded ? null : emp.email)
+                      }
+                      className="bg-white border border-slate-200 hover:border-[#3150A0]/30 hover:shadow-lg group transition-all duration-300 cursor-pointer rounded-3xl p-6 shadow-sm space-y-4 relative overflow-hidden flex flex-col justify-between"
+                    >
+                      {/* Upper decorative and info */}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gradient-to-tr from-[#3150A0] to-indigo-700 rounded-2xl text-white flex items-center justify-center font-bold text-base shadow-sm">
+                              {emp.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
                             </div>
-                            <p className="text-4xs text-slate-500 font-extrabold uppercase mt-0.5">
-                              {emp.role}
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-sm font-bold text-slate-850">
+                                  {emp.name}
+                                </h4>
+                                {emp.status && (
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                      emp.status === "Active"
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : emp.status === "On-Leave"
+                                          ? "bg-amber-100 text-amber-700"
+                                          : "bg-slate-200 text-slate-600"
+                                    }`}
+                                  >
+                                    {emp.status}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-4xs text-slate-500 font-bold uppercase mt-0.5">
+                                {emp.role}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div
+                            className="flex flex-col items-end gap-1.5"
+                            onClick={(e) => e.stopPropagation()} // Prevent card click when interacting with right side
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedForBulk.includes(emp.email)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedForBulk((prev) => [
+                                    ...prev,
+                                    emp.email,
+                                  ]);
+                                } else {
+                                  setSelectedForBulk((prev) =>
+                                    prev.filter((email) => email !== emp.email),
+                                  );
+                                }
+                              }}
+                              className="w-4 h-4 text-[#3150A0] bg-slate-100 border-slate-300 rounded focus:ring-[#3150A0] focus:ring-2 cursor-pointer mb-1"
+                            />
+                            <span className="bg-blue-50 border border-blue-100 text-[#3150A0] text-4xs font-bold px-2 py-0.5 rounded-lg uppercase tracking-wide">
+                              {emp.empId}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Display Qualification */}
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center gap-2">
+                          <GraduationCap className="w-4 h-4 text-[#3150A0] shrink-0" />
+                          <div>
+                            <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
+                              Highest Professional Qualification
+                            </p>
+                            <p className="text-3xs font-bold text-slate-850">
+                              {emp.qualification ||
+                                "Master of Business Administration (Finance / Tax)"}
                             </p>
                           </div>
                         </div>
 
-                        <div
-                          className="flex flex-col items-end gap-1.5"
-                          onClick={(e) => e.stopPropagation()} // Prevent card click when interacting with right side
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedForBulk.includes(emp.email)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedForBulk((prev) => [
-                                  ...prev,
-                                  emp.email,
-                                ]);
-                              } else {
-                                setSelectedForBulk((prev) =>
-                                  prev.filter((email) => email !== emp.email),
-                                );
-                              }
-                            }}
-                            className="w-4 h-4 text-[#3150A0] bg-slate-100 border-slate-300 rounded focus:ring-[#3150A0] focus:ring-2 cursor-pointer mb-1"
-                          />
-                          <span className="bg-blue-50 border border-blue-100 text-[#3150A0] text-4xs font-extrabold px-2 py-0.5 rounded-lg uppercase tracking-wide">
-                            {emp.empId}
-                          </span>
-                        </div>
-                      </div>
+                        {/* Department division info */}
+                        <p className="text-4xs text-slate-550 font-bold pl-0.5">
+                          <span className="text-slate-400">Department:</span>{" "}
+                          {emp.department}{" "}
+                          <span className="text-slate-400">| Joined:</span>{" "}
+                          {emp.doj}
+                        </p>
 
-                      {/* Display Qualification */}
-                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center gap-2">
-                        <GraduationCap className="w-4 h-4 text-[#3150A0] shrink-0" />
-                        <div>
-                          <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
-                            Highest Professional Qualification
-                          </p>
-                          <p className="text-3xs font-extrabold text-slate-850">
-                            {emp.qualification ||
-                              "Master of Business Administration (Finance / Tax)"}
-                          </p>
+                        {/* Core Metrics striplet */}
+                        <div className="grid grid-cols-3 gap-2.5 pt-1 text-center text-xs">
+                          <div className="bg-slate-50/70 p-2 rounded-xl border border-slate-100">
+                            <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
+                              Approved Shift
+                            </p>
+                            <p className="font-bold text-[#3150A0] text-3xs mt-0.5">
+                              {empHrs.toFixed(1)} hrs
+                            </p>
+                          </div>
+                          <div className="bg-slate-50/70 p-2 rounded-xl border border-slate-100">
+                            <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
+                              Active Directives
+                            </p>
+                            <p className="font-bold text-amber-700 text-3xs mt-0.5">
+                              {activeEmpTasks} open
+                            </p>
+                          </div>
+                          <div className="bg-slate-50/70 p-2 rounded-xl border border-slate-100">
+                            <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
+                              Consulting KPI
+                            </p>
+                            <p className="font-bold text-emerald-600 text-3xs mt-0.5">
+                              {emp.kpiScore}
+                            </p>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Department division info */}
-                      <p className="text-4xs text-slate-550 font-bold pl-0.5">
-                        <span className="text-slate-400">Department:</span>{" "}
-                        {emp.department}{" "}
-                        <span className="text-slate-400">| Joined:</span>{" "}
-                        {emp.doj}
-                      </p>
+                        {/* Achievements Badges */}
+                        <div className="pt-1.5 text-xs text-slate-600 space-y-1">
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {emp.achievements.map((ach) => (
+                              <span
+                                key={ach}
+                                className="bg-amber-50 text-amber-800 border border-amber-100 px-2 py-0.5 rounded text-5xs font-bold inline-flex items-center gap-1"
+                              >
+                                <Award className="w-2.5 h-2.5" />
+                                {ach}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
 
-                      {/* Core Metrics striplet */}
-                      <div className="grid grid-cols-3 gap-2.5 pt-1 text-center text-xs">
-                        <div className="bg-slate-50/70 p-2 rounded-xl border border-slate-100">
-                          <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
-                            Approved Shift
-                          </p>
-                          <p className="font-extrabold text-[#3150A0] text-3xs mt-0.5">
-                            {empHrs.toFixed(1)} hrs
-                          </p>
-                        </div>
-                        <div className="bg-slate-50/70 p-2 rounded-xl border border-slate-100">
-                          <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
-                            Active Directives
-                          </p>
-                          <p className="font-extrabold text-amber-700 text-3xs mt-0.5">
-                            {activeEmpTasks} open
-                          </p>
-                        </div>
-                        <div className="bg-slate-50/70 p-2 rounded-xl border border-slate-100">
-                          <p className="text-5xs text-slate-400 font-bold uppercase tracking-wider">
-                            Consulting KPI
-                          </p>
-                          <p className="font-extrabold text-emerald-600 text-3xs mt-0.5">
-                            {emp.kpiScore}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Achievements Badges */}
-                      <div className="pt-1.5 text-xs text-slate-600 space-y-1">
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {emp.achievements.map((ach) => (
-                            <span
-                              key={ach}
-                              className="bg-amber-50 text-amber-800 border border-amber-100 px-2 py-0.5 rounded text-5xs font-bold inline-flex items-center gap-1"
-                            >
-                              <Award className="w-2.5 h-2.5" />
-                              {ach}
+                        {/* EXPANDABLE COMPENSATION SECTION (₹ Standard) */}
+                        <div className="border border-slate-150 rounded-2xl overflow-hidden mt-4 bg-slate-50/40">
+                          <button
+                            type="button"
+                            className="w-full px-3.5 py-2.5 flex justify-between items-center text-4xs font-bold uppercase tracking-widest text-[#3150A0] bg-slate-50 border-b border-indigo-50 font-sans hover:bg-slate-100 transition-colors"
+                          >
+                            <span className="flex items-center gap-1">
+                              <ChevronDown
+                                className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                              />
+                              Quick Summary
                             </span>
-                          ))}
+                            <span className="flex items-center gap-1.5 text-3xs font-bold text-emerald-600">
+                              Net: ₹{netTakehome.toLocaleString("en-IN")}/mo
+                            </span>
+                          </button>
+
+                          {isExpanded && (
+                            <div
+                              className="p-4 bg-white divide-y divide-slate-100 text-3xs space-y-3 animate-in slide-in-from-top duration-200 cursor-default"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="pb-3 grid grid-cols-2 gap-4">
+                                <div>
+                                  <span className="block text-4xs text-slate-400 font-bold uppercase tracking-wider mb-1">
+                                    Email
+                                  </span>
+                                  <span className="text-xs font-bold text-slate-700 break-all">
+                                    {emp.email}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="block text-4xs text-slate-400 font-bold uppercase tracking-wider mb-1">
+                                    Phone
+                                  </span>
+                                  <span className="text-xs font-bold text-slate-700">
+                                    {emp.phone || "Not Provided"}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="pt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 pb-2">
+                                <p className="font-bold text-slate-400 uppercase text-5xs tracking-wider col-span-2 text-slate-600">
+                                  Credits (Earnings)
+                                </p>
+                                <div className="flex justify-between col-span-2 pl-1.5">
+                                  <span className="text-slate-500">
+                                    Basic & DA
+                                  </span>
+                                  <span className="font-bold">
+                                    ₹{sBasic.toLocaleString("en-IN")}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between col-span-2 pl-1.5">
+                                  <span className="text-slate-500">
+                                    HRA Allowance
+                                  </span>
+                                  <span className="font-bold">
+                                    ₹{sHra.toLocaleString("en-IN")}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between col-span-2 pl-1.5">
+                                  <span className="text-slate-500">
+                                    Special Advisory Allow
+                                  </span>
+                                  <span className="font-bold">
+                                    ₹{sSpecial.toLocaleString("en-IN")}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pt-2 pb-2">
+                                <p className="font-bold text-slate-405 uppercase text-5xs tracking-wider col-span-2 text-rose-600">
+                                  Debits (Deductions)
+                                </p>
+                                <div className="flex justify-between col-span-2 pl-1.5 text-rose-600">
+                                  <span className="text-slate-500">
+                                    Employee Provident Fund (EPF)
+                                  </span>
+                                  <span className="font-bold">
+                                    ₹{sPf.toLocaleString("en-IN")}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between col-span-2 pl-1.5 text-rose-600">
+                                  <span className="text-slate-500">
+                                    Professional Tax (P.Tax)
+                                  </span>
+                                  <span className="font-bold">
+                                    ₹{sProfTax.toLocaleString("en-IN")}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between col-span-2 pl-1.5 text-rose-600">
+                                  <span className="text-slate-500">
+                                    TDS / Income Tax
+                                  </span>
+                                  <span className="font-bold">
+                                    ₹{sTds.toLocaleString("en-IN")}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="pt-2 flex justify-between items-center text-xs font-bold">
+                                <span className="text-slate-500 text-3xs">
+                                  Calculated Monthly Paycheck (Net)
+                                </span>
+                                <span className="text-emerald-600 font-bold text-sm">
+                                  ₹{netTakehome.toLocaleString("en-IN")}
+                                </span>
+                              </div>
+
+                              <div className="pt-4 flex">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedEmployeeForModal(emp);
+                                  }}
+                                  className="w-full bg-[#3150A0]/10 text-[#3150A0] hover:bg-[#3150A0] hover:text-white transition-colors py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
+                                >
+                                  <UserPlus className="w-4 h-4" />
+                                  View Full Profile
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
 
-                      {/* EXPANDABLE COMPENSATION SECTION (₹ Standard) */}
-                      <div className="border border-slate-150 rounded-2xl overflow-hidden mt-2 bg-slate-50/40">
+                      {/* Bottom strip for edit and safe delete with confirmation */}
+                      <div className="pt-4 mt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3">
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setExpandedSalaryEmail(
-                              isExpanded ? null : emp.email,
-                            );
+                            handleStartEditEmployee(emp);
                           }}
-                          className="w-full px-3.5 py-2.5 flex justify-between items-center text-4xs font-extrabold uppercase tracking-widest text-[#3150A0] bg-slate-50 border-b border-indigo-50 font-sans hover:bg-slate-100 transition-colors"
+                          className="px-3.5 py-1.5 text-[#3150A0] hover:bg-blue-50 border border-blue-200 hover:border-blue-300 rounded-xl font-bold text-4xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
                         >
-                          <span className="flex items-center gap-1">
-                            <Coins className="w-3.5 h-3.5 text-slate-500" />
-                            Compensation Structure
-                          </span>
-                          <span className="flex items-center gap-1.5 text-3xs font-black text-emerald-600">
-                            Net: ₹{netTakehome.toLocaleString("en-IN")}/mo
-                            {isExpanded ? (
-                              <ChevronUp className="w-3.5 h-3.5" />
-                            ) : (
-                              <ChevronDown className="w-3.5 h-3.5" />
-                            )}
-                          </span>
+                          <Edit className="w-3 h-3" />
+                          Edit details
                         </button>
 
-                        {isExpanded && (
-                          <div className="p-4 bg-white divide-y divide-slate-100 text-3xs space-y-2.5 animate-in slide-in-from-top duration-200">
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pb-2">
-                              <p className="font-bold text-slate-400 uppercase text-5xs tracking-wider col-span-2 text-slate-600">
-                                Credits (Earnings)
-                              </p>
-                              <div className="flex justify-between col-span-2 pl-1.5">
-                                <span className="text-slate-500">
-                                  Basic & DA
-                                </span>
-                                <span className="font-extrabold">
-                                  ₹{sBasic.toLocaleString("en-IN")}
-                                </span>
-                              </div>
-                              <div className="flex justify-between col-span-2 pl-1.5">
-                                <span className="text-slate-500">
-                                  HRA Allowance
-                                </span>
-                                <span className="font-extrabold">
-                                  ₹{sHra.toLocaleString("en-IN")}
-                                </span>
-                              </div>
-                              <div className="flex justify-between col-span-2 pl-1.5">
-                                <span className="text-slate-500">
-                                  Special Advisory Allow
-                                </span>
-                                <span className="font-extrabold">
-                                  ₹{sSpecial.toLocaleString("en-IN")}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pt-2 pb-2">
-                              <p className="font-bold text-slate-405 uppercase text-5xs tracking-wider col-span-2 text-rose-600">
-                                Debits (Deductions)
-                              </p>
-                              <div className="flex justify-between col-span-2 pl-1.5 text-rose-600">
-                                <span className="text-slate-500">
-                                  Employee Provident Fund (EPF)
-                                </span>
-                                <span className="font-bold">
-                                  ₹{sPf.toLocaleString("en-IN")}
-                                </span>
-                              </div>
-                              <div className="flex justify-between col-span-2 pl-1.5 text-rose-600">
-                                <span className="text-slate-500">
-                                  Professional Tax (P.Tax)
-                                </span>
-                                <span className="font-bold">
-                                  ₹{sProfTax.toLocaleString("en-IN")}
-                                </span>
-                              </div>
-                              <div className="flex justify-between col-span-2 pl-1.5 text-rose-600">
-                                <span className="text-slate-500">
-                                  TDS / Income Tax
-                                </span>
-                                <span className="font-bold">
-                                  ₹{sTds.toLocaleString("en-IN")}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="pt-2 flex justify-between items-center text-xs font-black">
-                              <span className="text-slate-500 text-3xs">
-                                Calculated Monthly Paycheck (Net)
-                              </span>
-                              <span className="text-emerald-600 font-black text-sm">
-                                ₹{netTakehome.toLocaleString("en-IN")}
-                              </span>
-                            </div>
+                        {confirmDeleteEmail === emp.email ? (
+                          <div className="flex items-center gap-2 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-2xl animate-in shake duration-300">
+                            <span className="text-5xs font-bold text-rose-800 uppercase tracking-widest mr-1">
+                              Confirm delete?
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteEmployee(emp.email);
+                              }}
+                              className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white font-bold text-4xs transition-colors cursor-pointer"
+                            >
+                              Yes, Delete
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setConfirmDeleteEmail(null);
+                              }}
+                              className="px-2.5 py-1 rounded bg-slate-205 hover:bg-slate-300 text-slate-750 font-bold text-4xs transition-colors cursor-pointer"
+                            >
+                              Cancel
+                            </button>
                           </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDeleteEmail(emp.email);
+                            }}
+                            className="px-3.5 py-1.5 text-rose-600 hover:bg-rose-50 border border-rose-200 hover:border-rose-300 rounded-xl font-bold text-4xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                            title="Revoke portal access and purge employee registry records"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            De-register Professional
+                          </button>
                         )}
                       </div>
                     </div>
-
-                    {/* Bottom strip for edit and safe delete with confirmation */}
-                    <div className="pt-4 mt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStartEditEmployee(emp);
-                        }}
-                        className="px-3.5 py-1.5 text-[#3150A0] hover:bg-blue-50 border border-blue-200 hover:border-blue-300 rounded-xl font-bold text-4xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
-                      >
-                        <Edit className="w-3 h-3" />
-                        Edit details
-                      </button>
-
-                      {confirmDeleteEmail === emp.email ? (
-                        <div className="flex items-center gap-2 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-2xl animate-in shake duration-300">
-                          <span className="text-5xs font-extrabold text-rose-800 uppercase tracking-widest mr-1">
-                            Confirm delete?
-                          </span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteEmployee(emp.email);
-                            }}
-                            className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white font-bold text-4xs transition-colors cursor-pointer"
-                          >
-                            Yes, Delete
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setConfirmDeleteEmail(null);
-                            }}
-                            className="px-2.5 py-1 rounded bg-slate-205 hover:bg-slate-300 text-slate-750 font-bold text-4xs transition-colors cursor-pointer"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setConfirmDeleteEmail(emp.email);
-                          }}
-                          className="px-3.5 py-1.5 text-rose-600 hover:bg-rose-50 border border-rose-200 hover:border-rose-300 rounded-xl font-bold text-4xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
-                          title="Revoke portal access and purge employee registry records"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          De-register Professional
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         )}
@@ -2569,7 +2643,7 @@ export default function SuperAdminDashboard({
             {/* Header */}
             <div className="p-6 sm:p-8 flex items-start justify-between border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-gradient-to-tr from-[#3150A0] to-indigo-700 rounded-3xl text-white flex items-center justify-center font-black text-2xl shadow-sm">
+                <div className="w-16 h-16 bg-gradient-to-tr from-[#3150A0] to-indigo-700 rounded-3xl text-white flex items-center justify-center font-bold text-2xl shadow-sm">
                   {selectedEmployeeForModal.name
                     .split(" ")
                     .map((n) => n[0])
@@ -2577,12 +2651,12 @@ export default function SuperAdminDashboard({
                 </div>
                 <div>
                   <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">
+                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
                       {selectedEmployeeForModal.name}
                     </h2>
                     {selectedEmployeeForModal.status && (
                       <span
-                        className={`px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-widest ${selectedEmployeeForModal.status === "Active" ? "bg-emerald-100 text-emerald-700" : selectedEmployeeForModal.status === "On-Leave" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}
+                        className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest ${selectedEmployeeForModal.status === "Active" ? "bg-emerald-100 text-emerald-700" : selectedEmployeeForModal.status === "On-Leave" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}
                       >
                         {selectedEmployeeForModal.status}
                       </span>
@@ -2610,13 +2684,13 @@ export default function SuperAdminDashboard({
             <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 bg-white">
               {/* Profile Details */}
               <div>
-                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                   <Briefcase className="w-4 h-4 text-[#3150A0]" />
                   Professional Profile
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 bg-slate-50 rounded-2xl p-6 border border-slate-100">
                   <div>
-                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
                       Employee ID
                     </span>
                     <span className="text-sm font-bold text-slate-800">
@@ -2624,7 +2698,7 @@ export default function SuperAdminDashboard({
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
                       Date of Joining
                     </span>
                     <span className="text-sm font-bold text-slate-800">
@@ -2632,7 +2706,7 @@ export default function SuperAdminDashboard({
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
                       KPI Score
                     </span>
                     <span className="text-sm font-bold text-slate-800">
@@ -2640,7 +2714,7 @@ export default function SuperAdminDashboard({
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wide mb-1">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
                       Qualification
                     </span>
                     <span className="text-sm font-bold text-slate-800">
@@ -2652,7 +2726,7 @@ export default function SuperAdminDashboard({
 
               {/* Historical Performance Chart */}
               <div>
-                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                   <Activity className="w-4 h-4 text-[#3150A0]" />
                   Historical Performance Tracking
                 </h3>
@@ -2739,7 +2813,7 @@ export default function SuperAdminDashboard({
 
               {/* Historical Data: Tasks */}
               <div>
-                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                   <FolderKanban className="w-4 h-4 text-[#3150A0]" />
                   Assigned Directives
                 </h3>
@@ -2766,7 +2840,7 @@ export default function SuperAdminDashboard({
                               {t.title}
                             </h4>
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-extrabold whitespace-nowrap ${t.status === "Completed" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${t.status === "Completed" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
                             >
                               {t.status}
                             </span>
@@ -2774,7 +2848,7 @@ export default function SuperAdminDashboard({
                           <p className="text-[10px] font-bold text-slate-500 line-clamp-2 mb-3">
                             {t.description}
                           </p>
-                          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                             <CalendarCheck2 className="w-3 h-3" />
                             Due: {t.dueDate}
                           </div>
@@ -2788,7 +2862,7 @@ export default function SuperAdminDashboard({
               {/* Grid for Timesheets and Expenses */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                     <Clock className="w-4 h-4 text-emerald-600" />
                     Recent Timesheets
                   </h3>
@@ -2821,7 +2895,7 @@ export default function SuperAdminDashboard({
                               </p>
                             </div>
                             <span
-                              className={`px-2 py-1 rounded text-[10px] font-extrabold ${ts.status === "Approved" ? "bg-emerald-100 text-emerald-700" : ts.status === "Rejected" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"}`}
+                              className={`px-2 py-1 rounded text-[10px] font-bold ${ts.status === "Approved" ? "bg-emerald-100 text-emerald-700" : ts.status === "Rejected" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"}`}
                             >
                               {ts.status}
                             </span>
@@ -2832,7 +2906,7 @@ export default function SuperAdminDashboard({
                   })()}
                 </div>
                 <div>
-                  <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                     <Coins className="w-4 h-4 text-rose-500" />
                     Recent Expenses
                   </h3>
@@ -2865,11 +2939,11 @@ export default function SuperAdminDashboard({
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-xs font-black text-slate-800">
+                              <p className="text-xs font-bold text-slate-800">
                                 ₹{exp.amount.toLocaleString("en-IN")}
                               </p>
                               <span
-                                className={`px-2 text-[10px] font-extrabold rounded ${exp.status === "Approved" ? "text-emerald-600" : exp.status === "Rejected" ? "text-rose-600" : "text-amber-600"}`}
+                                className={`px-2 text-[10px] font-bold rounded ${exp.status === "Approved" ? "text-emerald-600" : exp.status === "Rejected" ? "text-rose-600" : "text-amber-600"}`}
                               >
                                 {exp.status}
                               </span>
