@@ -266,9 +266,13 @@ export default function BlogAdminPage() {
       console.error(error);
       if (error && error.code === "auth/invalid-credential") {
         triggerFeedback("Invalid email or password.");
-      } else if (error && error.code === "auth/configuration-not-found") {
+      } else if (
+        error &&
+        (error.code === "auth/operation-not-allowed" ||
+          error.code === "auth/configuration-not-found")
+      ) {
         triggerFeedback(
-          "Error: Authentication is not enabled in your Firebase Console for this custom project. Please enable it under Authentication -> Sign-in methods.",
+          "Error: Email/Password Authentication is not enabled. Go to your Firebase Console -> Authentication -> Sign-in method, click 'Email/Password', enable it (first toggle), and save.",
         );
       } else {
         triggerFeedback(`Sign-in failed: ${error?.message || "Network error"}`);
