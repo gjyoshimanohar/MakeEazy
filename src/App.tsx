@@ -390,22 +390,6 @@ function TopRightCountdown() {
         <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
         AY 2026-27 | FY 2025-26 Filing Season
       </div>
-      <a
-        href="https://desk.makeeazy.in"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex w-auto flex-col items-center justify-center gap-1 bg-[#FFFaf5] hover:bg-[#fff5eb] border border-orange-200 hover:border-orange-300 px-5 py-3 rounded-2xl shadow-sm text-center transition-all hover:shadow-md active:scale-95 group cursor-pointer"
-      >
-        <div className="flex items-center justify-center gap-1.5">
-          <span className="text-base">⌛</span>
-          <span className="font-extrabold text-[#ea580c] text-[15px] leading-tight group-hover:text-orange-600">
-            68 Days left to File your ITR
-          </span>
-        </div>
-        <span className="text-slate-500 text-xs font-semibold">
-          Deadline: July 31, 2026
-        </span>
-      </a>
     </div>
   );
 }
@@ -2852,24 +2836,25 @@ function FAQ() {
                     </motion.div>
                   </button>
 
-                  <AnimatePresence initial={false}>
-                    <motion.div
-                      id={`faq-panel-${index}`}
-                      role="region"
-                      aria-labelledby={`faq-btn-${index}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{
-                        height: isOpen ? "auto" : 0,
-                        opacity: isOpen ? 1 : 0,
-                      }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
-                      className="overflow-hidden print-expanded"
-                    >
-                      <div className="px-6 pb-6 pt-1 text-slate-600 leading-relaxed text-sm sm:text-base border-t border-slate-100/80">
-                        {faq.answer}
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
+                  <motion.div
+                    id={`faq-panel-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-btn-${index}`}
+                    initial={false}
+                    animate={{
+                      height: isOpen ? "auto" : 0,
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                    transition={{
+                      height: { duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] },
+                      opacity: { duration: 0.25, delay: isOpen ? 0.1 : 0 },
+                    }}
+                    className="overflow-hidden print-expanded"
+                  >
+                    <div className="px-6 pb-6 pt-1 text-slate-600 leading-relaxed text-sm sm:text-base border-t border-slate-100/80">
+                      {faq.answer}
+                    </div>
+                  </motion.div>
                 </div>
               );
             })}
@@ -3653,10 +3638,7 @@ import { Breadcrumbs } from "./components/Breadcrumbs";
 function PrintHeaderFooter() {
   return (
     <>
-      <div
-        className="hidden print:flex print:fixed top-0 left-0 w-full items-end justify-between pb-6 border-b border-slate-200 bg-white z-[9999] px-8 pt-8"
-        style={{ position: "fixed" }}
-      >
+      <div className="print-header hidden items-end justify-between pb-6 border-b border-slate-200 bg-white z-[9999] px-8 pt-8">
         <img
           src="/logo.png"
           alt="MakeEazy Logo"
@@ -3669,10 +3651,7 @@ function PrintHeaderFooter() {
           <p className="text-slate-500 text-xs m-0">makeeazy.com</p>
         </div>
       </div>
-      <div
-        className="hidden print:flex print:fixed bottom-0 left-0 w-full justify-center pt-4 pb-8 border-t border-slate-200 bg-white z-[9999] text-slate-500 text-sm font-medium"
-        style={{ position: "fixed" }}
-      >
+      <div className="print-footer hidden justify-center pt-4 pb-8 border-t border-slate-200 bg-white z-[9999] text-slate-500 text-sm font-medium">
         Strictly for education purpose
       </div>
     </>
