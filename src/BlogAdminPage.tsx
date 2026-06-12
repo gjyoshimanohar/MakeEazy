@@ -19,6 +19,7 @@ import {
   Lock,
   Compass,
   Undo,
+  BarChart3,
 } from "lucide-react";
 import {
   collection,
@@ -33,6 +34,15 @@ import {
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { db, auth, handleFirestoreError, OperationType } from "./firebase";
 import { BlogPost, DEFAULT_POSTS } from "./BlogPage";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 
@@ -464,6 +474,24 @@ export default function BlogAdminPage() {
   };
 
   const isAdminAuthenticated = !!user;
+
+  const monthlyStats = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    months.forEach((m) => (counts[m] = 0));
+    customBlogs.forEach((post) => {
+      // date is usually 'yyyy-mm-dd'
+      const date = new Date(post.date);
+      if (!isNaN(date.getTime())) {
+        const monthName = months[date.getMonth()];
+        counts[monthName] = (counts[monthName] || 0) + 1;
+      }
+    });
+    return months.map((name) => ({ name, count: counts[name] }));
+  }, [customBlogs]);
 
   return (
     <div className="bg-slate-50 min-h-screen pb-24 font-sans text-slate-800 text-left">
@@ -1227,6 +1255,49 @@ export default function BlogAdminPage() {
                         <Plus className="w-4 h-4 stroke-[2.5]" />
                         <span>New Post</span>
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Monthly Publish Frequency Chart */}
+                  <div className="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-xs">
+                    <h3 className="text-sm md:text-base font-bold text-blue-900 tracking-tight mb-6 flex items-center gap-2">
+                       <BarChart3 className="w-5 h-5 text-orange-500" /> Publication Frequency
+                    </h3>
+                    <div className="h-64 w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={monthlyStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#1e3a8a" stopOpacity={1} />
+                              <stop offset="100%" stopColor="#f97316" stopOpacity={0.85} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                          <XAxis 
+                            dataKey="name" 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{ fill: '#64748B', fontSize: 12 }} 
+                            dy={10} 
+                          />
+                          <YAxis 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{ fill: '#64748B', fontSize: 12 }} 
+                            allowDecimals={false} 
+                          />
+                          <Tooltip 
+                            cursor={{ fill: 'rgba(30, 58, 138, 0.04)' }} 
+                            contentStyle={{ 
+                              borderRadius: '12px', 
+                              border: '1px solid #E2E8F0', 
+                              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' 
+                            }} 
+                            labelStyle={{ color: '#1e3a8a', fontWeight: 'bold' }}
+                          />
+                          <Bar dataKey="count" fill="url(#brandGradient)" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
 
