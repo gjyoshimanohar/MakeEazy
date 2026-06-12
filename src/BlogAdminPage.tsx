@@ -111,6 +111,7 @@ export default function BlogAdminPage() {
   const [authorFirm, setAuthorFirm] = useState("");
   const [authorBio, setAuthorBio] = useState("");
   const [authorAvatar, setAuthorAvatar] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
   const [tagsString, setTagsString] = useState("ROC, Startups, Compliances");
   const [gradient, setGradient] = useState("from-[#3150A0] to-slate-900");
   const [editorContent, setEditorContent] = useState("");
@@ -340,6 +341,7 @@ export default function BlogAdminPage() {
       authorFirm: authorFirm.trim(),
       authorBio: authorBio.trim(),
       authorAvatar: authorAvatar.trim(),
+      bannerImage: bannerImage.trim(),
       faqs,
       tags: tagsArr,
       gradient,
@@ -410,6 +412,7 @@ export default function BlogAdminPage() {
     setAuthorFirm(post.authorFirm || "");
     setAuthorBio(post.authorBio || "");
     setAuthorAvatar(post.authorAvatar || "");
+    setBannerImage(post.bannerImage || "");
     setFaqs(post.faqs || []);
     setTagsString(post.tags.join(", "));
     setGradient(post.gradient);
@@ -461,6 +464,7 @@ export default function BlogAdminPage() {
     setAuthorFirm("");
     setAuthorBio("");
     setAuthorAvatar("");
+    setBannerImage("");
     setFaqs([]);
     setTagsString("ROC, Startups, Compliances");
     setGradient("from-[#3150A0] to-slate-900");
@@ -925,6 +929,87 @@ export default function BlogAdminPage() {
                             placeholder="Detail the specialist's advisory qualifications, corporate consulting background, or statutory domain expertise. Leave empty to use the default compliance master biography."
                             className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1.5 focus:ring-[#3150A0] focus:bg-white text-slate-800 leading-normal"
                           />
+                        </div>
+
+                        
+                        {/* banner image placeholder uploader */}
+                        <div className="space-y-2 text-left border-t border-dashed border-slate-100 pt-4">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                            Blog Banner Image
+                          </label>
+                          <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-xl">
+                            <div className="relative shrink-0">
+                              <img
+                                src={
+                                  bannerImage ||
+                                  "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=200"
+                                }
+                                alt="Banner Preview"
+                                loading="lazy"
+                                className="w-32 h-16 rounded object-cover border-2 border-orange-200 bg-slate-200 shadow-sm"
+                              />
+                              {bannerImage && (
+                                <button
+                                  type="button"
+                                  onClick={() => setBannerImage("")}
+                                  className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-all text-[8px] leading-none font-bold"
+                                  title="Clear Photo"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex-1 w-full space-y-2">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const input = document.createElement('input');
+                                    input.type = 'file';
+                                    input.accept = 'image/*';
+                                    input.onchange = (e) => {
+                                      const file = (e.target as HTMLInputElement).files?.[0];
+                                      if (file) {
+                                        if (file.size > 2 * 1024 * 1024) {
+                                          alert('Banner image file is too large! Please select an image under 2MB to ensure optimal load times.');
+                                          return;
+                                        }
+                                        const reader = new FileReader();
+                                        reader.onload = (e) => {
+                                          if (e.target?.result) {
+                                            setBannerImage(e.target.result as string);
+                                          }
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    };
+                                    input.click();
+                                  }}
+                                  className="bg-white border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-50 hover:text-[#3150A0] transition-colors shadow-sm"
+                                >
+                                  + Upload Banner
+                                </button>
+
+                                <span className="text-[10px] text-slate-400">
+                                  or paste a custom web image URL:
+                                </span>
+                              </div>
+
+                              <input
+                                type="url"
+                                value={
+                                  bannerImage.startsWith("data:")
+                                    ? ""
+                                    : bannerImage
+                                }
+                                onChange={(e) =>
+                                  setBannerImage(e.target.value)
+                                }
+                                placeholder="Paste image web link (e.g. https://images.unsplash.com/...)"
+                                className="w-full px-3 py-2 text-[11px] bg-white border border-slate-200 rounded-lg focus:outline-none text-slate-800 font-mono"
+                              />
+                            </div>
+                          </div>
                         </div>
 
                         {/* author avatar placeholder uploader */}

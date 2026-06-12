@@ -439,6 +439,16 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
             <div className="print:block">
               <div className="print:block">
                 <div className="print:block w-full pt-0 print:pt-4">
+                  {post.bannerImage && (
+                    <div className="w-full mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-100 print:hidden">
+                      <img 
+                        src={post.bannerImage} 
+                        alt={post.title} 
+                        className="w-full max-h-[400px] object-cover"
+                      />
+                    </div>
+                  )}
+
                   {/* Visual Header Block */}
                   <div className="space-y-4 mb-8">
                     <div className="flex flex-wrap items-center gap-3.5 text-xs font-semibold text-slate-500 font-mono">
