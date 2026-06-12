@@ -6,6 +6,7 @@ import {
   User,
   Tag,
   ChevronRight,
+  ArrowRight,
   ArrowLeft,
   Calendar,
   AlertCircle,
@@ -291,7 +292,7 @@ export default function BlogPage() {
                     }`}
                   >
                     <span>{cat === "All" ? "All Articles" : cat}</span>
-                    <ChevronRight
+                    <ArrowRight
                       className={`w-3.5 h-3.5 transition-transform ${selectedCategory === cat ? "translate-x-1 text-orange-500" : "text-slate-300"}`}
                     />
                   </button>
@@ -403,7 +404,7 @@ export default function BlogPage() {
                       </span>
 
                       <span className="inline-flex items-center gap-1 text-[#3150A0] group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all text-slate-400">
-                        <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+                        <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                       </span>
                     </div>
                   </motion.a>
