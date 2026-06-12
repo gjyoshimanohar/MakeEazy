@@ -371,6 +371,12 @@ input[type="date"] {
   .no-print {
     display: none !important;
   }
+
+  /* Ensure space is reserved for fixed header and footer logos on each page */
+  body {
+    margin-top: 100px;
+    margin-bottom: 100px;
+  }
 }
 
 @keyframes float-icon {

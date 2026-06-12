@@ -3650,6 +3650,29 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Breadcrumbs } from "./components/Breadcrumbs";
 
+function PrintHeaderFooter() {
+  return (
+    <>
+      <div className="hidden print:flex fixed top-0 left-0 w-full items-end justify-between pb-6 border-b border-slate-200 bg-white z-[9999] px-8 pt-8">
+        <img
+          src="/logo.png"
+          alt="MakeEazy Logo"
+          className="h-10 w-auto object-contain"
+        />
+        <div className="text-right">
+          <p className="font-display font-bold text-[#3150A0] text-sm m-0">
+            MakeEazy Consultants
+          </p>
+          <p className="text-slate-500 text-xs m-0">makeeazy.com</p>
+        </div>
+      </div>
+      <div className="hidden print:flex fixed bottom-0 left-0 w-full justify-center pt-4 pb-8 border-t border-slate-200 bg-white z-[9999] text-slate-500 text-sm font-medium">
+        Strictly for education purpose
+      </div>
+    </>
+  );
+}
+
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -3808,6 +3831,7 @@ export default function App() {
 
   return (
     <>
+      <PrintHeaderFooter />
       {isGlobalRoute ? (
         renderGlobalContent()
       ) : (

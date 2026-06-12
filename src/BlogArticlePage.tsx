@@ -434,26 +434,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
             animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-3xl border border-slate-200/70 overflow-hidden shadow-sm flex flex-col p-5 md:p-8 lg:p-10 mb-8 print:border-none print:shadow-none print:p-0 print:mb-0 print:table print:w-full"
           >
-            {/* Print Header */}
-            <div className="hidden print:table-header-group w-full">
-              <div className="print:table-row">
-                <div className="print:table-cell w-full pb-6 border-b border-slate-200 align-bottom">
-                  <div className="flex items-center justify-between">
-                    <img
-                      src="/logo.png"
-                      alt="Make Eazy Logo"
-                      className="h-10 w-auto object-contain"
-                    />
-                    <div className="text-right">
-                      <p className="font-display font-bold text-[#3150A0] text-sm">
-                        MakeEazy Consultants
-                      </p>
-                      <p className="text-slate-500 text-xs">makeeazy.com</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Print Header removed globally */}
 
             <div className="print:table-row-group">
               <div className="print:table-row">
@@ -689,15 +670,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
               </div>
             </div>
 
-            <div className="hidden print:table-footer-group w-full">
-              <div className="print:table-row">
-                <div className="print:table-cell w-full pt-8 align-bottom">
-                  <div className="w-full text-center pt-4 border-t border-slate-200 text-slate-500 text-sm font-medium">
-                    Strictly for education purpose
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Print Footer removed globally */}
           </motion.div>
 
           {/* Related Articles Section */}
