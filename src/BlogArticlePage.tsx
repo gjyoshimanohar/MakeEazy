@@ -102,6 +102,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showTocSidebar, setShowTocSidebar] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [isMobileTocExpanded, setIsMobileTocExpanded] = useState(true);
 
   useEffect(() => {
     let unsubscribe = () => {};
@@ -472,6 +473,104 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                   <div className="bg-slate-50 border-l-4 border-orange-500 rounded-r-2xl p-5 md:p-6 text-sm md:text-base text-slate-700 italic font-medium leading-relaxed shadow-inner mb-10">
                     "{post.excerpt}"
                   </div>
+
+                  {/* Tablet and Mobile Table of Contents */}
+                  {headings.length > 0 && (
+                    <div className="block xl:hidden mb-10 print:hidden" id="mobile-tablet-toc">
+                      <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl overflow-hidden transition-all duration-300">
+                        {/* Header Trigger */}
+                        <button
+                          type="button"
+                          onClick={() => setIsMobileTocExpanded(!isMobileTocExpanded)}
+                          className="w-full flex items-center justify-between p-4 bg-slate-55 border-b border-slate-100 hover:bg-slate-100/50 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <List className="w-4 h-4 text-orange-500" />
+                            <span className="text-sm font-bold text-slate-800 tracking-wide uppercase">
+                              Table of Contents
+                            </span>
+                            <span className="bg-slate-200/80 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                              {headings.length} headings
+                            </span>
+                          </div>
+                          <ChevronDown
+                            className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${
+                              isMobileTocExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {/* Collapsible Content */}
+                        {isMobileTocExpanded && (
+                          <div className="p-4 bg-white/50 max-h-[300px] overflow-y-auto custom-scrollbar">
+                            <nav className="space-y-1 relative">
+                              {/* Visual track line */}
+                              <div className="absolute left-[7px] top-2 bottom-2 w-px bg-slate-150/50" />
+
+                              {headings.map((heading) => (
+                                <button
+                                  key={`mobile-${heading.id}`}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    try {
+                                      const el = document.getElementById(heading.id);
+                                      if (el) {
+                                        const yOffset = -120; // Adjust for fixed header
+                                        const y =
+                                          el.getBoundingClientRect().top +
+                                          window.scrollY +
+                                          yOffset;
+                                        window.scrollTo({ top: y, behavior: "smooth" });
+                                      } else {
+                                        // Fallback by text matching
+                                        const allHeadings = Array.from(
+                                          contentRef.current?.querySelectorAll(
+                                            "h1, h2, h3, h4, h5, h6",
+                                          ) || [],
+                                        ) as HTMLElement[];
+                                        const fallbackEl = allHeadings.find(
+                                          (h) => (h.textContent || "") === heading.text,
+                                        );
+                                        if (fallbackEl) {
+                                          const yOffset = -120;
+                                          const y =
+                                            fallbackEl.getBoundingClientRect().top +
+                                            window.scrollY +
+                                            yOffset;
+                                          window.scrollTo({ top: y, behavior: "smooth" });
+                                        }
+                                      }
+                                    } catch (err) {
+                                      console.error("Scroll error:", err);
+                                    }
+                                  }}
+                                  className={`relative block w-full text-left font-medium transition-all duration-200 text-sm leading-snug py-2 px-3 pl-6 rounded-xl group ${
+                                    activeHeadingId === heading.id
+                                      ? "text-orange-600 bg-orange-50 font-bold"
+                                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/80"
+                                  }`}
+                                  style={{
+                                    marginLeft: `${Math.max(0, (heading.level - 2) * 0.5)}rem`,
+                                  }}
+                                >
+                                  {/* Active indicator dot */}
+                                  <div
+                                    className={`absolute left-[5.5px] top-[14px] w-1.5 h-1.5 rounded-full transition-all duration-300 z-10 ${
+                                      activeHeadingId === heading.id
+                                        ? "bg-orange-500 scale-100"
+                                        : "bg-slate-200 scale-0 group-hover:scale-100"
+                                    }`}
+                                  />
+                                  <span className="line-clamp-2">{heading.text}</span>
+                                </button>
+                              ))}
+                            </nav>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="w-full text-left">
                     <div
