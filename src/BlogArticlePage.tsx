@@ -11,6 +11,8 @@ import {
   Share2,
   MessageCircle,
   ChevronDown,
+  Printer,
+  List,
 } from "lucide-react";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import { db } from "./firebase";
@@ -136,15 +138,28 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
       setHeadings(extractedHeadings);
 
+      const headingElementsRef: Record<string, IntersectionObserverEntry> = {};
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveHeadingId(entry.target.id);
+            headingElementsRef[entry.target.id] = entry;
+          });
+
+          const visibleHeadings: string[] = [];
+          Object.keys(headingElementsRef).forEach((key) => {
+            if (headingElementsRef[key].isIntersecting) {
+              visibleHeadings.push(key);
             }
           });
+
+          if (visibleHeadings.length > 0) {
+            const getIndex = (id: string) =>
+              extractedHeadings.findIndex((h) => h.id === id);
+            visibleHeadings.sort((a, b) => getIndex(a) - getIndex(b));
+            setActiveHeadingId(visibleHeadings[0]);
+          }
         },
-        { rootMargin: "0px 0px -80% 0px" },
+        { rootMargin: "-120px 0px -40% 0px" },
       );
 
       elements.forEach((el) => observer.observe(el));
@@ -198,10 +213,10 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900">
+    <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900 print:bg-white print:pt-0 print:pb-0">
       {/* Scroll Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-1 bg-orange-500 z-50 transition-all duration-150 ease-out"
+        className="fixed top-0 left-0 h-1 bg-orange-500 z-50 transition-all duration-150 ease-out print:hidden"
         style={{ width: `${scrollProgress}%` }}
       />
       <Helmet>
@@ -246,66 +261,80 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
       {/* Left Sidebar: Table of Contents */}
       <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col xl:flex-row gap-8 xl:gap-12 items-start justify-center">
         {headings.length > 0 && (
-          <div className="hidden xl:block w-72 shrink-0 sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-6">
-              Table of Contents
-            </h3>
-            <nav className="space-y-1.5 border-l-2 border-slate-100 pl-4">
-              {headings.map((heading) => (
-                <button
-                  key={heading.id}
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    try {
-                      const el = document.getElementById(heading.id);
-                      if (el) {
-                        const yOffset = -120; // Adjust for fixed header
-                        const y =
-                          el.getBoundingClientRect().top +
-                          window.scrollY +
-                          yOffset;
-                        window.scrollTo({ top: y, behavior: "smooth" });
-                      } else {
-                        console.warn(
-                          "TOC element not found for id:",
-                          heading.id,
-                        );
-                        // Fallback: try finding by text content if ID was wiped out by a re-render
-                        const allHeadings = Array.from(
-                          contentRef.current?.querySelectorAll(
-                            "h1, h2, h3, h4, h5, h6",
-                          ) || [],
-                        );
-                        const fallbackEl = allHeadings.find(
-                          (h) => (h.textContent || "") === heading.text,
-                        );
-                        if (fallbackEl) {
-                          const yOffset = -120;
+          <div className="hidden xl:block print:hidden w-[300px] shrink-0 sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="bg-white rounded-3xl border border-slate-200/70 p-6 shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2 mb-5 pb-4 border-b border-slate-100">
+                <List className="w-4 h-4 text-orange-500" />
+                Table of Contents
+              </h3>
+              <nav className="space-y-1 relative">
+                {/* Visual track line */}
+                <div className="absolute left-[7px] top-2 bottom-2 w-px bg-slate-100" />
+
+                {headings.map((heading) => (
+                  <button
+                    key={heading.id}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      try {
+                        const el = document.getElementById(heading.id);
+                        if (el) {
+                          const yOffset = -120; // Adjust for fixed header
                           const y =
-                            fallbackEl.getBoundingClientRect().top +
+                            el.getBoundingClientRect().top +
                             window.scrollY +
                             yOffset;
                           window.scrollTo({ top: y, behavior: "smooth" });
+                        } else {
+                          console.warn(
+                            "TOC element not found for id:",
+                            heading.id,
+                          );
+                          // Fallback: try finding by text content if ID was wiped out by a re-render
+                          const allHeadings = Array.from(
+                            contentRef.current?.querySelectorAll(
+                              "h1, h2, h3, h4, h5, h6",
+                            ) || [],
+                          );
+                          const fallbackEl = allHeadings.find(
+                            (h) => (h.textContent || "") === heading.text,
+                          );
+                          if (fallbackEl) {
+                            const yOffset = -120;
+                            const y =
+                              fallbackEl.getBoundingClientRect().top +
+                              window.scrollY +
+                              yOffset;
+                            window.scrollTo({ top: y, behavior: "smooth" });
+                          }
                         }
+                      } catch (err) {
+                        console.error("Scroll error:", err);
                       }
-                    } catch (err) {
-                      console.error("Scroll error:", err);
-                    }
-                  }}
-                  className={`block w-full text-left font-medium transition-colors duration-200 text-sm leading-snug ${
-                    activeHeadingId === heading.id
-                      ? "text-orange-500 font-bold"
-                      : "text-slate-600 hover:text-orange-500"
-                  }`}
-                  style={{
-                    marginLeft: `${Math.max(0, (heading.level - 2) * 1)}rem`,
-                  }}
-                >
-                  <span className="line-clamp-2">{heading.text}</span>
-                </button>
-              ))}
-            </nav>
+                    }}
+                    className={`relative block w-full text-left font-medium transition-all duration-200 text-sm leading-snug py-2 px-3 pl-6 rounded-xl group ${
+                      activeHeadingId === heading.id
+                        ? "text-orange-600 bg-orange-50/50 font-bold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    }`}
+                    style={{
+                      marginLeft: `${Math.max(0, (heading.level - 2) * 0.75)}rem`,
+                    }}
+                  >
+                    {/* Active indicator dot */}
+                    <div
+                      className={`absolute left-[5.5px] top-[14px] w-1.5 h-1.5 rounded-full transition-all duration-300 z-10 ${
+                        activeHeadingId === heading.id
+                          ? "bg-orange-500 scale-100"
+                          : "bg-slate-200 scale-0 group-hover:scale-100"
+                      }`}
+                    />
+                    <span className="line-clamp-2">{heading.text}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
           </div>
         )}
 
@@ -314,22 +343,44 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <button
               onClick={() => navigate("/blogs")}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#3150A0] transition-colors cursor-pointer bg-white px-4 py-2 border border-slate-200 rounded-full shadow-sm"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#3150A0] transition-colors cursor-pointer bg-white px-4 py-2 border border-slate-200 rounded-full shadow-sm print:hidden"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Knowledge Hub
             </button>
 
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#f97316] bg-[#f97316]/10 px-3 py-1.5 rounded-full border border-[#f97316]/20">
-              {post.category}
-            </span>
+            <div className="flex items-center gap-3 print:hidden">
+              <button
+                onClick={() => window.print()}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#3150A0] transition-colors cursor-pointer bg-white px-4 py-2 border border-slate-200 rounded-full shadow-sm"
+              >
+                <Printer className="w-4 h-4" /> Print Article
+              </button>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#f97316] bg-[#f97316]/10 px-3 py-1.5 rounded-full border border-[#f97316]/20">
+                {post.category}
+              </span>
+            </div>
           </div>
 
           {/* Article Container */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl border border-slate-200/70 overflow-hidden shadow-sm flex flex-col p-6 md:p-10 lg:p-12 mb-12"
+            className="bg-white rounded-3xl border border-slate-200/70 overflow-hidden shadow-sm flex flex-col p-5 md:p-8 lg:p-10 mb-8 print:border-none print:shadow-none print:p-0 print:mb-0"
           >
+            {/* Print Header */}
+            <div className="hidden print:flex w-full items-center justify-between pb-6 border-b border-slate-200 mb-8 mt-0 pt-0">
+              <img
+                src="/logo.png"
+                alt="Make Eazy Logo"
+                className="h-10 w-auto object-contain"
+              />
+              <div className="text-right">
+                <p className="font-display font-bold text-[#3150A0] text-sm">
+                  MakeEazy Consultants
+                </p>
+                <p className="text-slate-500 text-xs">makeeazy.com</p>
+              </div>
+            </div>
             {/* Visual Header Block */}
             <div className="space-y-4 mb-8">
               <div className="flex flex-wrap items-center gap-3.5 text-xs font-semibold text-slate-500 font-mono">
@@ -399,7 +450,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
             )}
 
             {/* Tag Cluster and Social Share Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-100 pt-8 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-100 pt-8 mb-10 print:hidden">
               {/* Tag Cluster */}
               <div className="space-y-3 text-left">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
@@ -534,7 +585,8 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
             })()}
 
             {/* Immersive Footer Call To Action */}
-            <div className="bg-slate-50 rounded-2xl flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 border border-slate-100">
+            {/* Call to Action ending block */}
+            <div className="bg-slate-50 rounded-2xl flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 border border-slate-100 print:hidden">
               <div className="text-left space-y-2 max-w-md">
                 <h4 className="text-base md:text-lg font-bold text-[#3150A0] tracking-tight">
                   Confused about legal deadlines or calculations?
@@ -551,6 +603,11 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
               >
                 Discuss Compliances Instantly
               </a>
+            </div>
+
+            {/* Print Footer */}
+            <div className="hidden print:block w-full text-center pt-8 mt-8 border-t border-slate-200 text-slate-500 text-sm font-medium">
+              Strictly for education purpose
             </div>
           </motion.div>
         </div>

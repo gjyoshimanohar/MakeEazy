@@ -185,7 +185,7 @@ function Navbar() {
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <a
@@ -3275,7 +3275,7 @@ function Contact() {
 
 function CTAAndFooter() {
   return (
-    <footer className="bg-blue-950 text-white border-t border-blue-900 relative overflow-hidden">
+    <footer className="bg-blue-950 text-white border-t border-blue-900 relative overflow-hidden print:hidden">
       {/* Large Decorative shape */}
       <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
         <svg

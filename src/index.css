@@ -303,34 +303,34 @@ input[type="date"] {
 
 .sun-editor-editable h1 {
   font-size: 2rem !important;
-  margin-top: 2rem !important;
-  margin-bottom: 0.85rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
 }
 .sun-editor-editable h2 {
   font-size: 1.6rem !important;
-  margin-top: 1.75rem !important;
-  margin-bottom: 0.75rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.65rem !important;
 }
 .sun-editor-editable h3 {
   font-size: 1.35rem !important;
-  margin-top: 1.5rem !important;
-  margin-bottom: 0.65rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.5rem !important;
 }
 .sun-editor-editable h4 {
   font-size: 1.15rem !important;
-  margin-top: 1.25rem !important;
-  margin-bottom: 0.55rem !important;
+  margin-top: 0.85rem !important;
+  margin-bottom: 0.45rem !important;
 }
 
 .sun-editor-editable p {
-  margin-bottom: 1.25rem !important;
+  margin-bottom: 0.75rem !important;
   text-align: justify !important;
 }
 
 /* Print configuration to isolate and format the Payslip Modal when printed */
 @media print {
-  /* Hide all external page content including navigation and footers */
-  body > * {
+  /* Hide all external page content including navigation and footers only if payslip modal is open */
+  body:has(#payslip-modal-container-wrapper) > * {
     visibility: hidden !important;
   }
 
