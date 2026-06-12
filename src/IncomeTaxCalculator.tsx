@@ -977,6 +977,7 @@ function CustomDropdown({ value, options, onChange, placeholder = "Select..." }:
                 src="/logo.png" 
                 alt="Make Eazy Logo" 
                 className="h-14 w-auto object-contain"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';

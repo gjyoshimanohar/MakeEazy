@@ -183,6 +183,22 @@ const NAV_ITEMS: NavItem[] = [
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
+  const [desktopDropdown, setDesktopDropdown] = useState<string | null>(null);
+
+  // Close desktop dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // If we're clicking outside and there's a dropdown open
+      if (desktopDropdown) {
+        setDesktopDropdown(null);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [desktopDropdown]);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 print:hidden">
@@ -197,6 +213,7 @@ function Navbar() {
               src="/logo.png"
               alt="Make Eazy Logo"
               className="h-14 w-auto object-contain"
+              loading="lazy"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = "none";
@@ -218,14 +235,24 @@ function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-4 xl:space-x-8">
             {NAV_ITEMS.map((item) => (
-              <div key={item.name} className="relative group">
+              <div 
+                key={item.name} 
+                className="relative group"
+                onMouseEnter={() => setDesktopDropdown(item.name)}
+                onMouseLeave={() => setDesktopDropdown(null)}
+              >
                 {item.dropdown ? (
                   <button
                     className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-orange-500 transition-colors py-8"
                     aria-label={`Toggle ${item.name} menu`}
+                    aria-expanded={desktopDropdown === item.name}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setDesktopDropdown(desktopDropdown === item.name ? null : item.name);
+                    }}
                   >
                     {item.name}
-                    <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${desktopDropdown === item.name ? 'rotate-180' : 'group-hover:rotate-180'}`} />
                   </button>
                 ) : (
                   <a
@@ -238,7 +265,13 @@ function Navbar() {
                 )}
 
                 {item.dropdown && (
-                  <div className="absolute top-full left-0 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-2 group-hover:translate-y-0 bg-white shadow-xl rounded-xl border border-slate-100 p-2">
+                  <div 
+                    className={`absolute top-full left-0 w-48 transition-all duration-200 bg-white shadow-xl rounded-xl border border-slate-100 p-2 ${
+                      desktopDropdown === item.name 
+                        ? 'opacity-100 visible translate-y-0' 
+                        : 'opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'
+                    }`}
+                  >
                     <div className="flex flex-col">
                       {item.dropdown.map((dropItem) => (
                         <a
@@ -250,6 +283,7 @@ function Navbar() {
                               ? "noopener noreferrer"
                               : undefined
                           }
+                          onClick={() => setDesktopDropdown(null)}
                           className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                           aria-label={`Navigate to ${dropItem.name}`}
                         >
@@ -2567,6 +2601,7 @@ function Services() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -8 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
                 className="group relative bg-white border border-slate-200 rounded-3xl p-6 hover:shadow-xl hover:border-slate-300 transition-all cursor-pointer overflow-hidden text-left block"
               >
@@ -3311,6 +3346,7 @@ function CTAAndFooter() {
                 src="/logo.png"
                 alt="Make Eazy Logo"
                 className="h-16 w-auto object-contain origin-left"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = "none";
@@ -3643,6 +3679,7 @@ function PrintHeaderFooter() {
           src="/logo.png"
           alt="MakeEazy Logo"
           className="h-10 w-auto object-contain"
+          loading="lazy"
         />
         <div className="text-right">
           <p className="font-display font-bold text-[#3150A0] text-sm m-0">
@@ -3820,7 +3857,7 @@ export default function App() {
       {isGlobalRoute ? (
         renderGlobalContent()
       ) : (
-        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900">
+        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900 print:min-h-0 print:h-auto print:block">
           <Navbar />
           <Breadcrumbs />
           {renderMainContent()}

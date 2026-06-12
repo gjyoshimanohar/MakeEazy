@@ -271,7 +271,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900 print:bg-white print:pt-0 print:pb-0">
+    <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900 print:bg-white print:pt-0 print:pb-0 print:h-auto print:min-h-0 print:block">
       {/* Scroll Progress Bar */}
       <div
         className="fixed top-0 left-0 h-1 bg-orange-500 z-50 transition-all duration-150 ease-out print:hidden"
@@ -405,7 +405,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
           </motion.div>
         )}
 
-        <div className="flex-1 w-full max-w-4xl min-w-0">
+        <div className="flex-1 w-full max-w-4xl min-w-0 print:block print:max-w-none">
           {/* Navigation and Category */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <button
@@ -432,13 +432,13 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl border border-slate-200/70 overflow-hidden shadow-sm flex flex-col p-5 md:p-8 lg:p-10 mb-8 print:border-none print:shadow-none print:p-0 print:mb-0 print:table print:w-full"
+            className="bg-white rounded-3xl border border-slate-200/70 shadow-sm flex flex-col p-5 md:p-8 lg:p-10 mb-8 print:border-none print:shadow-none print:p-0 print:mb-0 print:block print:w-full print:overflow-visible"
           >
             {/* Print Header removed globally */}
 
-            <div className="print:table-row-group">
-              <div className="print:table-row">
-                <div className="print:table-cell w-full pt-0 print:pt-8">
+            <div className="print:block">
+              <div className="print:block">
+                <div className="print:block w-full pt-0 print:pt-4">
                   {/* Visual Header Block */}
                   <div className="space-y-4 mb-8">
                     <div className="flex flex-wrap items-center gap-3.5 text-xs font-semibold text-slate-500 font-mono">
@@ -603,6 +603,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                                 src={authorInfo.avatarUrl}
                                 alt={authorName}
                                 referrerPolicy="no-referrer"
+                                loading="lazy"
                                 className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-orange-200 shadow-md"
                               />
                               <div

@@ -48,6 +48,7 @@ export default function HraCalculator() {
                 src="/logo.png" 
                 alt="Make Eazy Logo" 
                 className="h-14 w-auto object-contain"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';
