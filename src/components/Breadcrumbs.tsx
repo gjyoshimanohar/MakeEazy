@@ -33,7 +33,7 @@ export function Breadcrumbs() {
   };
 
   return (
-    <div className="w-full bg-slate-50/90 backdrop-blur-md border-b border-slate-200 fixed top-20 left-0 z-40 h-10 flex items-center">
+    <div className="w-full bg-slate-50/90 backdrop-blur-md border-b border-slate-200 fixed top-20 left-0 z-40 h-10 flex items-center print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <nav
           className="flex text-[10px] font-bold text-slate-500 overflow-x-auto whitespace-nowrap scrollbar-hide"
