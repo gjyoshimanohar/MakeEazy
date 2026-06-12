@@ -326,6 +326,18 @@ export default function BlogAdminPage() {
       .map((t) => t.trim())
       .filter(Boolean);
 
+    if (bannerImage.length > 900000) {
+      triggerFeedback("Banner image is too large for database sync. Please upload a smaller image file or use a shorter web URL.");
+      setIsWriting(false);
+      return;
+    }
+    
+    if (authorAvatar.length > 900000) {
+      triggerFeedback("Author avatar is too large for database sync. Please upload a smaller image file or use a shorter web URL.");
+      setIsWriting(false);
+      return;
+    }
+    
     const postPayload: BlogPost = {
       id: computedId,
       title: title.trim(),
@@ -946,7 +958,7 @@ export default function BlogAdminPage() {
                                 }
                                 alt="Banner Preview"
                                 loading="lazy"
-                                className="w-32 h-16 rounded object-cover border-2 border-orange-200 bg-slate-200 shadow-sm"
+                                className="w-full sm:w-64 sm:h-32 rounded-xl object-cover border-2 border-orange-200 bg-slate-200 shadow-sm transition-all hover:opacity-90"
                               />
                               {bannerImage && (
                                 <button
@@ -970,15 +982,34 @@ export default function BlogAdminPage() {
                                     input.onchange = (e) => {
                                       const file = (e.target as HTMLInputElement).files?.[0];
                                       if (file) {
-                                        if (file.size > 2 * 1024 * 1024) {
-                                          alert('Banner image file is too large! Please select an image under 2MB to ensure optimal load times.');
-                                          return;
-                                        }
                                         const reader = new FileReader();
-                                        reader.onload = (e) => {
-                                          if (e.target?.result) {
-                                            setBannerImage(e.target.result as string);
-                                          }
+                                        reader.onload = (event) => {
+                                          const img = new Image();
+                                          img.onload = () => {
+                                            const canvas = document.createElement('canvas');
+                                            let width = img.width;
+                                            let height = img.height;
+                                            const maxDim = 1000;
+                                            
+                                            if (width > height && width > maxDim) {
+                                              height = Math.round((height * maxDim) / width);
+                                              width = maxDim;
+                                            } else if (height > maxDim) {
+                                              width = Math.round((width * maxDim) / height);
+                                              height = maxDim;
+                                            }
+                                            
+                                            canvas.width = width;
+                                            canvas.height = height;
+                                            const ctx = canvas.getContext('2d');
+                                            if(ctx) {
+                                              ctx.drawImage(img, 0, 0, width, height);
+                                              // Compress as JPEG to keep size small for Firestore 1MB limit
+                                              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                                              setBannerImage(compressedDataUrl);
+                                            }
+                                          };
+                                          img.src = event.target?.result as string;
                                         };
                                         reader.readAsDataURL(file);
                                       }
@@ -1051,19 +1082,33 @@ export default function BlogAdminPage() {
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
-                                      if (file.size > 400 * 1024) {
-                                        alert(
-                                          "Please keep your dynamic avatar image files under 400KB to ensure rapid compliance database Sync.",
-                                        );
-                                        return;
-                                      }
                                       const reader = new FileReader();
                                       reader.onload = (event) => {
-                                        if (event.target?.result) {
-                                          setAuthorAvatar(
-                                            event.target.result as string,
-                                          );
-                                        }
+                                        const img = new Image();
+                                        img.onload = () => {
+                                          const canvas = document.createElement('canvas');
+                                          let width = img.width;
+                                          let height = img.height;
+                                          const maxDim = 400; // Small size for avatar
+                                          
+                                          if (width > height && width > maxDim) {
+                                            height = Math.round((height * maxDim) / width);
+                                            width = maxDim;
+                                          } else if (height > maxDim) {
+                                            width = Math.round((width * maxDim) / height);
+                                            height = maxDim;
+                                          }
+                                          
+                                          canvas.width = width;
+                                          canvas.height = height;
+                                          const ctx = canvas.getContext('2d');
+                                          if(ctx) {
+                                            ctx.drawImage(img, 0, 0, width, height);
+                                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                                            setAuthorAvatar(compressedDataUrl);
+                                          }
+                                        };
+                                        img.src = event.target?.result as string;
                                       };
                                       reader.readAsDataURL(file);
                                     }
@@ -1119,8 +1164,7 @@ export default function BlogAdminPage() {
                       </div>
 
                       {/* comma-seprated tags & custom gradient presets */}
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-1.5 text-left">
+                      <div className="space-y-1.5 text-left">
                           <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                             Tags (comma separated)
                           </label>
@@ -1132,28 +1176,6 @@ export default function BlogAdminPage() {
                             className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none text-slate-800"
                           />
                         </div>
-
-                        <div className="space-y-1.5 text-left">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                            Insight Card Color Theme
-                          </label>
-                          <div className="flex flex-wrap items-center gap-3 pt-1">
-                            {GRADIENTS.map((g) => (
-                              <button
-                                key={g.name}
-                                type="button"
-                                onClick={() => setGradient(g.val)}
-                                className={`w-8 h-8 rounded-full bg-gradient-to-r ${g.val} border-2 transition-all cursor-pointer ${
-                                  gradient === g.val
-                                    ? "border-orange-500 scale-110 shadow"
-                                    : "border-slate-200 hover:scale-105"
-                                }`}
-                                title={g.name}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
 
                       {/* HTML rich layout entry workspace */}
                       <div className="space-y-2 text-left">

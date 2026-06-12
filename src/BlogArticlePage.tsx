@@ -440,11 +440,11 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
               <div className="print:block">
                 <div className="print:block w-full pt-0 print:pt-4">
                   {post.bannerImage && (
-                    <div className="w-full mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-100 print:hidden">
+                    <div className="w-full mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-50">
                       <img 
                         src={post.bannerImage} 
                         alt={post.title} 
-                        className="w-full max-h-[400px] object-cover"
+                        className="w-full h-[250px] sm:h-[350px] lg:h-[400px] object-cover object-center"
                       />
                     </div>
                   )}
@@ -700,13 +700,17 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                     }}
                     className="group bg-white rounded-2xl border border-slate-200/60 overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 flex flex-col"
                   >
-                    <div className="h-40 overflow-hidden relative overflow-hidden bg-slate-100 pb-[56%]">
-                      <img
-                        src={relatedPost.coverImage}
-                        alt={relatedPost.title}
-                        className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                        loading="lazy"
-                      />
+                    <div className="h-40 overflow-hidden relative bg-slate-100 pb-[56%]">
+                      {relatedPost.bannerImage ? (
+                        <img
+                          src={relatedPost.bannerImage}
+                          alt={relatedPost.title}
+                          className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className={"absolute inset-0 w-full h-full bg-gradient-to-r " + relatedPost.gradient} />
+                      )}
                       <div className="absolute top-3 left-3">
                         <span className="bg-white/90 backdrop-blur text-[#3150A0] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
                           {relatedPost.category}

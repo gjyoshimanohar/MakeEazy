@@ -3671,6 +3671,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Breadcrumbs } from "./components/Breadcrumbs";
 
+
 function PrintHeaderFooter() {
   return (
     <>
@@ -3853,17 +3854,55 @@ export default function App() {
 
   return (
     <>
-      <PrintHeaderFooter />
-      {isGlobalRoute ? (
-        renderGlobalContent()
-      ) : (
-        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900 print:min-h-0 print:h-auto print:block">
-          <Navbar />
-          <Breadcrumbs />
-          {renderMainContent()}
-          <CTAAndFooter />
+      <div className="print:table font-sans print:w-full min-w-full block">
+        <div className="print:table-header-group hidden">
+          <div className="print:table-row">
+            <div className="print:table-cell">
+              <div className="flex items-end justify-between pb-6 border-b border-slate-200 bg-white px-8 pt-8">
+                <img
+                  src="/logo.png"
+                  alt="MakeEazy Logo"
+                  className="h-10 w-auto object-contain"
+                  loading="lazy"
+                />
+                <div className="text-right">
+                  <p className="font-display font-bold text-[#3150A0] text-sm m-0">
+                    MakeEazy Consultants
+                  </p>
+                  <p className="text-slate-500 text-xs m-0">makeeazy.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+
+        <div className="print:table-row-group block">
+          <div className="print:table-row">
+            <div className="print:table-cell">
+              {isGlobalRoute ? (
+                renderGlobalContent()
+              ) : (
+                <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900 print:min-h-0 print:h-auto print:block">
+                  <Navbar />
+                  <Breadcrumbs />
+                  {renderMainContent()}
+                  <CTAAndFooter />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="print:table-footer-group hidden">
+          <div className="print:table-row">
+            <div className="print:table-cell">
+              <div className="flex justify-center pt-4 pb-8 border-t border-slate-200 bg-white text-slate-500 text-sm font-medium">
+                Strictly for education purpose
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <ScrollToTopButton />
       <WhatsAppWidget />
     </>

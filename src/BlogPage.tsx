@@ -349,12 +349,10 @@ export default function BlogPage() {
                     className="bg-white rounded-3xl border border-slate-200/70 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group block"
                   >
 
-                    {blog.bannerImage ? (
-                      <div className="w-full h-40 bg-slate-100 overflow-hidden">
+                    {blog.bannerImage && (
+                      <div className="w-full h-40 bg-slate-100 overflow-hidden shrink-0">
                         <img src={blog.bannerImage} alt={blog.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       </div>
-                    ) : (
-                      <div className={"w-full h-3 bg-gradient-to-r " + blog.gradient} />
                     )}
                     <div className="p-6 md:p-7 space-y-4">
 
