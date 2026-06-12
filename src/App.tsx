@@ -2853,22 +2853,22 @@ function FAQ() {
                   </button>
 
                   <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        id={`faq-panel-${index}`}
-                        role="region"
-                        aria-labelledby={`faq-btn-${index}`}
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-6 pb-6 pt-1 text-slate-600 leading-relaxed text-sm sm:text-base border-t border-slate-100/80">
-                          {faq.answer}
-                        </div>
-                      </motion.div>
-                    )}
+                    <motion.div
+                      id={`faq-panel-${index}`}
+                      role="region"
+                      aria-labelledby={`faq-btn-${index}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{
+                        height: isOpen ? "auto" : 0,
+                        opacity: isOpen ? 1 : 0,
+                      }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="overflow-hidden print-expanded"
+                    >
+                      <div className="px-6 pb-6 pt-1 text-slate-600 leading-relaxed text-sm sm:text-base border-t border-slate-100/80">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
                   </AnimatePresence>
                 </div>
               );
@@ -3653,7 +3653,10 @@ import { Breadcrumbs } from "./components/Breadcrumbs";
 function PrintHeaderFooter() {
   return (
     <>
-      <div className="hidden print:flex fixed top-0 left-0 w-full items-end justify-between pb-6 border-b border-slate-200 bg-white z-[9999] px-8 pt-8">
+      <div
+        className="hidden print:flex print:fixed top-0 left-0 w-full items-end justify-between pb-6 border-b border-slate-200 bg-white z-[9999] px-8 pt-8"
+        style={{ position: "fixed" }}
+      >
         <img
           src="/logo.png"
           alt="MakeEazy Logo"
@@ -3666,7 +3669,10 @@ function PrintHeaderFooter() {
           <p className="text-slate-500 text-xs m-0">makeeazy.com</p>
         </div>
       </div>
-      <div className="hidden print:flex fixed bottom-0 left-0 w-full justify-center pt-4 pb-8 border-t border-slate-200 bg-white z-[9999] text-slate-500 text-sm font-medium">
+      <div
+        className="hidden print:flex print:fixed bottom-0 left-0 w-full justify-center pt-4 pb-8 border-t border-slate-200 bg-white z-[9999] text-slate-500 text-sm font-medium"
+        style={{ position: "fixed" }}
+      >
         Strictly for education purpose
       </div>
     </>

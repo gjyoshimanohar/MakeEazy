@@ -497,11 +497,11 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
                                 />
                               </button>
 
-                              {isOpen && (
-                                <div className="px-5 pb-5 pt-1 text-xs md:text-sm text-slate-600 leading-relaxed border-t border-slate-100 text-justify animate-fadeIn">
-                                  {faq.answer}
-                                </div>
-                              )}
+                              <div
+                                className={`px-5 pb-5 pt-1 text-xs md:text-sm text-slate-600 leading-relaxed border-t border-slate-100 text-justify animate-fadeIn print-expanded ${isOpen ? "block" : "hidden"}`}
+                              >
+                                {faq.answer}
+                              </div>
                             </div>
                           );
                         })}

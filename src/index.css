@@ -372,11 +372,23 @@ input[type="date"] {
     display: none !important;
   }
 
-  /* Ensure space is reserved for fixed header and footer logos on each page */
   body {
-    margin-top: 100px;
-    margin-bottom: 100px;
+    padding-top: 150px !important;
+    padding-bottom: 150px !important;
   }
+
+  .print-expanded {
+    display: block !important;
+    height: auto !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    visibility: visible !important;
+  }
+}
+
+@page {
+  margin-top: 150px;
+  margin-bottom: 150px;
 }
 
 @keyframes float-icon {
