@@ -946,9 +946,18 @@ export default function BlogAdminPage() {
                         
                         {/* banner image placeholder uploader */}
                         <div className="space-y-2 text-left border-t border-dashed border-slate-100 pt-4">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                            Blog Banner Image
-                          </label>
+                          <div className="flex items-center gap-2">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                              Blog Banner Image
+                            </label>
+                            <div className="relative group flex items-center justify-center">
+                              <Info className="w-4 h-4 text-slate-400 hover:text-orange-500 transition-colors cursor-help" />
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2 bg-slate-800 text-white text-[11px] rounded-xl opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100 pointer-events-none z-10 text-center font-medium shadow-lg hidden md:block">
+                                Ideal size: 1200x630 pixels. Keep file under 200KB for fast loading.
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+                              </div>
+                            </div>
+                          </div>
                           <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-xl">
                             <div className="relative shrink-0">
                               <img
