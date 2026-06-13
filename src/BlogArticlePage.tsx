@@ -56,11 +56,30 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const tocNavRef = useRef<HTMLElement>(null);
+  const tocContainerRef = useRef<HTMLDivElement>(null);
 
   const [headings, setHeadings] = useState<
     { id: string; text: string; level: number; element: HTMLElement }[]
   >([]);
   const [activeHeadingId, setActiveHeadingId] = useState<string>("");
+
+  useEffect(() => {
+    if (activeHeadingId && tocNavRef.current && tocContainerRef.current) {
+      const activeElement = tocNavRef.current.querySelector(
+        `[data-toc-id="${activeHeadingId}"]`
+      ) as HTMLElement;
+      if (activeElement) {
+        const container = tocContainerRef.current;
+        const offsetTop = activeElement.offsetTop;
+        const halfHeight = container.clientHeight / 2;
+        container.scrollTo({
+          top: offsetTop - halfHeight + (activeElement.clientHeight / 2),
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [activeHeadingId]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -196,36 +215,39 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
       });
 
       setHeadings(extractedHeadings);
+      if (extractedHeadings.length > 0) {
+        setActiveHeadingId(extractedHeadings[0].id);
+      }
 
-      const headingElementsRef: Record<string, IntersectionObserverEntry> = {};
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            headingElementsRef[entry.target.id] = entry;
-          });
-
-          const visibleHeadings: string[] = [];
-          Object.keys(headingElementsRef).forEach((key) => {
-            if (headingElementsRef[key].isIntersecting) {
-              visibleHeadings.push(key);
-            }
-          });
-
-          if (visibleHeadings.length > 0) {
-            const getIndex = (id: string) =>
-              extractedHeadings.findIndex((h) => h.id === id);
-            visibleHeadings.sort((a, b) => getIndex(a) - getIndex(b));
-            setActiveHeadingId(visibleHeadings[0]);
+      const handleScroll = () => {
+        const threshold = 150; // Distance from top of viewport to consider a heading "active"
+        let currentActiveId = "";
+        
+        for (let i = 0; i < extractedHeadings.length; i++) {
+          const rect = extractedHeadings[i].element.getBoundingClientRect();
+          // If the heading is above the threshold (or slightly below), it is the active one
+          if (rect.top <= threshold + 50) {
+            currentActiveId = extractedHeadings[i].id;
+          } else {
+            // Once we find a heading below the threshold, the previous one was our active heading
+            break;
           }
-        },
-        { rootMargin: "-120px 0px -40% 0px" },
-      );
+        }
+        
+        // If we scrolled past all above, or if none are above threshold yet, we clamp to first/last
+        if (currentActiveId) {
+          setActiveHeadingId(currentActiveId);
+        } else if (extractedHeadings.length > 0) {
+           // We are above the first heading
+           setActiveHeadingId(extractedHeadings[0].id);
+        }
+      };
 
-      elements.forEach((el) => observer.observe(el));
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll(); // Trigger once on mount
 
       return () => {
-        elements.forEach((el) => observer.unobserve(el));
-        observer.disconnect();
+        window.removeEventListener("scroll", handleScroll);
       };
     }, 100);
 
@@ -318,9 +340,10 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
       </Helmet>
 
       {/* Left Sidebar: Table of Contents */}
-      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col xl:flex-row gap-8 xl:gap-12 items-start justify-center">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-8 lg:gap-12 items-start justify-center">
         {headings.length > 0 && (
           <motion.div
+            ref={tocContainerRef}
             initial={{ opacity: 0, x: -20 }}
             animate={{
               opacity: showTocSidebar ? 1 : 0,
@@ -328,20 +351,21 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
               pointerEvents: showTocSidebar ? "auto" : "none",
             }}
             transition={{ duration: 0.3 }}
-            className="hidden xl:block print:hidden w-[300px] shrink-0 sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar"
+            className="hidden lg:block print:hidden w-[300px] shrink-0 sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar"
           >
             <div className="bg-white rounded-3xl border border-slate-200/70 p-6 shadow-sm">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2 mb-5 pb-4 border-b border-slate-100">
                 <List className="w-4 h-4 text-orange-500" />
                 Table of Contents
               </h3>
-              <nav className="space-y-1 relative">
+              <nav ref={tocNavRef} className="space-y-1 relative">
                 {/* Visual track line */}
                 <div className="absolute left-[7px] top-2 bottom-2 w-px bg-slate-100" />
 
                 {headings.map((heading) => (
                   <button
                     key={heading.id}
+                    data-toc-id={heading.id}
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
@@ -476,7 +500,7 @@ export default function BlogArticlePage({ slug }: { slug?: string }) {
 
                   {/* Tablet and Mobile Table of Contents */}
                   {headings.length > 0 && (
-                    <div className="block xl:hidden mb-10 print:hidden" id="mobile-tablet-toc">
+                    <div className="block lg:hidden mb-10 print:hidden" id="mobile-tablet-toc">
                       <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl overflow-hidden transition-all duration-300">
                         {/* Header Trigger */}
                         <button
