@@ -6,15 +6,18 @@ import { format } from 'date-fns';
 export default function TdsLateFeeCalculator() {
   const [dueDate, setDueDate] = useState('');
   const [filingDate, setFilingDate] = useState('');
-  const [tdsAmount, setTdsAmount] = useState('');
+  const [transactionAmount, setTransactionAmount] = useState('');
+  const [tdsRate, setTdsRate] = useState('');
 
   const [delayDays, setDelayDays] = useState(0);
   const [lateFee, setLateFee] = useState(0);
+  const [calculatedTds, setCalculatedTds] = useState(0);
 
   useEffect(() => {
     if (!dueDate || !filingDate) {
       setDelayDays(0);
       setLateFee(0);
+      setCalculatedTds(0);
       return;
     }
 
@@ -26,6 +29,7 @@ export default function TdsLateFeeCalculator() {
     if (daysDiff <= 0) {
       setDelayDays(0);
       setLateFee(0);
+      setCalculatedTds(0);
       return;
     }
 
@@ -34,15 +38,20 @@ export default function TdsLateFeeCalculator() {
     // Calculate Late Fee - Rs 200 per day
     let totalFee = daysDiff * 200;
 
-    // Max fee is the TDS amount
-    const maxFee = parseFloat(tdsAmount) || 0;
+    // Calculate Max fee (TDS amount) based on Transaction Amount and Rate
+    let maxFee = 0;
+    const amount = parseFloat(transactionAmount);
+    const rate = parseFloat(tdsRate);
     
-    if (tdsAmount && maxFee > 0) {
+    if (!isNaN(amount) && !isNaN(rate) && amount > 0 && rate > 0) {
+      maxFee = (amount * rate) / 100;
+      setCalculatedTds(maxFee);
       setLateFee(Math.min(totalFee, maxFee));
     } else {
+      setCalculatedTds(0);
       setLateFee(totalFee);
     }
-  }, [dueDate, filingDate, tdsAmount]);
+  }, [dueDate, filingDate, transactionAmount, tdsRate]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-orange-200 selection:text-orange-900 pb-20">
@@ -122,16 +131,29 @@ export default function TdsLateFeeCalculator() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-slate-700">TDS Amount Deducted (₹) <span className="text-slate-400 font-normal">(Optional)</span></label>
-                <input 
-                  type="number" 
-                  placeholder="e.g. 5000"
-                  value={tdsAmount}
-                  onChange={(e) => setTdsAmount(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-                <p className="text-xs text-slate-500">Under the Income Tax Act 2025, late fee cannot exceed the amount of TDS deductible.</p>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-slate-700">Amount on which TDS is deducted (₹)</label>
+                  <input 
+                    type="number" 
+                    placeholder="e.g. 50000"
+                    value={transactionAmount}
+                    onChange={(e) => setTransactionAmount(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-slate-700">Rate at which TDS is deducted (%)</label>
+                  <input 
+                    type="number" 
+                    placeholder="e.g. 10"
+                    value={tdsRate}
+                    onChange={(e) => setTdsRate(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  />
+                  <p className="text-xs text-slate-500">Under the Income Tax Act, late fee cannot exceed the amount of TDS deductible (which is calculated as Amount × Rate).</p>
+                </div>
               </div>
 
             </div>
