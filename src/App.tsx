@@ -2684,7 +2684,6 @@ function Testimonials() {
                   <h4 className="font-bold text-slate-900">
                     {testimonial.name}
                   </h4>
-                  <p className="text-sm text-slate-500">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>
